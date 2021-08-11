@@ -2,11 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class GridEditorUtility : MonoBehaviour
+
+public class GridGeneratorUtility : MonoBehaviour
 {
     #region EDITOR_VARS
-    [SerializeField] EditorGridCell gridPrefab;
+    [SerializeField] private GridCell gridPrefab;
+    [SerializeField] private GameObject seperatorPrefab;
     [SerializeField] private int gridHeight;
     [SerializeField] private int gridWidth;
     [SerializeField] private float widthSpacing;
@@ -14,18 +17,25 @@ public class GridEditorUtility : MonoBehaviour
     [SerializeField] private Transform gridPivot;
     #endregion
 
-    #region PRIVATE_VARS
-    private EditorGridCell[,] grid;
+    #region PUBLIC_VARS
     public bool IsGridGenerated => grid != null;
-    
+    #if UNITY_EDITOR
+    public List<GridCell> cells;
+    public List<GameObject> seperators;
+    #endif
     #endregion
-
+    
+    #region PRIVATE_VARS
+    private GridCell[,] grid;
+    #endregion
+    
+    
     #region PUBLIC_METHODS
     public void GenerateGrid()
     {
         if (ValidInputEntered())
         {
-            grid = new EditorGridCell[gridWidth,gridHeight];
+            grid = new GridCell[gridHeight,gridWidth];
             Vector3 pivot = gridPivot.localPosition;
             
             for (int i = 0; i < grid.GetLength(0); i++)
@@ -33,13 +43,14 @@ public class GridEditorUtility : MonoBehaviour
                 for (int j = 0; j < grid.GetLength(1); j++)
                 {
                     grid[i, j] = Instantiate(gridPrefab, transform);
-                    EditorGridCell cell = grid[i, j];
+                    GridCell cell = grid[i, j];
                     cell.transform.localPosition = pivot;
-
+                    cells.Add(cell);
                     pivot.x += widthSpacing;
                 }
 
-                pivot.y += heightSpacing;
+                seperators.Add(Instantiate(seperatorPrefab, transform));
+                pivot.y -= heightSpacing;
                 pivot.x = gridPivot.transform.localPosition.x;
             }
         }
@@ -52,27 +63,69 @@ public class GridEditorUtility : MonoBehaviour
 
     public void ResetGrid()
     {
-       
-        for (int i = 0; i < grid.GetLength(0); i++)
+        foreach (GridCell gridCell in cells)
         {
-            for (int j = 0; j < grid.GetLength(1); j++)
-            {
-                DestroyImmediate(grid[i,j].gameObject);
-            }
+            DestroyImmediate(gridCell.gameObject);
         }
 
+        foreach (GameObject seperator in seperators)
+        {
+            DestroyImmediate(seperator.gameObject);
+        }
+        seperators.Clear();
+        cells.Clear();
         grid = null;
     }
 
 
+    public void SetSources()
+    {
+        FillArray();
+        for (int i = 0; i < grid.GetLength(0)-1; i++)
+        {
+            for (int j = 0; j < grid.GetLength(1); j++)
+            {
+                Debug.Log("Filling");
+                GridCell currentGridCell = grid[i, j];
+                GridCell nextCellInColumn = grid[i + 1, j];
+
+                nextCellInColumn.elementSource = currentGridCell;
+            }
+        }
+    }
+
     public void OnValidate()
     {
         SetSizes();
+        FillArray();
     }
 
     #endregion
     
     #region PRIVATE_METHODS
+
+    private void FillArray()
+    {
+        if (cells.Count <= 0)
+        {
+            grid = null;
+            return;
+        }
+
+        if (grid == null)
+        {
+            grid = new GridCell[gridWidth,gridHeight];
+            int counter = 0;
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    grid[i, j] = cells[counter];
+                }
+            }
+        }
+
+    }
 
     private bool ValidInputEntered()
     {
@@ -93,7 +146,7 @@ public class GridEditorUtility : MonoBehaviour
         {
             for (int j = 0; j < grid.GetLength(1); j++)
             {
-                EditorGridCell cell = grid[i, j];
+                GridCell cell = grid[i, j];
                 cell.transform.localPosition = pivot;
                  pivot.x += widthSpacing;
             }
@@ -104,4 +157,5 @@ public class GridEditorUtility : MonoBehaviour
     }
     #endregion
 
+    
 }

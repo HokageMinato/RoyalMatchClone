@@ -3,36 +3,49 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(GridEditorUtility))]
+[CustomEditor(typeof(GridGeneratorUtility))]
 public class GridEditor : Editor
 {
   
-    
-    
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
         DrawGenerateButton();
         DrawResetButton();
+        DrawSourcesButton();
     }
 
     private void DrawGenerateButton()
     {
-        GridEditorUtility gridEditor = (GridEditorUtility) target;
-        if (GUILayout.Button("Generate Grid"))
+        GridGeneratorUtility gridGenerator = (GridGeneratorUtility) target;
+        if (!gridGenerator.IsGridGenerated)
         {
-            gridEditor.GenerateGrid();
+            if (GUILayout.Button("Generate Grid"))
+            {
+                gridGenerator.GenerateGrid();
+            }
         }
     }
     
     private void DrawResetButton()
     {
-        GridEditorUtility gridEditor = (GridEditorUtility) target;
-        if (gridEditor.IsGridGenerated)
+        GridGeneratorUtility gridGenerator = (GridGeneratorUtility) target;
+        if (gridGenerator.IsGridGenerated)
         {
             if (GUILayout.Button("Reset Grid"))
             {
-                gridEditor.ResetGrid();
+                gridGenerator.ResetGrid();
+            }
+        }
+    }
+    private void DrawSourcesButton()
+    {
+        GridGeneratorUtility gridGenerator = (GridGeneratorUtility) target;
+        if (gridGenerator.IsGridGenerated)
+        {
+            if (GUILayout.Button("SetSources"))
+            {
+                gridGenerator.SetSources();
             }
         }
     }
