@@ -60,6 +60,7 @@
   <ItemGroup>
      <Compile Include="Assets\GridEditor\Scripts\GridCell.cs" />
      <Compile Include="Assets\GridEditor\Scripts\GridGeneratorUtility.cs" />
+     <Compile Include="Assets\GridEditor\Scripts\SwipeInputReciever.cs" />
      <Compile Include="Assets\MainGame\Scripts\Grid.cs" />
      <Compile Include="Assets\MainGame\Scripts\GridBox.cs" />
  <Reference Include="Unity.Timeline.Editor">
