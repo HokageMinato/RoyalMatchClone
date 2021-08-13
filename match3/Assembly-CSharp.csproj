@@ -60,9 +60,9 @@
   <ItemGroup>
      <Compile Include="Assets\GridEditor\Scripts\GridCell.cs" />
      <Compile Include="Assets\GridEditor\Scripts\GridGeneratorUtility.cs" />
-     <Compile Include="Assets\GridEditor\Scripts\SwipeInputReciever.cs" />
-     <Compile Include="Assets\MainGame\Scripts\Grid.cs" />
-     <Compile Include="Assets\MainGame\Scripts\GridBox.cs" />
+     <Compile Include="Assets\GridEditor\Scripts\InputManager.cs" />
+     <Compile Include="Assets\MainGame\Scripts\Gameplay\Grid.cs" />
+     <Compile Include="Assets\MainGame\Scripts\Utilities\MinatoUtils.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>D:/Minato/Documents/match-3/match3/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>

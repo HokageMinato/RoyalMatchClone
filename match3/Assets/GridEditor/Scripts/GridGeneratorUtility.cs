@@ -33,6 +33,11 @@ public class GridGeneratorUtility : MonoBehaviour
     #region PUBLIC_METHODS
     public void GenerateGrid()
     {
+        if (!GetComponent<Grid>())
+        {
+            gameObject.AddComponent<Grid>();
+        }
+
         if (ValidInputEntered())
         {
             grid = new GridCell[gridHeight,gridWidth];
@@ -44,8 +49,10 @@ public class GridGeneratorUtility : MonoBehaviour
                 {
                     grid[i, j] = Instantiate(gridPrefab, transform);
                     GridCell cell = grid[i, j];
+                    cell.gameObject.name = $"({i},{j})";
                     cell.transform.localPosition = pivot;
                     cells.Add(cell);
+                    cell.Init(i,j);
                     pivot.x += widthSpacing;
                 }
 
@@ -81,15 +88,36 @@ public class GridGeneratorUtility : MonoBehaviour
     public void SetSources()
     {
         FillArray();
-        for (int i = 0; i < grid.GetLength(0)-1; i++)
+        DiscardPreviousSources();
+        AssignNewSources();
+        
+        GetComponent<Grid>().SetGrid(cells,gridHeight,gridWidth);
+        
+    }
+
+    private void DiscardPreviousSources()
+    {
+        for (int i = 0; i < cells.Count; i++)
         {
+            cells[i].elementSource = null;
+        }
+    }
+
+    private void AssignNewSources()
+    {
+        for (int i = 0; i < grid.GetLength(0) - 1; i++)
+        {
+            List<GridCell> activeCellList = new List<GridCell>();
+
             for (int j = 0; j < grid.GetLength(1); j++)
             {
-                Debug.Log("Filling");
-                GridCell currentGridCell = grid[i, j];
-                GridCell nextCellInColumn = grid[i + 1, j];
+                if (!grid[i, j].gameObject.activeSelf)
+                    activeCellList.Add(grid[i, j]);
+            }
 
-                nextCellInColumn.elementSource = currentGridCell;
+            for (int j = activeCellList.Count; j > 0; j++)
+            {
+                activeCellList[j].elementSource = activeCellList[j - 1];
             }
         }
     }
