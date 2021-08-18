@@ -6,8 +6,8 @@ using UnityEngine.Serialization;
 
 public class InputManager : Singleton<InputManager>
 {
-    private GridCell _firstCell;
-    private GridCell _secondCell;
+    [SerializeField] private GridCell _firstCell;
+    [SerializeField] private GridCell _secondCell;
     private bool _inputValid = false;
 
     public void SetFirstCell(GridCell firstCell)
@@ -20,9 +20,12 @@ public class InputManager : Singleton<InputManager>
 
     public void SetSecondCell(GridCell secondCell)
     {
+        if (!_inputValid)
+            return;
+        
+        InvalidateNextInputsTillFingerLift();
         _secondCell = secondCell;
         ValidateMove();
-        InvalidateNextInputsTillFingerLift();
     }
 
     private void InvalidateNextInputsTillFingerLift()
@@ -32,11 +35,17 @@ public class InputManager : Singleton<InputManager>
 
     private void ValidateMove()
     {
-        if (IsFirstCellAssigned() && _inputValid)
+        if (IsFirstCellAssigned())
         {
             if (_secondCell.IsNeighbourOf(_firstCell))
             {
                 Debug.Log("PERFORM SWIPE");
+                Element firstElement = _firstCell.element;
+                Element secondElement = _secondCell.element;
+                
+                firstElement.SetHolder(_secondCell);
+                secondElement.SetHolder(_firstCell);
+
             }
         }
     }

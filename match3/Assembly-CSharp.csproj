@@ -58,6 +58,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\CellGroup.cs" />
+     <Compile Include="Assets\GridEditor\Scripts\Element.cs" />
      <Compile Include="Assets\GridEditor\Scripts\GridCell.cs" />
      <Compile Include="Assets\GridEditor\Scripts\GridGeneratorUtility.cs" />
      <Compile Include="Assets\GridEditor\Scripts\InputManager.cs" />

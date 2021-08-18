@@ -12,8 +12,7 @@ public class GridGeneratorUtility : MonoBehaviour
     [SerializeField] private GameObject seperatorPrefab;
     [SerializeField] private int gridHeight;
     [SerializeField] private int gridWidth;
-    [SerializeField] private float widthSpacing;
-    [SerializeField] private float heightSpacing;
+   
     [SerializeField] private Transform gridPivot;
     #endregion
 
@@ -25,9 +24,13 @@ public class GridGeneratorUtility : MonoBehaviour
     #endif
     #endregion
     
+    
     #region PRIVATE_VARS
     private GridCell[,] grid;
+    private int widthSpacing;
+    private int heightSpacing;
     #endregion
+    
     
     
     #region PUBLIC_METHODS
@@ -88,40 +91,10 @@ public class GridGeneratorUtility : MonoBehaviour
     public void SetSources()
     {
         FillArray();
-        DiscardPreviousSources();
-        AssignNewSources();
-        
         GetComponent<Grid>().SetGrid(cells,gridHeight,gridWidth);
-        
     }
 
-    private void DiscardPreviousSources()
-    {
-        for (int i = 0; i < cells.Count; i++)
-        {
-            cells[i].elementSource = null;
-        }
-    }
-
-    private void AssignNewSources()
-    {
-        for (int i = 0; i < grid.GetLength(0) - 1; i++)
-        {
-            List<GridCell> activeCellList = new List<GridCell>();
-
-            for (int j = 0; j < grid.GetLength(1); j++)
-            {
-                if (!grid[i, j].gameObject.activeSelf)
-                    activeCellList.Add(grid[i, j]);
-            }
-
-            for (int j = activeCellList.Count; j > 0; j++)
-            {
-                activeCellList[j].elementSource = activeCellList[j - 1];
-            }
-        }
-    }
-
+  
     public void OnValidate()
     {
         SetSizes();
@@ -160,7 +133,6 @@ public class GridGeneratorUtility : MonoBehaviour
         bool isInputValid = true;
 
         isInputValid = gridHeight > 0 && gridWidth > 0;
-        
         return isInputValid;
     }
 
@@ -176,7 +148,7 @@ public class GridGeneratorUtility : MonoBehaviour
             {
                 GridCell cell = grid[i, j];
                 cell.transform.localPosition = pivot;
-                 pivot.x += widthSpacing;
+                pivot.x += widthSpacing;
             }
 
             pivot.y += heightSpacing;
