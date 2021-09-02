@@ -265,6 +265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1c4eb49024ac074b89b75f5df4b4f89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  matchCount: 5
 --- !u!4 &322992770
 Transform:
   m_ObjectHideFlags: 0
@@ -690,6 +691,7 @@ MonoBehaviour:
   - {fileID: 1511474995}
   - {fileID: 1549868448}
   - {fileID: 1131081773}
+  IsAnimating: 0
 --- !u!4 &1338448302
 Transform:
   m_ObjectHideFlags: 0

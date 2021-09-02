@@ -31,17 +31,17 @@ public class GridColoumn : MonoBehaviour
       }      
    }
 
-   public bool IsAnimating()
-   {
-      for (int i = 0; i < gridCells.Count; i++)
-      {
-         if (gridCells[i].IsAnimating())
-            return true;
-      }
-
-      return false;
-
-   }
+   // public bool IsAnimating()
+   // {
+   //    for (int i = 0; i < gridCells.Count; i++)
+   //    {
+   //       if (gridCells[i].IsAnimating())
+   //          return true;
+   //    }
+   //
+   //    return false;
+   //
+   // }
 
    public void AddCell(GridCell newCell)
    {

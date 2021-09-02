@@ -50,18 +50,41 @@ public class InputManager : Singleton<InputManager>
             if (_secondCell.IsNeighbourOf(_firstCell))
             {
                 Debug.Log("PERFORM SWIPE");
-                Element firstElement = _firstCell.GetElement();
-                Element secondElement = _secondCell.GetElement();
-              
-                _firstCell.SetElement(secondElement);
-                _secondCell.SetElement(firstElement);
-              //  firstElement.SetHolder(_secondCell);
-              //  secondElement.SetHolder(_firstCell);
+                
+                SwapCells();
+                StartCoroutine(ReSwipeRoutine());
                 
             }
         }
     }
 
+    public void SwapCells()
+    {
+        Element firstElement = _firstCell.GetElement();
+        Element secondElement = _secondCell.GetElement();
+              
+        _firstCell.SetElement(secondElement);
+        _secondCell.SetElement(firstElement);
+    }
+
+    private IEnumerator ReSwipeRoutine()
+    {
+        Matcher.instance.StartChecking();
+        
+        // while(_firstCell.IsAnimating() || _secondCell.IsAnimating())
+        //     yield return null;
+
+        while (Grid.instance.IsAnimating)
+            yield return null;
+        
+        yield return new WaitForSeconds(.2f);
+        
+        if (Matcher.instance.matchCount == 0)
+        {
+            SwapCells();
+        }
+
+    }
 
     private bool IsFirstCellAssigned()
     {

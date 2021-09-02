@@ -26,7 +26,7 @@ public class Grid : Singleton<Grid>
     {
         get { return GridDesignTemp.gridHeight; }
     }
- 
+    public bool IsAnimating=false;
     #endregion
    
     #region PRIVATE_VARIABLES
@@ -34,6 +34,7 @@ public class Grid : Singleton<Grid>
     private List<GridColoumn> _gridC= new List<GridColoumn>(); 
     #endregion
 
+    
     #region UNITY_CALLBACKS
     public override void Awake()
     {
@@ -43,19 +44,10 @@ public class Grid : Singleton<Grid>
     }
     #endregion
 
- 
+    #region PUBLIC_METHODS
 
-    public void LockColoumn(int col)
-    {
-      
-        _gridC[col].LockColoumn();
-    }
     
-    public void UnLockColoumn(int colIndex)
-    {
-         _gridC[colIndex].UnLockColoumn();
-    }
-
+    #endregion
 
     #region PRIVATE_METHODS
     private void CreateGrid()
@@ -124,49 +116,48 @@ public class Grid : Singleton<Grid>
 
     #endregion
 
-    // private void Update()
-    // {
-    //     if (Input.GetKeyDown(KeyCode.D))
-    //     {
-    //         StartCoroutine(CollapseAndDestruct());
-    //     }
-    // }
-    //
-    // private IEnumerator CollapseAndDestruct()
-    // {
-    //     yield return null;
-    //
-    //     for (int m = 0; m < 10; m++)
-    //     {
-    //         yield return null;
-    //         for (int k = 0; k < 5; k++)
-    //         {
-    //             yield return null;
-    //
-    //             int i = Random.Range(0, GridDesignTemp.gridHeight);
-    //             int j = Random.Range(0, GridDesignTemp.gridWidth);
-    //
-    //             if (GridDesignTemp.gridDesignTemp[i, j] == 1)
-    //                 if (!_grid[i, j].IsEmpty)
-    //                 {
-    //                     _grid[i, j].EmptyCell();
-    //                 }
-    //         }
-    //
-    //
-    //         for (int l = 0; l < _gridC.Count; l++)
-    //         {
-    //             _gridC[l].CollapseColoumn();
-    //             _gridC[l].LockColoumn();
-    //             while (_gridC[l].IsAnimating())
-    //             {
-    //                 yield return null;
-    //             }
-    //             _gridC[l].UnLockColoumn();
-    //         }
-    //         
-    //     }
-    // }
+    public void Destruct()
+    {
+        StartCoroutine(CollapseAndDestruct());
+        Debug.Log("DESTRUCTING");
+    }
+    
+    private IEnumerator CollapseAndDestruct()
+    {
+        yield return null;
+    
+        for (int m = 0; m < 2; m++)
+        {
+            yield return null;
+            for (int k = 0; k < 5; k++)
+            {
+                yield return null;
+    
+                int i = Random.Range(0, GridDesignTemp.gridHeight);
+                int j = Random.Range(0, GridDesignTemp.gridWidth);
+    
+                if (GridDesignTemp.gridDesignTemp[i, j] == 1)
+                    if (!_grid[i, j].IsEmpty)
+                    {
+                        _grid[i, j].EmptyCell();
+                    }
+            }
+    
+    
+            for (int l = 0; l < _gridC.Count; l++)
+            {
+                _gridC[l].CollapseColoumn();
+                _gridC[l].LockColoumn();
+                //while (_gridC[l].IsAnimating())
+                while (IsAnimating)
+                {
+                    yield return null;
+                }
+                _gridC[l].UnLockColoumn();
+            }
+            
+        }
+    }
 }
 
 public class GridDesignTemp

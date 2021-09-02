@@ -16,17 +16,15 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 
     #region PUBLIC_VARIABLES
 
-    public bool IsAnimating()
-    {
-        if (IsEmpty)
-        {
-            return false;
-        }
-
-        return (_element.IsAnimating);
-    }
-
-
+    // public bool IsAnimating()
+    // {
+    //     if (IsEmpty)
+    //     {
+    //         return false;
+    //     }
+    //
+    //     return (_element.IsAnimating);
+    // }
     public bool IsEmpty
     {
         get

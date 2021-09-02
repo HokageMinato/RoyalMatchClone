@@ -6,16 +6,16 @@ public class Element : MonoBehaviour
 {
    public ElementType elementType;
    public float swipeAnimTime;
-   private bool isAnimating;
+   //private bool isAnimating;
    
-   public bool IsAnimating
-   {
-      get
-      {
-         return isAnimating;
-      }
-
-   }
+   // public bool IsAnimating
+   // {
+   //    get
+   //    {
+   //       return isAnimating;
+   //    }
+   //
+   // }
 
    public bool IsSame(Element other)
    {
@@ -36,7 +36,8 @@ public class Element : MonoBehaviour
 
    private IEnumerator ShiftRoutine()
    {
-      isAnimating = true;
+    //  isAnimating = true;
+      Grid.instance.IsAnimating = true;
       float rate = 1f/swipeAnimTime ;
       float i = 0;
       Vector3 sourcePosition = transform.localPosition;
@@ -49,7 +50,8 @@ public class Element : MonoBehaviour
          yield return null;
       }
 
-         isAnimating = false;
+        // isAnimating = false;
+         Grid.instance.IsAnimating = false;
 
    }
 
