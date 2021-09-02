@@ -10,7 +10,7 @@ public class CellGroup : MonoBehaviour
 
     public void OnMoveDone(int[] w, int[]h)
     {
-        bool isNear = false;
+        
         
         for (int i = 0; i < groupedCells.Length; i++)
         {

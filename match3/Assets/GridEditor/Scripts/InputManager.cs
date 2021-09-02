@@ -12,6 +12,9 @@ public class InputManager : Singleton<InputManager>
 
     public void SetFirstCell(GridCell firstCell)
     {
+        if(firstCell.IsEmpty)
+            return;
+        
         _firstCell = firstCell;
         ValidateInputsForSwipe();
     }
@@ -22,7 +25,14 @@ public class InputManager : Singleton<InputManager>
     {
         if (!_inputValid)
             return;
-        
+
+        if (secondCell.IsEmpty)
+        {
+            _inputValid = true;
+            _firstCell = null;
+            _secondCell = null;
+        }
+
         InvalidateNextInputsTillFingerLift();
         _secondCell = secondCell;
         ValidateMove();
@@ -33,19 +43,21 @@ public class InputManager : Singleton<InputManager>
         _inputValid = false;
     }
 
-    private void ValidateMove()
+    private void ValidateMove()           
     {
         if (IsFirstCellAssigned())
         {
             if (_secondCell.IsNeighbourOf(_firstCell))
             {
                 Debug.Log("PERFORM SWIPE");
-                Element firstElement = _firstCell.element;
-                Element secondElement = _secondCell.element;
+                Element firstElement = _firstCell.GetElement();
+                Element secondElement = _secondCell.GetElement();
+              
+                _firstCell.SetElement(secondElement);
+                _secondCell.SetElement(firstElement);
+              //  firstElement.SetHolder(_secondCell);
+              //  secondElement.SetHolder(_firstCell);
                 
-                firstElement.SetHolder(_secondCell);
-                secondElement.SetHolder(_firstCell);
-
             }
         }
     }
@@ -60,4 +72,6 @@ public class InputManager : Singleton<InputManager>
     {
         _inputValid = true;
     }
+    
+    
 }

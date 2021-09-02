@@ -1,42 +1,73 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
- 
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
+
 public class Grid : Singleton<Grid>
 {
 
     #region PUBLIC_VARIABLES
-    public List<GridCell> gridList;
-    public GridCell gridPrefab;
+    public GridColoumn GridColoumnPrefab;
+    public GridCell gridCellPrefab;
     public Element[] elementPrefab;
-    public int gridHeight;
-    public int gridWidth;
+    public GridCell this[int i,int j]
+    {
+        get { return _grid[i,j]; }
+        set { _grid[i,j] = value; }
+    }
+    public int GridHeight
+    {
+        get { return GridDesignTemp.gridHeight; }
+    }
+    
+    public int GridWidth
+    {
+        get { return GridDesignTemp.gridHeight; }
+    }
+ 
     #endregion
-
-
    
-    
-    
     #region PRIVATE_VARIABLES
     private GridCell[,] _grid;
+    private List<GridColoumn> _gridC= new List<GridColoumn>(); 
     #endregion
 
     #region UNITY_CALLBACKS
-    private void Awake()
+    public override void Awake()
     {
+        base.Awake();
         CreateGrid();
+        SetBottomReferences();
     }
     #endregion
+
+ 
+
+    public void LockColoumn(int col)
+    {
+      
+        _gridC[col].LockColoumn();
+    }
+    
+    public void UnLockColoumn(int colIndex)
+    {
+         _gridC[colIndex].UnLockColoumn();
+    }
 
 
     #region PRIVATE_METHODS
     private void CreateGrid()
     {
         int c = 0;
-        _grid = new GridCell[9, 9];
+        _grid = new GridCell[GridDesignTemp.gridHeight,GridDesignTemp.gridWidth];
        
-        for (int i = 0; i < 9; i++)
+
+        for (int i = 0; i < GridDesignTemp.gridHeight; i++)
         {
-            for (int j = 0; j < 9; j++)
+            _gridC.Add(Instantiate(GridColoumnPrefab,transform));
+            for (int j = 0; j < GridDesignTemp.gridWidth; j++)
             {
                 if (GridDesignTemp.gridDesignTemp[i, j] == 0)
                     continue;
@@ -46,44 +77,96 @@ public class Grid : Singleton<Grid>
                 c++;
             }
         }
+        
+    }
 
+    private void SetBottomReferences()
+    {
+         for (int i = 0; i < GridDesignTemp.gridWidth; i++)
+         {
+            for (int j = 0; j < GridDesignTemp.gridHeight/*-1*/; j++)
+            {
+                if (GridDesignTemp.gridDesignTemp[i, j] == 0)// || GridDesignTemp.gridDesignTemp[j+1,i] == 0)
+                    continue;
+        
+                _gridC[j].AddCell(_grid[i,j]);
+                //_grid[j, i].bottomCell = _grid[j + 1,i];
+            }
+        }
     }
 
     private void CreateCellAt(int j, int i)
     {
-        GridCell cell = Instantiate(gridPrefab, transform);
+        GridCell cell = Instantiate(gridCellPrefab, transform);
         Vector3 newPosition = transform.position + new Vector3(j, -i) * GridDesignTemp.gridSpacing;
-        newPosition.x -= GridDesignTemp.maxWidthMidPointForThisPattern; //To make sure gridPivot is in center
+        newPosition.x -= GridDesignTemp.maxWidthMidPointForThisPattern;  // | To make sure gridPivot is in center
+        newPosition.y += GridDesignTemp.maxHeightMidPointForThisPattern;//  |
         cell.transform.position = newPosition;
-        _grid[i, j] = cell;
+        cell.Init(i,j);
         cell.gameObject.name = $"({i},{j})";
+        _grid[i, j] = cell;
+        i++;
+    
+       
     }
 
     private void FillInitialElementAt(int j, int i,int c)
     {
         GridCell parentCell = _grid[i, j];
-        Element element = Instantiate(elementPrefab[Random.Range(0,elementPrefab.Length)],parentCell.transform);
+        Element element = Instantiate(elementPrefab[Random.Range(0,elementPrefab.Length) ],parentCell.transform);
         
         
         Transform elementTransform = element.transform;
         elementTransform.localPosition = new Vector3(0f,15f,0f);
         element.gameObject.name = c.ToString();
-        element.SetHolder(parentCell);
+        parentCell.SetElement(element);
     }
 
     #endregion
 
-    #region PUBLIC_METHODS
-    public void SetGrid(List<GridCell> gridCells, int height, int width)
-    {
-        gridList = gridCells;
-        gridHeight = height;
-        gridWidth = width;
-    }
- 
-     #endregion
-
-
+    // private void Update()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.D))
+    //     {
+    //         StartCoroutine(CollapseAndDestruct());
+    //     }
+    // }
+    //
+    // private IEnumerator CollapseAndDestruct()
+    // {
+    //     yield return null;
+    //
+    //     for (int m = 0; m < 10; m++)
+    //     {
+    //         yield return null;
+    //         for (int k = 0; k < 5; k++)
+    //         {
+    //             yield return null;
+    //
+    //             int i = Random.Range(0, GridDesignTemp.gridHeight);
+    //             int j = Random.Range(0, GridDesignTemp.gridWidth);
+    //
+    //             if (GridDesignTemp.gridDesignTemp[i, j] == 1)
+    //                 if (!_grid[i, j].IsEmpty)
+    //                 {
+    //                     _grid[i, j].EmptyCell();
+    //                 }
+    //         }
+    //
+    //
+    //         for (int l = 0; l < _gridC.Count; l++)
+    //         {
+    //             _gridC[l].CollapseColoumn();
+    //             _gridC[l].LockColoumn();
+    //             while (_gridC[l].IsAnimating())
+    //             {
+    //                 yield return null;
+    //             }
+    //             _gridC[l].UnLockColoumn();
+    //         }
+    //         
+    //     }
+    // }
 }
 
 public class GridDesignTemp
@@ -91,17 +174,47 @@ public class GridDesignTemp
     public static readonly int[,] gridDesignTemp = new[,]
     {
         {1,1,1,1,1,1,1,1,1},
-        {0,0,0,1,1,1,0,0,0},
+        {1,1,1,1,1,1,1,1,1},
+        {1,1,1,1,1,1,1,1,1},
+        {0,0,1,1,1,1,1,0,0},
         {0,0,1,1,1,1,1,0,0},
         {0,0,1,1,1,1,1,0,0},
         {1,1,1,1,1,1,1,1,1},
-        {0,0,0,1,1,1,0,0,0},
-        {0,0,0,1,1,1,0,0,0},
-        {0,0,0,1,1,1,0,0,0},
-        {0,0,0,1,1,1,0,0,0}
+        {1,1,1,1,1,1,1,1,1},
+        {1,1,1,1,1,1,1,1,1}
     };
+    // public static readonly int[,] gridDesignTemp = new[,]
+    // {
+    //     {1,1,1,1,1},
+    //     {1,1,1,1,1},
+    //     {1,1,1,1,1},
+    //     {1,1,1,1,1},
+    //     {1,1,1,1,1},
+    //     
+    // };
     public const float gridSpacing = 2.0f;
-    public const float maxWidthMidPointForThisPattern = 8; 
+    public const float maxWidthMidPointForThisPattern = 7; 
+    public const float maxHeightMidPointForThisPattern = 7; 
+    public const int gridHeight = 8;
+    public const int gridWidth = 8;
     
+    // height width calculation ??IMPLEMENT IN EDITOR
+    //     for (int i = 0; i < 8; i++)
+    // {
+    //     for (int j = 0; j < 8; j++)
+    //     {
+    //         if (_grid[i,j] == null)
+    //             continue;
+    //
+    //         gridHeight = Mathf.Max(Mathf.Abs(_grid[i, j].transform.localPosition.y),gridHeight);
+    //         Debug.Log(gridHeight);
+    //         Debug.Log(_grid[i, j].transform.localPosition.y);
+    //     }
+    // }
 }
 
+public enum GridState
+{
+    UNSET,
+    SET
+}

@@ -5,39 +5,55 @@ using System.Collections.Generic;
 public class Element : MonoBehaviour
 {
    public ElementType elementType;
-   public GridCell holder;
-
-   [SerializeField] private GridCell previousHolder=null;
-
+   public float swipeAnimTime;
+   private bool isAnimating;
    
+   public bool IsAnimating
+   {
+      get
+      {
+         return isAnimating;
+      }
+
+   }
+
    public bool IsSame(Element other)
    {
       return other.elementType == elementType;
    }
 
-   public void SetHolder(GridCell newHolder)
+   public void DestroySelf()
    {
-      previousHolder = holder;
-      holder = newHolder;
-      holder.element = this;
-      transform.SetParent(holder.transform);
-      StartCoroutine(SwipeRoutine());
+      Destroy(gameObject);
    }
 
-   private IEnumerator SwipeRoutine()
+ 
+   public void SetHolder(GridCell newHolder)
    {
-      float rate = 1f / .45f;
+      transform.SetParent(newHolder.transform);
+      StartCoroutine(ShiftRoutine());
+   }
+
+   private IEnumerator ShiftRoutine()
+   {
+      isAnimating = true;
+      float rate = 1f/swipeAnimTime ;
       float i = 0;
+      Vector3 sourcePosition = transform.localPosition;
+      Vector3 pseudoZero = new Vector3(0.01f, 0.01f,0.01f);
       
-      while (i <= 1)
+      while (i <= 1f)
       {
-         transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, i);
          i += rate * Time.deltaTime;
+         transform.localPosition = Vector3.Lerp(sourcePosition, pseudoZero, i);
          yield return null;
       }
 
+         isAnimating = false;
+
    }
 
+   
    public enum ElementType
    {
       Type1,

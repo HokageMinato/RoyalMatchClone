@@ -64,7 +64,10 @@
      <Compile Include="Assets\GridEditor\Scripts\GridGeneratorUtility.cs" />
      <Compile Include="Assets\GridEditor\Scripts\InputManager.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\Grid.cs" />
+     <Compile Include="Assets\MainGame\Scripts\Gameplay\GridColoumn.cs" />
      <Compile Include="Assets\MainGame\Scripts\Utilities\MinatoUtils.cs" />
+     <Compile Include="Assets\Matcher.cs" />
+     <Compile Include="Assets\NativePooler.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>D:/Minato/Documents/match-3/match3/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
