@@ -11,7 +11,9 @@ public class Grid : Singleton<Grid>
     #region PUBLIC_VARIABLES
     public GridColoumn GridColoumnPrefab;
     public GridCell gridCellPrefab;
-    public Element[] elementPrefab;
+    public ElementGenerator elementGeneratorPrefab;
+    
+    
     public GridCell this[int i,int j]
     {
         get { return _grid[i,j]; }
@@ -40,7 +42,8 @@ public class Grid : Singleton<Grid>
     {
         base.Awake();
         CreateGrid();
-        SetBottomReferences();
+        CreateElementGenerators();
+        SetColoumnCells();
     }
     #endregion
 
@@ -50,6 +53,7 @@ public class Grid : Singleton<Grid>
     #endregion
 
     #region PRIVATE_METHODS
+    
     private void CreateGrid()
     {
         int c = 0;
@@ -72,7 +76,22 @@ public class Grid : Singleton<Grid>
         
     }
 
-    private void SetBottomReferences()
+    private void CreateElementGenerators()
+    {
+        int i = 0;
+        for (int j = 0; j < GridDesignTemp.gridWidth; j++)
+        {
+            ElementGenerator generator = Instantiate(elementGeneratorPrefab);
+            GridCell cell = _grid[i, j];
+            
+            Vector3 position = cell.transform.position;
+            position.y += 2f;
+            generator.transform.position = position;
+            _gridC[j].SetGenerator(generator);
+        }
+    }
+
+    private void SetColoumnCells()
     {
          for (int i = 0; i < GridDesignTemp.gridWidth; i++)
          {
@@ -82,9 +101,8 @@ public class Grid : Singleton<Grid>
                     continue;
         
                 _gridC[j].AddCell(_grid[i,j]);
-                //_grid[j, i].bottomCell = _grid[j + 1,i];
             }
-        }
+         }
     }
 
     private void CreateCellAt(int j, int i)
@@ -102,12 +120,14 @@ public class Grid : Singleton<Grid>
        
     }
 
-    private void FillInitialElementAt(int j, int i,int c)
+    public void FillInitialElementAt(int j, int i,int c)
     {
         GridCell parentCell = _grid[i, j];
-        Element element = Instantiate(elementPrefab[Random.Range(0,elementPrefab.Length) ],parentCell.transform);
         
+        if(!parentCell.IsEmpty)
+            return;
         
+        Element element = elementGeneratorPrefab.GetRandomElement(parentCell);
         Transform elementTransform = element.transform;
         elementTransform.localPosition = new Vector3(0f,15f,0f);
         element.gameObject.name = c.ToString();
@@ -148,7 +168,6 @@ public class Grid : Singleton<Grid>
             {
                 _gridC[l].CollapseColoumn();
                 _gridC[l].LockColoumn();
-                //while (_gridC[l].IsAnimating())
                 while (IsAnimating)
                 {
                     yield return null;

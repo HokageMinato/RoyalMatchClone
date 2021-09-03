@@ -71,9 +71,6 @@ public class InputManager : Singleton<InputManager>
     {
         Matcher.instance.StartChecking();
         
-        // while(_firstCell.IsAnimating() || _secondCell.IsAnimating())
-        //     yield return null;
-
         while (Grid.instance.IsAnimating)
             yield return null;
         

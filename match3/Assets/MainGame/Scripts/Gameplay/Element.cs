@@ -6,17 +6,8 @@ public class Element : MonoBehaviour
 {
    public ElementType elementType;
    public float swipeAnimTime;
-   //private bool isAnimating;
+   public AnimationCurve curve;
    
-   // public bool IsAnimating
-   // {
-   //    get
-   //    {
-   //       return isAnimating;
-   //    }
-   //
-   // }
-
    public bool IsSame(Element other)
    {
       return other.elementType == elementType;
@@ -36,7 +27,6 @@ public class Element : MonoBehaviour
 
    private IEnumerator ShiftRoutine()
    {
-    //  isAnimating = true;
       Grid.instance.IsAnimating = true;
       float rate = 1f/swipeAnimTime ;
       float i = 0;
@@ -46,12 +36,11 @@ public class Element : MonoBehaviour
       while (i <= 1f)
       {
          i += rate * Time.deltaTime;
-         transform.localPosition = Vector3.Lerp(sourcePosition, pseudoZero, i);
+         transform.localPosition = Vector3.Lerp(sourcePosition, pseudoZero, curve.Evaluate(i));
          yield return null;
       }
 
-        // isAnimating = false;
-         Grid.instance.IsAnimating = false;
+      Grid.instance.IsAnimating = false;
 
    }
 

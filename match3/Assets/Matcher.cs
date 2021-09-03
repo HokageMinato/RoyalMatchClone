@@ -11,11 +11,12 @@ public class Matcher : Singleton<Matcher>
     public void StartChecking()
     {
         StartCoroutine(CheckRoutine());
+        
     }
 
     private IEnumerator CheckRoutine()
     {
-        matchCount=5;
+        
         yield return null;
 
         while (matchCount > 0)
@@ -23,14 +24,16 @@ public class Matcher : Singleton<Matcher>
             Grid.instance.Destruct();
             while (Grid.instance.IsAnimating)
             {
-                yield return new WaitForSeconds(.5f);
+                yield return null;
             }
 
             
+            yield return new WaitForSeconds(0.2f);
             matchCount--;
-            yield return new WaitForSeconds(2f);
         }
 
+        yield return new WaitForSeconds(2f);
+        matchCount = 5;
     }
 
 
