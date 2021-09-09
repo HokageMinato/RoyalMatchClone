@@ -136,47 +136,54 @@ public class Grid : Singleton<Grid>
 
     #endregion
 
-    public void Destruct()
+    // public void Destruct()
+    // {
+    //     StartCoroutine(CollapseAndDestruct());
+    //     Debug.Log("DESTRUCTING");
+    // }
+    //
+    // private IEnumerator CollapseAndDestruct()
+    // {
+    //     yield return null;
+    //
+    //     for (int m = 0; m < 2; m++)
+    //     {
+    //         yield return null;
+    //         for (int k = 0; k < 5; k++)
+    //         {
+    //             yield return null;
+    //
+    //             int i = Random.Range(0, GridDesignTemp.gridHeight);
+    //             int j = Random.Range(0, GridDesignTemp.gridWidth);
+    //
+    //             if (GridDesignTemp.gridDesignTemp[i, j] == 1)
+    //                 if (!_grid[i, j].IsEmpty)
+    //                 {
+    //                     _grid[i, j].EmptyCell();
+    //                 }
+    //         }
+    //
+    public bool CollapseColoumns()
     {
-        StartCoroutine(CollapseAndDestruct());
-        Debug.Log("DESTRUCTING");
+        Debug.Log("Executing");
+        //StartCoroutine(CollapseRoutine());
+        return !IsAnimating;
     }
     
-    private IEnumerator CollapseAndDestruct()
-    {
-        yield return null;
-    
-        for (int m = 0; m < 2; m++)
+    private  IEnumerator CollapseRoutine(){
+        for (int l = 0; l < _gridC.Count; l++)
         {
-            yield return null;
-            for (int k = 0; k < 5; k++)
+            _gridC[l].CollapseColoumn();
+            _gridC[l].LockColoumn();
+            while (IsAnimating)
             {
                 yield return null;
-    
-                int i = Random.Range(0, GridDesignTemp.gridHeight);
-                int j = Random.Range(0, GridDesignTemp.gridWidth);
-    
-                if (GridDesignTemp.gridDesignTemp[i, j] == 1)
-                    if (!_grid[i, j].IsEmpty)
-                    {
-                        _grid[i, j].EmptyCell();
-                    }
             }
-    
-    
-            for (int l = 0; l < _gridC.Count; l++)
-            {
-                _gridC[l].CollapseColoumn();
-                _gridC[l].LockColoumn();
-                while (IsAnimating)
-                {
-                    yield return null;
-                }
-                _gridC[l].UnLockColoumn();
-            }
-            
+            _gridC[l].UnLockColoumn();
         }
+        
     }
+     
 }
 
 public class GridDesignTemp

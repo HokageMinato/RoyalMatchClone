@@ -48,7 +48,7 @@ MonoBehaviour:
   hIndex: 0
   wIndex: 0
   inputCollider: {fileID: 3620018301269111305}
-  element: {fileID: 0}
+  renderer: {fileID: 3649137515392342350}
 --- !u!212 &3649137515392342350
 SpriteRenderer:
   m_ObjectHideFlags: 0

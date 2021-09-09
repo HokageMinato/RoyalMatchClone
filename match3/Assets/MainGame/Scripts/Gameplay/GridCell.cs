@@ -9,6 +9,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     [SerializeField] private int hIndex;
     [SerializeField] private int wIndex;
     [SerializeField] private BoxCollider2D inputCollider;
+    [SerializeField] private SpriteRenderer renderer;
     #pragma  warning restore 0649
     
     private Element _element;
@@ -81,6 +82,11 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         inputCollider.enabled = isActive;
     }
 
+    public Element ReadElement()
+    {
+        return _element;
+    }
+
     public Element GetElement()
     {
         Element lastElement = _element;
@@ -103,6 +109,11 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     {
         Destroy(_element.gameObject);
         _element = null;
+    }
+
+    public void HighlightCell()
+    {
+        renderer.color = Color.cyan;
     }
 
     #endregion

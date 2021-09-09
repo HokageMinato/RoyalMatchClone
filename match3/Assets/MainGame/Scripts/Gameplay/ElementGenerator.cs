@@ -8,7 +8,6 @@ public class ElementGenerator : MonoBehaviour
 
     public Element GetRandomElement(GridCell parentCell)
     {
-        Debug.Log("Generating");
        return  Instantiate(elementPrefab[Random.Range(0, elementPrefab.Length)], parentCell.transform);
     }
 }

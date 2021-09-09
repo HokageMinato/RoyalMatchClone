@@ -5,9 +5,8 @@ using Unity.Mathematics;
 
 public class Matcher : Singleton<Matcher>
 {
-
-    public int matchCount;
-    
+    [SerializeField] private MatchPattern patterns;
+   
     public void StartChecking()
     {
         StartCoroutine(CheckRoutine());
@@ -16,25 +15,41 @@ public class Matcher : Singleton<Matcher>
 
     private IEnumerator CheckRoutine()
     {
+
+        int matchCount = 0;
+        Grid grid = Grid.instance;
         
         yield return null;
 
         while (matchCount > 0)
         {
-            Grid.instance.Destruct();
-            while (Grid.instance.IsAnimating)
+        
+            
+            
+        
+            while (grid.IsAnimating)
             {
                 yield return null;
             }
 
-            
+
             yield return new WaitForSeconds(0.2f);
             matchCount--;
         }
 
         yield return new WaitForSeconds(2f);
-        matchCount = 5;
+       
     }
 
+    [ContextMenu("Check")]
+    public void FindMatches()
+    {
+        Grid grid = Grid.instance;
+        List<Element> matches = new List<Element>();
+
+       
+
+    }
+    
 
 }
