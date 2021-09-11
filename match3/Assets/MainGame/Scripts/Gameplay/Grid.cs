@@ -163,11 +163,11 @@ public class Grid : Singleton<Grid>
     //                 }
     //         }
     //
-    public bool CollapseColoumns()
+    public void CollapseColoumns()
     {
         Debug.Log("Executing");
-        //StartCoroutine(CollapseRoutine());
-        return !IsAnimating;
+        StartCoroutine(CollapseRoutine());
+        
     }
     
     private  IEnumerator CollapseRoutine(){

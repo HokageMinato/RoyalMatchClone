@@ -5,9 +5,7 @@ using UnityEngine;
 public class MatchPattern : ScriptableObject
 {
     [SerializeField] private List<IndexPair> indexes;
-    public int iMax;
-    public int jMax;
-
+    public string patternName;
      public int Length
     {
         get
@@ -25,6 +23,23 @@ public class MatchPattern : ScriptableObject
 [System.Serializable]
 public class IndexPair
 {
-    public int widthOffset;
     public int heightOffset;
+    public int widthOffset;
+
+
+    public int i_Offset
+    {
+        get
+        {
+            return heightOffset;
+        }
+    }
+    
+    public int j_Offset
+    {
+        get
+        {
+            return widthOffset;
+        }
+    }
 }

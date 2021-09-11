@@ -233,6 +233,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   patterns:
   - {fileID: 11400000, guid: 02105cbeb9c9ab248b52684b3e9a83a6, type: 2}
+  - {fileID: 11400000, guid: 5f6de3182aba7d742ba26248b18f761a, type: 2}
+  matchCount: 1
 --- !u!4 &322992770
 Transform:
   m_ObjectHideFlags: 0

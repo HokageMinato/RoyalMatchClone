@@ -105,12 +105,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         _element.SetHolder(this);
     }
 
-    public void EmptyCell()
-    {
-        Destroy(_element.gameObject);
-        _element = null;
-    }
-
+    
     public void HighlightCell()
     {
         renderer.color = Color.cyan;
