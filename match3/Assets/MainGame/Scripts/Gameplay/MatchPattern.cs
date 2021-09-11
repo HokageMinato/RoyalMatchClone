@@ -4,13 +4,13 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MatcherPattern", menuName = "ScriptableObjects/Gameplay/MatcherPattern")]
 public class MatchPattern : ScriptableObject
 {
-    [SerializeField] private List<IndexPair> indexes;
+    [SerializeField] private IndexPair[] indexes;
     public string patternName;
      public int Length
     {
         get
         {
-            return indexes.Count;
+            return indexes.Length;
         }
     }
 

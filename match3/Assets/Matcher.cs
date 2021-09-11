@@ -9,7 +9,7 @@ public class Matcher : Singleton<Matcher>
     [SerializeField] private MatchPattern[] patterns;
     private readonly List<List<Element>> _matchedElements = new List<List<Element>>();
     private readonly List<GridCell> _patternCells = new List<GridCell>();
-
+    
     public bool HasMatches
     {
         get
@@ -21,31 +21,34 @@ public class Matcher : Singleton<Matcher>
     [ContextMenu("Start Checking")]
     public void StartChecking()
     {
-        StartCoroutine(CheckRoutine());
+        FindMatches();
+        if(HasMatches)
+            StartCoroutine(IterativeCheckRoutine());
     }
 
-    private IEnumerator CheckRoutine()
+    private IEnumerator IterativeCheckRoutine()
     {
-        Grid grid = Grid.instance;
-        yield return null;
-        FindMatches();
-        Debug.Log($"<Mathcer> Matched elements count{_matchedElements.Count}");
+        yield return WaitForGridAnimation();
+        
+        Debug.Log($"<Matcher> Matched elements count{_matchedElements.Count}");
         while (_matchedElements.Count > 0)
         {
             DestroyMatchedItems();
-            grid.CollapseColoumns();
-            while (grid.IsAnimating)
-            {
-                yield return null;
-            }
+            Grid.instance.CollapseColoumns();
+            yield return WaitForGridAnimation();
             FindMatches();
-            yield return null;
         }
 
-        yield return new WaitForSeconds(2f);
-       
     }
 
+    private IEnumerator WaitForGridAnimation()
+    {
+        Grid grid = Grid.instance;
+        while (grid.IsAnimating)
+        {
+            yield return null;
+        }
+    }
 
 
     private void DestroyMatchedItems()
@@ -61,7 +64,7 @@ public class Matcher : Singleton<Matcher>
         }
     }
 
-    public void FindMatches()
+    private void FindMatches()
     {
         Grid grid = Grid.instance;
      

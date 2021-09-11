@@ -52,7 +52,7 @@ public class InputManager : Singleton<InputManager>
                 Debug.Log("PERFORM SWIPE");
                 
                 SwapCells();
-               // StartCoroutine(ReSwipeRoutine());
+                StartCoroutine(ReSwipeRoutine());
                 
             }
         }
@@ -74,12 +74,11 @@ public class InputManager : Singleton<InputManager>
         while (Grid.instance.IsAnimating)
             yield return null;
         
-        yield return new WaitForSeconds(.2f);
         
-         if (!Matcher.instance.HasMatches)
-         {
-             SwapCells();
-         }
+        if (!Matcher.instance.HasMatches)
+        {
+            SwapCells();
+        }
 
     }
 
