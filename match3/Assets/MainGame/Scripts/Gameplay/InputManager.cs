@@ -49,13 +49,16 @@ public class InputManager : Singleton<InputManager>
         {
             if (_secondCell.IsNeighbourOf(_firstCell))
             {
-                Debug.Log("PERFORM SWIPE");
-                
-                SwapCells();
-                StartCoroutine(ReSwipeRoutine());
-                
+                OnValidMove();
             }
         }
+    }
+
+    private void OnValidMove()
+    {
+        Debug.Log("PERFORM SWIPE");
+        SwapCells();
+        StartCoroutine(ReSwipeRoutine());
     }
 
     public void SwapCells()
@@ -69,12 +72,11 @@ public class InputManager : Singleton<InputManager>
 
     private IEnumerator ReSwipeRoutine()
     {
-        Matcher.instance.StartChecking();
-        
         while (Grid.instance.IsAnimating)
             yield return null;
         
-        
+        Matcher.instance.StartChecking();
+
         if (!Matcher.instance.HasMatches)
         {
             SwapCells();

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -28,18 +29,24 @@ public class Matcher : Singleton<Matcher>
 
     private IEnumerator IterativeCheckRoutine()
     {
+        Grid grid = Grid.instance;
         yield return WaitForGridAnimation();
         
-        Debug.Log($"<Matcher> Matched elements count{_matchedElements.Count}");
+      //I  Debug.Log($"<Matcher> Matched elements count{_matchedElements.Count}");
         while (_matchedElements.Count > 0)
         {
             DestroyMatchedItems();
-            Grid.instance.CollapseColoumns();
+            grid.LockColoumns();
+            yield return new WaitForSeconds(.2f);
+            grid.CollapseColoumns();
             yield return WaitForGridAnimation();
+            grid.UnlockColoumns();
             FindMatches();
         }
 
     }
+
+    
 
     private IEnumerator WaitForGridAnimation()
     {
@@ -93,11 +100,11 @@ public class Matcher : Singleton<Matcher>
                         //all the listed elements are same or not.
                         if (DoesSelectedCellsHaveSameElements()) 
                         {
-                            Debug.Log($"<Matcher> Cell count {_patternCells.Count}");
+                            //Debug.Log($"<Matcher> Cell count {_patternCells.Count}");
                             ExtractElementsToDestroyList();
-                            Debug.Log("--------------------------------------------------------------");
-                            Debug.Log(".");
-                            Debug.Log(".");
+                           // Debug.Log("--------------------------------------------------------------");
+                            //Debug.Log(".");
+                            //Debug.Log(".");
                         }
                         //Pattern 'p' checked successfully here
                     }
@@ -105,7 +112,7 @@ public class Matcher : Singleton<Matcher>
             }
         }
 
-        Debug.Log($"Total patterns detected {_matchedElements.Count}");
+        //Debug.Log($"Total patterns detected {_matchedElements.Count}");
 
     }
 
@@ -114,7 +121,7 @@ public class Matcher : Singleton<Matcher>
         List<Element> sameElementList = new List<Element>();
         for (int k = 0; k < _patternCells.Count; k++)
         {
-            Debug.Log($"<Matcher> Adding element fomr{_patternCells[k].gameObject.name} to matched list");
+         //   Debug.Log($"<Matcher> Adding element fomr{_patternCells[k].gameObject.name} to matched list");
             Element element = _patternCells[k].GetElement();
             sameElementList.Add(element);
            //element.gameObject.SetActive(false); //TODO remove later
@@ -134,9 +141,9 @@ public class Matcher : Singleton<Matcher>
         for (int k = 1; k < _patternCells.Count; k++)
         {
             Element patternCellElement = _patternCells[k].ReadElement();
-            if (patternCellElement == null || !patternCellElement.IsSame(startingElement))
+            if (!patternCellElement.IsSame(startingElement))
             {
-                Debug.Log($"<Matcher> Terminating check due to different elements present at {_patternCells[k].gameObject.name} or is empty");
+          //      Debug.Log($"<Matcher> Terminating check due to different elements present at {_patternCells[k].gameObject.name} or is empty");
                 _patternCells.Clear();
                 return false;
             }
@@ -150,7 +157,7 @@ public class Matcher : Singleton<Matcher>
         
         Grid grid = Grid.instance;
         
-        Debug.Log($"<Matcher> Checking {matchPattern.patternName} at cell {startingCell.gameObject.name}");
+      //  Debug.Log($"<Matcher> Checking {matchPattern.patternName} at cell {startingCell.gameObject.name}");
 
         for (int k = 0; k < matchPattern.Length; k++) //Generate a list of cell from patterm
         {
@@ -166,9 +173,9 @@ public class Matcher : Singleton<Matcher>
                 _patternCells.Clear();
                
                 //editor logging
-                    Debug.Log($"<Matcher> Terminating check due i{iPaired} j{jPaired} >= {grid.GridHeight} {grid.GridWidth}");
-                    Debug.Log($"<Matcher> OR");
-                    Debug.Log($"<Matcher> Terminating check due to no cell present at or is Empty {i}{j}");
+                 //   Debug.Log($"<Matcher> Terminating check due i{iPaired} j{jPaired} >= {grid.GridHeight} {grid.GridWidth}");
+                  //  Debug.Log($"<Matcher> OR");
+                   // Debug.Log($"<Matcher> Terminating check due to no cell present at or is Empty {i}{j}");
                 //end logging
                 
                 return;

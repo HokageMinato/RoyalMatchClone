@@ -7,9 +7,9 @@ public class GridColoumn : MonoBehaviour
    public List<GridCell> gridCells;
    public ElementGenerator elementGenerator;
    
-
    private List<Element> _generatedElementList = new List<Element>();
    private int cellIndex = 0;
+   
    public void CollapseColoumn()
    {
       ShiftRemainingCellsToEmptySpaces();
@@ -27,7 +27,6 @@ public class GridColoumn : MonoBehaviour
          cellIndex--;
       }
 
-      Debug.Log($"Cell Index {cellIndex}");
    }
 
    private void GenerateNewElementBuffer()
@@ -76,7 +75,7 @@ public class GridColoumn : MonoBehaviour
       elementGenerator.transform.SetParent(transform);
    }
 
-   public void LockColoumn()
+   private void LockColoumn()
    {
       for (int i = 0; i < gridCells.Count; i++)
       {
@@ -84,7 +83,7 @@ public class GridColoumn : MonoBehaviour
       }
    }
     
-   public void UnLockColoumn()
+   private void UnLockColoumn()
    {
       for (int i = 0; i < gridCells.Count; i++)
       {

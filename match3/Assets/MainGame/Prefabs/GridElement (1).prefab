@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   elementType: 0
-  swipeAnimTime: 0.2
+  swipeAnimTime: 0.1
   curve:
     serializedVersion: 2
     m_Curve:

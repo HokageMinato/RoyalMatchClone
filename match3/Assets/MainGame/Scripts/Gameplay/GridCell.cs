@@ -16,7 +16,6 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     #endregion
 
     #region PUBLIC_VARIABLES
-
     public bool IsEmpty
     {
         get
@@ -34,9 +33,9 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     {
         get { return wIndex; }
     }
-
     #endregion
 
+    
     #region PUBLIC_METHODS
 
     public void Init(int hIndex, int wIndex)

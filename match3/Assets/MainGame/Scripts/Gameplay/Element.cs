@@ -10,6 +10,9 @@ public class Element : MonoBehaviour
    
    public bool IsSame(Element other)
    {
+      if (other == null)
+         return false;
+      
       return other.elementType == elementType;
    }
 
@@ -36,7 +39,7 @@ public class Element : MonoBehaviour
       while (i <= 1f)
       {
          i += rate * Time.deltaTime;
-         transform.localPosition = Vector3.Lerp(sourcePosition, pseudoZero, curve.Evaluate(i));
+         transform.localPosition = Vector3.Lerp(sourcePosition, pseudoZero, i);
          yield return null;
       }
 
