@@ -58,7 +58,7 @@ public class InputManager : Singleton<InputManager>
     {
         Debug.Log("PERFORM SWIPE");
         SwapCells();
-        StartCoroutine(ReSwipeRoutine());
+        Matcher.instance.StartChecking();
     }
 
     public void SwapCells()
@@ -70,19 +70,7 @@ public class InputManager : Singleton<InputManager>
         _secondCell.SetElement(firstElement);
     }
 
-    private IEnumerator ReSwipeRoutine()
-    {
-        while (Grid.instance.IsAnimating)
-            yield return null;
-        
-        Matcher.instance.StartChecking();
-
-        if (!Matcher.instance.HasMatches)
-        {
-            SwapCells();
-        }
-
-    }
+   
 
     private bool IsFirstCellAssigned()
     {

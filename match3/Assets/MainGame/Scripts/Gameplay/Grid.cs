@@ -44,6 +44,8 @@ public class Grid : Singleton<Grid>
         CreateGrid();
         CreateElementGenerators();
         SetColoumnCells();
+        ToggleColoumnLock(true);
+        WaitForGridAnimation(() => { ToggleColoumnLock(false);});
     }
     #endregion
 
@@ -134,6 +136,16 @@ public class Grid : Singleton<Grid>
         parentCell.SetElement(element);
     }
 
+    private void ToggleColoumnLock(bool toggleValue)
+    {
+        if(toggleValue)
+            for (int i = 0; i < _gridC.Count; i++)
+                _gridC[i].LockColoumn();
+        else
+            for (int i = 0; i < _gridC.Count; i++)
+                _gridC[i].UnLockColoumn();
+    }
+
     #endregion
 
   
@@ -145,17 +157,22 @@ public class Grid : Singleton<Grid>
         }
         
     }
-
-    public void LockColoumns()
-    {
-        
-    }
     
-    public void UnlockColoumns()
+
+    private void WaitForGridAnimation(Action action)
     {
+        StartCoroutine(WaitForGridAnimationRoutine(action));
     }
 
-
+    private IEnumerator WaitForGridAnimationRoutine(Action action=null)
+    {
+        Grid grid = Grid.instance;
+        while (grid.IsAnimating)
+        {
+            yield return null;
+        }
+        action?.Invoke();
+    }
 }
 
 public class GridDesignTemp

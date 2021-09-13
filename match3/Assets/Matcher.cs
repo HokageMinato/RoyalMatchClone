@@ -4,14 +4,20 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 
+[System.Serializable]
+public class MatchData
+{
+    
+}
+
 public class Matcher : Singleton<Matcher>
 {
     
     [SerializeField] private MatchPattern[] patterns;
     private readonly List<List<Element>> _matchedElements = new List<List<Element>>();
     private readonly List<GridCell> _patternCells = new List<GridCell>();
-    
-    public bool HasMatches
+
+    private bool HasMatches
     {
         get
         {
@@ -22,39 +28,54 @@ public class Matcher : Singleton<Matcher>
     [ContextMenu("Start Checking")]
     public void StartChecking()
     {
+        
         FindMatches();
-        if(HasMatches)
-            StartCoroutine(IterativeCheckRoutine());
+        if (HasMatches)
+        {
+            WaitForGridAnimation(DestoryMatchesTillNoMatchPossible);
+        }
+        else
+        {
+            WaitForGridAnimation(InputManager.instance.SwapCells);
+        }
+    }
+
+
+    private void DestoryMatchesTillNoMatchPossible()
+    {
+        StartCoroutine(IterativeCheckRoutine());
     }
 
     private IEnumerator IterativeCheckRoutine()
     {
         Grid grid = Grid.instance;
-        yield return WaitForGridAnimation();
-        
-      //I  Debug.Log($"<Matcher> Matched elements count{_matchedElements.Count}");
-        while (_matchedElements.Count > 0)
+      
+        //I  Debug.Log($"<Matcher> Matched elements count{_matchedElements.Count}");
+        while (HasMatches)
         {
+            yield return new WaitForSeconds(.3f);
             DestroyMatchedItems();
-            grid.LockColoumns();
-            yield return new WaitForSeconds(.2f);
             grid.CollapseColoumns();
-            yield return WaitForGridAnimation();
-            grid.UnlockColoumns();
+            yield return WaitForGridAnimationRoutine();
             FindMatches();
         }
 
     }
 
-    
 
-    private IEnumerator WaitForGridAnimation()
+    private void WaitForGridAnimation(Action action)
+    {
+        StartCoroutine(WaitForGridAnimationRoutine(action));
+    }
+
+    private IEnumerator WaitForGridAnimationRoutine(Action action=null)
     {
         Grid grid = Grid.instance;
         while (grid.IsAnimating)
         {
             yield return null;
         }
+        action?.Invoke();
     }
 
 
@@ -124,7 +145,6 @@ public class Matcher : Singleton<Matcher>
          //   Debug.Log($"<Matcher> Adding element fomr{_patternCells[k].gameObject.name} to matched list");
             Element element = _patternCells[k].GetElement();
             sameElementList.Add(element);
-           //element.gameObject.SetActive(false); //TODO remove later
         }
         _matchedElements.Add(sameElementList);
         _patternCells.Clear();

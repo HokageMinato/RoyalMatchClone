@@ -34,7 +34,7 @@ public class Element : MonoBehaviour
       float rate = 1f/swipeAnimTime ;
       float i = 0;
       Vector3 sourcePosition = transform.localPosition;
-      Vector3 pseudoZero = new Vector3(0.01f, 0.01f,0.01f);
+      Vector3 pseudoZero = new Vector3(0.001f, 0.001f,0.01f);
       
       while (i <= 1f)
       {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,9 +13,25 @@ public class GridColoumn : MonoBehaviour
    
    public void CollapseColoumn()
    {
-      ShiftRemainingCellsToEmptySpaces();
-      GenerateNewElementBuffer();
-      SetNewlyGeneratedElementsToEmptyCells();
+      if (IsColoumnDirty())
+      {
+         LockColoumn();
+         ShiftRemainingCellsToEmptySpaces();
+         GenerateNewElementBuffer();
+         SetNewlyGeneratedElementsToEmptyCells();
+         StartCoroutine(WaitForGridAnimation(UnLockColoumn));
+      }
+   }
+
+   private bool IsColoumnDirty()
+   {
+      for (int i = 0; i < gridCells.Count; i++)
+      {
+         if (gridCells[i].IsEmpty)
+            return true;
+      }
+
+      return false;
    }
 
    private void SetNewlyGeneratedElementsToEmptyCells()
@@ -75,22 +92,28 @@ public class GridColoumn : MonoBehaviour
       elementGenerator.transform.SetParent(transform);
    }
 
-   private void LockColoumn()
-   {
+   public void LockColoumn()
+   {Debug.Log("Locking col");
       for (int i = 0; i < gridCells.Count; i++)
       {
             gridCells[i].ToggleInputInteractibility(false);
       }
    }
     
-   private void UnLockColoumn()
-   {
+   public void UnLockColoumn()
+   {Debug.Log("unLocking col");
       for (int i = 0; i < gridCells.Count; i++)
       {
          gridCells[i].ToggleInputInteractibility(true);
       }
    }
 
+   IEnumerator WaitForGridAnimation(Action onAnimationDone)
+   {
+      while (Grid.instance.IsAnimating)
+         yield return null;
 
-   
+      onAnimationDone();
+   }
+
 }
