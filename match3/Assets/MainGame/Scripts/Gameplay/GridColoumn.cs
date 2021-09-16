@@ -49,7 +49,7 @@ public class GridColoumn : MonoBehaviour
    private void GenerateNewElementBuffer()
    {
       _generatedElementList.Clear();
-      for (int i = gridCells.Count - 1; i >= 0; i--)
+      for (int i = 0; i < gridCells.Count; i++)
       {
          GridCell cell = gridCells[i];
 
@@ -59,7 +59,7 @@ public class GridColoumn : MonoBehaviour
             Transform elementTransform = element.transform;
 
             Vector3 initialPosition = elementTransform.InverseTransformPoint(elementGenerator.transform.localPosition);
-            initialPosition.y -= i;
+            initialPosition.y += i;
             elementTransform.localPosition = initialPosition;
             _generatedElementList.Add(element);
          }

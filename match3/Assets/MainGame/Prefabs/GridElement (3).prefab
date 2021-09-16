@@ -45,37 +45,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   elementType: 2
-  swipeAnimTime: 5
+  swipeAnimTime: 0.4
   curve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 3.5377357
-      outSlope: 3.5377357
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.033333335
+      outWeight: 0
     - serializedVersion: 3
-      time: 0.067963675
-      value: 0.45513156
-      inSlope: 3.519264
-      outSlope: 3.519264
+      time: 0.068083145
+      value: 0.49656045
+      inSlope: 1.6320238
+      outSlope: 1.6320238
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.284508
+      outWeight: 0.39565665
     - serializedVersion: 3
-      time: 0.2660456
-      value: 0.7917064
-      inSlope: 0.88306046
-      outSlope: 0.88306046
+      time: 0.26436368
+      value: 0.76579595
+      inSlope: 0.7117499
+      outSlope: 0.7117499
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.09205921
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1

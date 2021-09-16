@@ -42,10 +42,35 @@ public class Element : MonoBehaviour
          transform.localPosition = Vector3.Lerp(sourcePosition, pseudoZero, i);
          yield return null;
       }
-
+   
       Grid.instance.IsAnimating = false;
-
+   
    }
+   [ContextMenu("Test")]
+   public void Move()
+   {
+      StartCoroutine(ShiftRoutine());
+   }
+   //speed based
+   // private IEnumerator ShiftRoutine()
+   // {
+   //    Grid.instance.IsAnimating = true;
+   //    
+   //    Vector3 pseudoZero = new Vector3(0.01f,0.01f,0.01f);
+   //    
+   //    Vector3 distance = (pseudoZero - transform.localPosition);
+   //    while (distance.magnitude > 0.0001f)
+   //    {
+   //       distance = (pseudoZero - transform.localPosition);
+   //       transform.localPosition += distance * Time.deltaTime * swipeAnimTime;
+   //       yield return null;
+   //    }
+   //
+   //    yield return null;
+   //
+   //    Grid.instance.IsAnimating = false;
+   //
+   // }
 
    
    public enum ElementType

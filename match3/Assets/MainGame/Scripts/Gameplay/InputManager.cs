@@ -58,7 +58,7 @@ public class InputManager : Singleton<InputManager>
     {
         Debug.Log("PERFORM SWIPE");
         SwapCells();
-        Matcher.instance.StartChecking();
+        Matcher.instance.OnValidSwipe();
     }
 
     public void SwapCells()
