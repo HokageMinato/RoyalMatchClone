@@ -24,15 +24,8 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         }
     }
 
-    public int HIndex
-    {
-        get { return hIndex; }
-    }
-
-    public int WIndex
-    {
-        get { return wIndex; }
-    }
+    public bool isMarkedForDestory = false;
+    public MatchExecutionData executionData;
     #endregion
 
     
@@ -42,6 +35,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     {
         this.hIndex = hIndex;
         this.wIndex = wIndex;
+        executionData = MatchExecutionData.GetDefaultExecutionData();
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -60,11 +54,6 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     public bool IsNeighbourOf(GridCell otherCell)
     {
         return IsHorizontalNeighbourOf(otherCell) || IsVerticalNeighbourOf(otherCell);
-    }
-
-    public bool HasSameElementAs(GridCell otherCell)
-    {
-        return _element.IsSame(otherCell._element);
     }
 
     public void ToggleInputInteractibility(bool isActive)
@@ -96,10 +85,6 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     }
 
     
-    public void HighlightCell()
-    {
-        renderer.color = Color.cyan;
-    }
 
     #endregion
     
@@ -119,7 +104,10 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     }
     #endregion
 
-   
 
+    public void SetExecutionData(MatchExecutionData matchExecutionData)
+    {
+        executionData = matchExecutionData;
+    }
 }
 

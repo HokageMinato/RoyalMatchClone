@@ -9,6 +9,7 @@ public class InputManager : Singleton<InputManager>
     [SerializeField] private GridCell _firstCell;
     [SerializeField] private GridCell _secondCell;
     private bool _inputValid = false;
+    private int swipeNumber = 0;
 
     public void SetFirstCell(GridCell firstCell)
     {
@@ -58,7 +59,9 @@ public class InputManager : Singleton<InputManager>
     {
         Debug.Log("PERFORM SWIPE");
         SwapCells();
-        Matcher.instance.OnValidSwipe();
+        MatchExecutionData matchExecutionData = new MatchExecutionData(new List<List<Element>>(),new List<GridCell>(),swipeNumber);
+        swipeNumber++;
+        Matcher.instance.StartChecking(matchExecutionData);
     }
 
     public void SwapCells()

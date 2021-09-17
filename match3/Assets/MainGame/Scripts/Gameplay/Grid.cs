@@ -136,7 +136,7 @@ public class Grid : Singleton<Grid>
         parentCell.SetElement(element);
     }
 
-    private void ToggleColoumnLock(bool toggleValue)
+    public void ToggleColoumnLock(bool toggleValue)
     {
         if(toggleValue)
             for (int i = 0; i < _gridC.Count; i++)
@@ -145,7 +145,7 @@ public class Grid : Singleton<Grid>
             for (int i = 0; i < _gridC.Count; i++)
                 _gridC[i].UnLockColoumn();
     }
-
+    
     #endregion
 
   
@@ -157,7 +157,36 @@ public class Grid : Singleton<Grid>
         }
         
     }
-    
+
+    public void LockDirtyColoumns(MatchExecutionData executionData)
+    {
+        for (int i = 0; i < _gridC.Count; i++)
+        {
+            if (_gridC[i].IsColoumnDirty())
+            {
+                _gridC[i].LockColoumn();
+                _gridC[i].SetExecutionData(executionData);
+            }
+        }
+    }
+
+    public void UnlockCells(MatchExecutionData mathE)
+    {
+        for (int i = 0; i < GridDesignTemp.gridWidth; i++)
+        {
+            for (int j = 0; j < GridDesignTemp.gridHeight /*-1*/; j++)
+            {
+                GridCell cell = _grid[i, j];
+                if (cell)
+                {
+                    if (cell.executionData.Equals(mathE))
+                    {
+                        cell.SetExecutionData(MatchExecutionData.GetDefaultExecutionData());
+                    }
+                }
+            }
+        }
+    }
 
     private void WaitForGridAnimation(Action action)
     {
