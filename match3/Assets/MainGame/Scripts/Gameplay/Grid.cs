@@ -136,7 +136,7 @@ public class Grid : Singleton<Grid>
         parentCell.SetElement(element);
     }
 
-    public void ToggleColoumnLock(bool toggleValue)
+    private void ToggleColoumnLock(bool toggleValue)
     {
         if(toggleValue)
             for (int i = 0; i < _gridC.Count; i++)
@@ -160,28 +160,27 @@ public class Grid : Singleton<Grid>
 
     public void LockDirtyColoumns(MatchExecutionData executionData)
     {
-        for (int i = 0; i < _gridC.Count; i++)
+        List<GridCell> cells = executionData.patternCells;
+        for (int i = 0; i < cells.Count; i++)
         {
-            if (_gridC[i].IsColoumnDirty())
-            {
-                _gridC[i].LockColoumn();
-                _gridC[i].SetExecutionData(executionData);
-            }
+            _gridC[cells[i].HIndex].LockColoumn();    
         }
+        
     }
 
-    public void UnlockCells(MatchExecutionData mathE)
+    public void UnlockCells(MatchExecutionData matchExecutionData)
     {
         for (int i = 0; i < GridDesignTemp.gridWidth; i++)
         {
-            for (int j = 0; j < GridDesignTemp.gridHeight /*-1*/; j++)
+            for (int j = 0; j < GridDesignTemp.gridHeight ; j++)
             {
                 GridCell cell = _grid[i, j];
                 if (cell)
                 {
-                    if (cell.executionData.Equals(mathE))
+                    if (cell.executionData.Equals(matchExecutionData))
                     {
                         cell.SetExecutionData(MatchExecutionData.GetDefaultExecutionData());
+                        _gridC[j].UnLockColoumn();
                     }
                 }
             }

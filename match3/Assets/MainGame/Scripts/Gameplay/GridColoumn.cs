@@ -16,8 +16,6 @@ public class GridColoumn : MonoBehaviour
          ShiftRemainingCellsToEmptySpaces();
          GenerateNewElementBuffer();
          SetNewlyGeneratedElementsToEmptyCells();
-         StartCoroutine(WaitForGridAnimation(UnLockColoumn));
-      
    }
 
    private void SetNewlyGeneratedElementsToEmptyCells()
@@ -79,7 +77,8 @@ public class GridColoumn : MonoBehaviour
    }
 
    public void LockColoumn()
-   { 
+   {
+         
       for (int i = 0; i < gridCells.Count; i++)
       {
             gridCells[i].ToggleInputInteractibility(false);
@@ -88,23 +87,24 @@ public class GridColoumn : MonoBehaviour
     
    public void UnLockColoumn()
    {
+       
       for (int i = 0; i < gridCells.Count; i++)
       {
          gridCells[i].ToggleInputInteractibility(true);
-         gridCells[i].isMarkedForDestory = false;
+        // gridCells[i].isMarkedForDestory = false;
       }
    }
 
-   public bool IsColoumnDirty()
-   {
-      for (int i = 0; i < gridCells.Count; i++)
-      {
-         if (gridCells[i].isMarkedForDestory)
-            return true;
-      }
-
-      return false;
-   }
+   // public bool IsColoumnDirty()
+   // {
+   //    for (int i = 0; i < gridCells.Count; i++)
+   //    {
+   //       if (gridCells[i].isMarkedForDestory)
+   //          return true;
+   //    }
+   //
+   //    return false;
+   // }
    
    
    

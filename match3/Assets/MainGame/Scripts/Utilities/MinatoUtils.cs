@@ -29,8 +29,8 @@ public readonly struct PersistantBool
 
     public bool Val
     {
-        get => PlayerPrefs.GetInt(_key,0) == 1;
-        set => PlayerPrefs.SetInt(_key,(value)?1:0);
+        get { return PlayerPrefs.GetInt(_key, 0) == 1; }
+        set { PlayerPrefs.SetInt(_key, (value) ? 1 : 0); }
     }
 }
 
@@ -45,8 +45,8 @@ public readonly struct PersistantInt
 
     public int Val
     {
-        get => PlayerPrefs.GetInt(_key, 0);
-        set => PlayerPrefs.SetInt(_key,value);
+        get { return PlayerPrefs.GetInt(_key, 0); }
+        set { PlayerPrefs.SetInt(_key, value); }
     }
 }
 
@@ -55,8 +55,11 @@ public readonly struct PeristantString
     private readonly string _key;
     private readonly string[] _seperator;
 
-    public string SeperatorValue => _seperator[0] ?? string.Empty;
-    
+    public string SeperatorValue
+    {
+        get { return _seperator[0] ?? string.Empty; }
+    }
+
     public PeristantString(string key)
     {
         _key = key;
@@ -65,9 +68,7 @@ public readonly struct PeristantString
    
     public string Val
     {
-        get => PlayerPrefs.GetString(_key, string.Empty);
-        set => PlayerPrefs.SetString(_key, value);
+        get { return PlayerPrefs.GetString(_key, string.Empty); }
+        set { PlayerPrefs.SetString(_key, value); }
     }
-
-   
 }

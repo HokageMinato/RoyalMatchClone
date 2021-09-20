@@ -7,8 +7,9 @@ using Unity.Mathematics;
 [System.Serializable]
 public struct MatchExecutionData
 {
-    private const int DefaultSwipeId=99;
-    
+    private const int DefaultSwipeId=-99;
+    public GridCell firstCell;
+    public GridCell secondCell;
     public List<List<Element>> matchedElements;
     public List<GridCell> patternCells;
     public int swipeId;
@@ -20,18 +21,22 @@ public struct MatchExecutionData
         }
     }
 
-    public MatchExecutionData( List<List<Element>>matchedElementList,List<GridCell> patternCellList,int swipeNumber)
+    public MatchExecutionData( List<List<Element>>matchedElementList,List<GridCell> patternCellList,int swipeNumber,GridCell fCell,GridCell sCell)
     {
         matchedElements = matchedElementList;
         patternCells = patternCellList;
         swipeId = swipeNumber;
-
+        firstCell = fCell;
+        secondCell = sCell;
     }
 
     public bool Equals(MatchExecutionData obj)
     {
-        if (obj.swipeId == DefaultSwipeId)
+
+        if (obj.swipeId == DefaultSwipeId || swipeId==DefaultSwipeId)
+        {
             return true;
+        }
 
         return obj.swipeId == swipeId;
 
@@ -45,7 +50,7 @@ public struct MatchExecutionData
     
     public static MatchExecutionData GetDefaultExecutionData()
     {
-        return new MatchExecutionData(new List<List<Element>>(), new List<GridCell>(), DefaultSwipeId);
+        return new MatchExecutionData(new List<List<Element>>(), new List<GridCell>(), DefaultSwipeId,null,null);
     }
 
 
@@ -55,6 +60,8 @@ public class Matcher : Singleton<Matcher>
 {
     
     [SerializeField] private MatchPattern[] patterns;
+
+    public int swipeCount = 0;
     //public List<MatchExecutionData> matchExecutionDatas = new List<MatchExecutionData>();
 
     [ContextMenu("Start Checking")]
@@ -64,6 +71,7 @@ public class Matcher : Singleton<Matcher>
         
         if (executionData.HasMatches)
         {
+            swipeCount++;
             WaitForGridAnimation(()=>
             {
                 DestoryMatchesTillNoMatchPossible(executionData);
@@ -86,24 +94,30 @@ public class Matcher : Singleton<Matcher>
 
     private void ReswapCells(MatchExecutionData executionData)
     {
-        InputManager.instance.SwapCells();
+        InputManager.instance.SwapCells(executionData);
     }
 
     private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData)
     {
         Grid grid = Grid.instance;
-        //I  Debug.Log($"<Matcher> Matched elements count{_matchedElements.Count}");
+        
         while (executionData.HasMatches)
         {
             yield return new WaitForSeconds(.3f);
             DestroyMatchedItems(executionData);
             grid.CollapseColoumns();
             yield return WaitForGridAnimationRoutine();
-            grid.ToggleColoumnLock(false); 
             FindMatches(executionData);
+        }
+
+        swipeCount--;
+        while (swipeCount!=0)
+        {
+            yield return null;
         }
         
         grid.UnlockCells(executionData);
+         
     }
 
 
@@ -172,7 +186,7 @@ public class Matcher : Singleton<Matcher>
                         {
                             //Debug.Log($"<Matcher> Cell count {_patternCells.Count}");
                             ExtractElementsToDestroyList(executionData);
-                            grid.LockDirtyColoumns(executionData);
+                          //  grid.LockDirtyColoumns(executionData);
                            // Debug.Log("--------------------------------------------------------------");
                             //Debug.Log(".");
                             //Debug.Log(".");
@@ -189,15 +203,17 @@ public class Matcher : Singleton<Matcher>
 
     private void ExtractElementsToDestroyList(MatchExecutionData matchExecutionData)
     {
+        Grid grid = Grid.instance;
         List<GridCell> patternCells = matchExecutionData.patternCells;
         List<Element> sameElementList = new List<Element>();
         for (int k = 0; k < patternCells.Count; k++)
         {
          //   Debug.Log($"<Matcher> Adding element fomr{_patternCells[k].gameObject.name} to matched list");
             Element element = patternCells[k].GetElement();
-            patternCells[k].isMarkedForDestory = true;
+           //patternCells[k].isMarkedForDestory = true;
             sameElementList.Add(element);
         }
+        grid.LockDirtyColoumns(matchExecutionData);
         matchExecutionData.matchedElements.Add(sameElementList);
         patternCells.Clear();
     }
@@ -242,7 +258,8 @@ public class Matcher : Singleton<Matcher>
             int jPaired = j + offsetIndexPair.j_Offset;
 
             if ((iPaired >= grid.GridHeight || jPaired >= grid.GridWidth) ||( 
-                grid[iPaired, jPaired] == null || grid[iPaired,jPaired].IsEmpty))
+                grid[iPaired, jPaired] == null || grid[iPaired,jPaired].IsEmpty || 
+                !grid[iPaired,jPaired].executionData.Equals(matchExecutionData)))
             {
                 // Either grid geometry doesn't allow further check or previous pattern locked and extracted the cell thus current pattern will fail,
                 // so we terminate execution instantly and clear the extractList;
@@ -259,7 +276,6 @@ public class Matcher : Singleton<Matcher>
        
             GridCell cellOfPattern = grid[iPaired, jPaired];
             patternCells.Add(cellOfPattern);
-            Debug.Log($"Cell{grid[iPaired, jPaired].gameObject.name} --> ed {grid[iPaired,jPaired].executionData.ToString()} swipe ed {matchExecutionData.swipeId}");
 
         }
 

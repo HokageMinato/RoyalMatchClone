@@ -58,19 +58,20 @@ public class InputManager : Singleton<InputManager>
     private void OnValidMove()
     {
         Debug.Log("PERFORM SWIPE");
-        SwapCells();
-        MatchExecutionData matchExecutionData = new MatchExecutionData(new List<List<Element>>(),new List<GridCell>(),swipeNumber);
+        MatchExecutionData matchExecutionData = new MatchExecutionData(new List<List<Element>>(),new List<GridCell>(),swipeNumber,_firstCell,_secondCell);
+        _firstCell = _secondCell = null;
+        SwapCells(matchExecutionData);
         swipeNumber++;
         Matcher.instance.StartChecking(matchExecutionData);
     }
 
-    public void SwapCells()
+    public void SwapCells(MatchExecutionData matchExecutionData)
     {
-        Element firstElement = _firstCell.GetElement();
-        Element secondElement = _secondCell.GetElement();
+        Element firstElement = matchExecutionData.firstCell.GetElement();
+        Element secondElement = matchExecutionData.secondCell.GetElement();
               
-        _firstCell.SetElement(secondElement);
-        _secondCell.SetElement(firstElement);
+        matchExecutionData.firstCell.SetElement(secondElement);
+        matchExecutionData.secondCell.SetElement(firstElement);
     }
 
    
