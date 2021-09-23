@@ -4,34 +4,35 @@ using System.Collections.Generic;
 
 public class Element : MonoBehaviour
 {
+   public ElementData elementData;
+   private MatchExecutionData _matchExecutionData;
    public ElementType elementType;
-   public float swipeAnimTime;
-   public AnimationCurve curve;
    
    public bool IsSame(Element other)
    {
       if (other == null)
          return false;
       
-      return other.elementType == elementType;
+      return other.elementType.Equals(other.elementType);
    }
 
-   public void DestroySelf()
-   {
-      Destroy(gameObject);
-   }
-
- 
    public void SetHolder(GridCell newHolder)
    {
+      _matchExecutionData = newHolder.executionData;
       transform.SetParent(newHolder.transform);
       StartCoroutine(ShiftRoutine());
    }
 
    private IEnumerator ShiftRoutine()
    {
-      Grid.instance.IsAnimating = true;
-      float rate = 1f/swipeAnimTime ;
+      //Grid.instance.IsAnimating =_matchExecutionData.isAnimating = true;
+      // Debug.Log("--------------------------------------");
+      // Debug.Log(_matchExecutionData.animationPeriod);
+       //_matchExecutionData.animationPeriod += swipeAnimTime;
+      // Debug.Log(_matchExecutionData.animationPeriod);
+      // Debug.Log("=======================================");
+      
+      float rate = 1f/elementData.swipeAnimationTime;
       float i = 0;
       Vector3 sourcePosition = transform.localPosition;
       Vector3 pseudoZero = new Vector3(0.001f, 0.001f,0.01f);
@@ -43,7 +44,7 @@ public class Element : MonoBehaviour
          yield return null;
       }
    
-      Grid.instance.IsAnimating = false;
+//      Grid.instance.IsAnimating =_matchExecutionData.isAnimating = false;
    
    }
    [ContextMenu("Test")]
@@ -72,7 +73,6 @@ public class Element : MonoBehaviour
    //
    // }
 
-   
    public enum ElementType
    {
       Type1,
@@ -80,4 +80,5 @@ public class Element : MonoBehaviour
       Type3,
       Type4
    }
+  
 }

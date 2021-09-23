@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 public class Grid : Singleton<Grid>
 {
@@ -28,7 +26,7 @@ public class Grid : Singleton<Grid>
     {
         get { return GridDesignTemp.gridHeight; }
     }
-    public bool IsAnimating=false;
+   // public bool IsAnimating=false;
     #endregion
    
     #region PRIVATE_VARIABLES
@@ -138,9 +136,10 @@ public class Grid : Singleton<Grid>
 
     private void ToggleColoumnLock(bool toggleValue)
     {
+       // MatchExecutionData defaultData = MatchExecutionData.GetDefaultExecutionData();
         if(toggleValue)
             for (int i = 0; i < _gridC.Count; i++)
-                _gridC[i].LockColoumn();
+                _gridC[i].LockColoumn(null);
         else
             for (int i = 0; i < _gridC.Count; i++)
                 _gridC[i].UnLockColoumn();
@@ -149,11 +148,11 @@ public class Grid : Singleton<Grid>
     #endregion
 
   
-    public void CollapseColoumns()
+    public void CollapseColoumns(MatchExecutionData executionData)
     {
         for (int l = 0; l < _gridC.Count; l++)
         {
-            _gridC[l].CollapseColoumn();
+            _gridC[l].CollapseColoumn(executionData);
         }
         
     }
@@ -163,7 +162,7 @@ public class Grid : Singleton<Grid>
         List<GridCell> cells = executionData.patternCells;
         for (int i = 0; i < cells.Count; i++)
         {
-            _gridC[cells[i].HIndex].LockColoumn();    
+            _gridC[cells[i].HIndex].LockColoumn(executionData);    
         }
         
     }
@@ -177,9 +176,8 @@ public class Grid : Singleton<Grid>
                 GridCell cell = _grid[i, j];
                 if (cell)
                 {
-                    if (cell.executionData.Equals(matchExecutionData))
+                    if (cell.executionData!=null && cell.executionData.Equals(matchExecutionData))
                     {
-                        cell.SetExecutionData(MatchExecutionData.GetDefaultExecutionData());
                         _gridC[j].UnLockColoumn();
                     }
                 }
@@ -195,8 +193,9 @@ public class Grid : Singleton<Grid>
     private IEnumerator WaitForGridAnimationRoutine(Action action=null)
     {
         Grid grid = Grid.instance;
-        while (grid.IsAnimating)
+       // while (grid.IsAnimating)
         {
+            yield return new WaitForSeconds(02f);
             yield return null;
         }
         action?.Invoke();

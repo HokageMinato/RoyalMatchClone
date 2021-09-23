@@ -4,8 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 
-[System.Serializable]
-public struct MatchExecutionData
+public class MatchExecutionData
 {
     private const int DefaultSwipeId=-99;
     public GridCell firstCell;
@@ -13,6 +12,9 @@ public struct MatchExecutionData
     public List<List<Element>> matchedElements;
     public List<GridCell> patternCells;
     public int swipeId;
+    //public bool isAnimating;
+    public float animationPeriod;
+    
     public bool HasMatches
     {
         get
@@ -28,11 +30,16 @@ public struct MatchExecutionData
         swipeId = swipeNumber;
         firstCell = fCell;
         secondCell = sCell;
+        
+        if(fCell!=null)
+            animationPeriod = firstCell.ReadElement().elementData.swipeAnimationTime;
     }
 
     public bool Equals(MatchExecutionData obj)
     {
-
+        if (obj==null)
+            return false;
+        
         if (obj.swipeId == DefaultSwipeId || swipeId==DefaultSwipeId)
         {
             return true;
@@ -62,11 +69,13 @@ public class Matcher : Singleton<Matcher>
     [SerializeField] private MatchPattern[] patterns;
 
     public int swipeCount = 0;
-    //public List<MatchExecutionData> matchExecutionDatas = new List<MatchExecutionData>();
+    
 
     [ContextMenu("Start Checking")]
     public void StartChecking(MatchExecutionData executionData)
     {
+        
+        Debug.Log(executionData == null);
         FindMatches(executionData);
         
         if (executionData.HasMatches)
@@ -75,14 +84,14 @@ public class Matcher : Singleton<Matcher>
             WaitForGridAnimation(()=>
             {
                 DestoryMatchesTillNoMatchPossible(executionData);
-            });
+            },executionData);
         }
         else
         {
             WaitForGridAnimation(() =>
             {
                 ReswapCells(executionData);
-            });
+            },executionData);
         }
     }
 
@@ -103,10 +112,11 @@ public class Matcher : Singleton<Matcher>
         
         while (executionData.HasMatches)
         {
-            yield return new WaitForSeconds(.3f);
+            Debug.Log("ForceWait ");
+            yield return new WaitForSeconds(2f);
             DestroyMatchedItems(executionData);
-            grid.CollapseColoumns();
-            yield return WaitForGridAnimationRoutine();
+            grid.CollapseColoumns(executionData);
+            yield return WaitForGridAnimationRoutine(executionData);
             FindMatches(executionData);
         }
 
@@ -121,17 +131,20 @@ public class Matcher : Singleton<Matcher>
     }
 
 
-    private void WaitForGridAnimation(Action action)
+    private void WaitForGridAnimation(Action action,MatchExecutionData executionData)
     {
-        StartCoroutine(WaitForGridAnimationRoutine(action));
+        StartCoroutine(WaitForGridAnimationRoutine(executionData,action));
     }
 
-    private IEnumerator WaitForGridAnimationRoutine(Action action=null)
+    private IEnumerator WaitForGridAnimationRoutine(MatchExecutionData executionData,Action action=null)
     {
         Grid grid = Grid.instance;
-        while (grid.IsAnimating)
+        Debug.Log(executionData.animationPeriod);
+        while (/*grid.IsAnimating ||*/ executionData.animationPeriod > 0)
         {
-            yield return null;
+            executionData.animationPeriod -= 1;
+            yield return new WaitForSeconds(1);
+            
         }
         action?.Invoke();
     }
@@ -173,6 +186,7 @@ public class Matcher : Singleton<Matcher>
                         
                         //We extract the cells according to pattern specified offsets
                         ExtractPatternCells(startingCell, matchPattern, i, j,executionData);
+                        
                         if (!IsExtractionValid(executionData))
                         {
                             //Incase the geometry of grid doesnt allow us to continue,
@@ -258,7 +272,7 @@ public class Matcher : Singleton<Matcher>
             int jPaired = j + offsetIndexPair.j_Offset;
 
             if ((iPaired >= grid.GridHeight || jPaired >= grid.GridWidth) ||( 
-                grid[iPaired, jPaired] == null || grid[iPaired,jPaired].IsEmpty || 
+                grid[iPaired, jPaired] == null || grid[iPaired,jPaired].IsEmpty || grid[iPaired,jPaired].executionData !=null && 
                 !grid[iPaired,jPaired].executionData.Equals(matchExecutionData)))
             {
                 // Either grid geometry doesn't allow further check or previous pattern locked and extracted the cell thus current pattern will fail,

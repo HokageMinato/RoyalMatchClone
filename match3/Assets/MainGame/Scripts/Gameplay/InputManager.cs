@@ -59,6 +59,8 @@ public class InputManager : Singleton<InputManager>
     {
         Debug.Log("PERFORM SWIPE");
         MatchExecutionData matchExecutionData = new MatchExecutionData(new List<List<Element>>(),new List<GridCell>(),swipeNumber,_firstCell,_secondCell);
+        matchExecutionData.firstCell.executionData = matchExecutionData;
+        matchExecutionData.secondCell.executionData = matchExecutionData;
         _firstCell = _secondCell = null;
         SwapCells(matchExecutionData);
         swipeNumber++;
@@ -69,9 +71,11 @@ public class InputManager : Singleton<InputManager>
     {
         Element firstElement = matchExecutionData.firstCell.GetElement();
         Element secondElement = matchExecutionData.secondCell.GetElement();
-              
+
         matchExecutionData.firstCell.SetElement(secondElement);
         matchExecutionData.secondCell.SetElement(firstElement);
+
+        
     }
 
    
