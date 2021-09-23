@@ -4,7 +4,9 @@ using System.Collections.Generic;
 
 public class Element : MonoBehaviour
 {
-   public ElementData elementData;
+   public const float SWIPE_ANIM_TIME = 2.5f;
+  
+   
    private MatchExecutionData _matchExecutionData;
    public ElementType elementType;
    
@@ -13,7 +15,7 @@ public class Element : MonoBehaviour
       if (other == null)
          return false;
       
-      return other.elementType.Equals(other.elementType);
+      return elementType==other.elementType;
    }
 
    public void SetHolder(GridCell newHolder)
@@ -32,7 +34,7 @@ public class Element : MonoBehaviour
       // Debug.Log(_matchExecutionData.animationPeriod);
       // Debug.Log("=======================================");
       
-      float rate = 1f/elementData.swipeAnimationTime;
+      float rate = 1f/SWIPE_ANIM_TIME;
       float i = 0;
       Vector3 sourcePosition = transform.localPosition;
       Vector3 pseudoZero = new Vector3(0.001f, 0.001f,0.01f);

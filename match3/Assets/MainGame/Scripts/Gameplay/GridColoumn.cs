@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class GridColoumn : MonoBehaviour
 {
-   public ElementData elementData;
    public List<GridCell> gridCells;
    public ElementGenerator elementGenerator;
    
@@ -21,7 +20,7 @@ public class GridColoumn : MonoBehaviour
 
    private void SetNewlyGeneratedElementsToEmptyCells(MatchExecutionData executionData)
    {
-      executionData.animationPeriod += elementData.MatcherWaitRate;
+      //executionData.animationPeriod += Element.SWIPE_ANIM_TIME;
       for (int i = 0; i < _generatedElementList.Count; i++)
       {
          GridCell cell = gridCells[cellIndex];
@@ -83,7 +82,6 @@ public class GridColoumn : MonoBehaviour
 
    public void LockColoumn(MatchExecutionData executionData)
    {
-         
       for (int i = 0; i < gridCells.Count; i++)
       {
             gridCells[i].executionData = executionData;

@@ -30,9 +30,7 @@ public class MatchExecutionData
         swipeId = swipeNumber;
         firstCell = fCell;
         secondCell = sCell;
-        
-        if(fCell!=null)
-            animationPeriod = firstCell.ReadElement().elementData.swipeAnimationTime;
+        animationPeriod = Element.SWIPE_ANIM_TIME;
     }
 
     public bool Equals(MatchExecutionData obj)
@@ -112,8 +110,8 @@ public class Matcher : Singleton<Matcher>
         
         while (executionData.HasMatches)
         {
-            Debug.Log("ForceWait ");
-            yield return new WaitForSeconds(2f);
+           // Debug.Log("ForceWait ");
+           // yield return new WaitForSeconds(2f);
             DestroyMatchedItems(executionData);
             grid.CollapseColoumns(executionData);
             yield return WaitForGridAnimationRoutine(executionData);
@@ -138,15 +136,8 @@ public class Matcher : Singleton<Matcher>
 
     private IEnumerator WaitForGridAnimationRoutine(MatchExecutionData executionData,Action action=null)
     {
-        Grid grid = Grid.instance;
-        Debug.Log(executionData.animationPeriod);
-        while (/*grid.IsAnimating ||*/ executionData.animationPeriod > 0)
-        {
-            executionData.animationPeriod -= 1;
-            yield return new WaitForSeconds(1);
-            
-        }
-        action?.Invoke();
+        yield return new WaitForSeconds(Element.SWIPE_ANIM_TIME);
+       action?.Invoke();
     }
 
 
@@ -271,9 +262,8 @@ public class Matcher : Singleton<Matcher>
             int iPaired = i + offsetIndexPair.i_Offset;
             int jPaired = j + offsetIndexPair.j_Offset;
 
-            if ((iPaired >= grid.GridHeight || jPaired >= grid.GridWidth) ||( 
-                grid[iPaired, jPaired] == null || grid[iPaired,jPaired].IsEmpty || grid[iPaired,jPaired].executionData !=null && 
-                !grid[iPaired,jPaired].executionData.Equals(matchExecutionData)))
+            if (iPaired >= grid.GridHeight || jPaired >= grid.GridWidth ||
+                grid[iPaired, jPaired] == null || grid[iPaired,jPaired].IsEmpty)
             {
                 // Either grid geometry doesn't allow further check or previous pattern locked and extracted the cell thus current pattern will fail,
                 // so we terminate execution instantly and clear the extractList;
@@ -290,7 +280,7 @@ public class Matcher : Singleton<Matcher>
        
             GridCell cellOfPattern = grid[iPaired, jPaired];
             patternCells.Add(cellOfPattern);
-
+            
         }
 
     }
