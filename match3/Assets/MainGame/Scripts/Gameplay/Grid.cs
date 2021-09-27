@@ -95,9 +95,9 @@ public class Grid : Singleton<Grid>
     {
          for (int i = 0; i < GridDesignTemp.gridWidth; i++)
          {
-            for (int j = 0; j < GridDesignTemp.gridHeight/*-1*/; j++)
+            for (int j = 0; j < GridDesignTemp.gridHeight; j++)
             {
-                if (GridDesignTemp.gridDesignTemp[i, j] == 0)// || GridDesignTemp.gridDesignTemp[j+1,i] == 0)
+                if (GridDesignTemp.gridDesignTemp[i, j] == 0)
                     continue;
         
                 _gridC[j].AddCell(_grid[i,j]);
@@ -160,15 +160,19 @@ public class Grid : Singleton<Grid>
     public void LockDirtyColoumns(MatchExecutionData executionData)
     {
         List<GridCell> cells = executionData.patternCells;
+        _gridC[executionData.firstCell.HIndex].LockColoumn(executionData);
+        _gridC[executionData.secondCell.HIndex].LockColoumn(executionData);
         for (int i = 0; i < cells.Count; i++)
         {
-            _gridC[cells[i].HIndex].LockColoumn(executionData);    
+            _gridC[cells[i].HIndex].LockColoumn(executionData);
+            
         }
         
     }
 
     public void UnlockCells(MatchExecutionData matchExecutionData)
     {
+        
         for (int i = 0; i < GridDesignTemp.gridWidth; i++)
         {
             for (int j = 0; j < GridDesignTemp.gridHeight ; j++)
@@ -183,6 +187,10 @@ public class Grid : Singleton<Grid>
                 }
             }
         }
+        
+        _gridC[matchExecutionData.firstCell.HIndex].UnLockColoumn();
+        _gridC[matchExecutionData.secondCell.HIndex].UnLockColoumn();
+
     }
 
     private void WaitForGridAnimation(Action action)

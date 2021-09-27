@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Element : MonoBehaviour
 {
-   public const float SWIPE_ANIM_TIME = 2.5f;
+   public const float SWIPE_ANIM_TIME = 0.2f;
   
    
    private MatchExecutionData _matchExecutionData;
@@ -27,13 +27,7 @@ public class Element : MonoBehaviour
 
    private IEnumerator ShiftRoutine()
    {
-      //Grid.instance.IsAnimating =_matchExecutionData.isAnimating = true;
-      // Debug.Log("--------------------------------------");
-      // Debug.Log(_matchExecutionData.animationPeriod);
-       //_matchExecutionData.animationPeriod += swipeAnimTime;
-      // Debug.Log(_matchExecutionData.animationPeriod);
-      // Debug.Log("=======================================");
-      
+       
       float rate = 1f/SWIPE_ANIM_TIME;
       float i = 0;
       Vector3 sourcePosition = transform.localPosition;
@@ -46,7 +40,6 @@ public class Element : MonoBehaviour
          yield return null;
       }
    
-//      Grid.instance.IsAnimating =_matchExecutionData.isAnimating = false;
    
    }
    [ContextMenu("Test")]
@@ -54,26 +47,7 @@ public class Element : MonoBehaviour
    {
       StartCoroutine(ShiftRoutine());
    }
-   //speed based
-   // private IEnumerator ShiftRoutine()
-   // {
-   //    Grid.instance.IsAnimating = true;
-   //    
-   //    Vector3 pseudoZero = new Vector3(0.01f,0.01f,0.01f);
-   //    
-   //    Vector3 distance = (pseudoZero - transform.localPosition);
-   //    while (distance.magnitude > 0.0001f)
-   //    {
-   //       distance = (pseudoZero - transform.localPosition);
-   //       transform.localPosition += distance * Time.deltaTime * swipeAnimTime;
-   //       yield return null;
-   //    }
-   //
-   //    yield return null;
-   //
-   //    Grid.instance.IsAnimating = false;
-   //
-   // }
+   
 
    public enum ElementType
    {

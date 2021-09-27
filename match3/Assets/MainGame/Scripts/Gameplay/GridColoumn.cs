@@ -84,6 +84,7 @@ public class GridColoumn : MonoBehaviour
    {
       for (int i = 0; i < gridCells.Count; i++)
       {
+            gridCells[i].renderer.color= Color.red;
             gridCells[i].executionData = executionData;
             gridCells[i].ToggleInputInteractibility(false);
       }
@@ -91,44 +92,13 @@ public class GridColoumn : MonoBehaviour
     
    public void UnLockColoumn()
    {
-       
-    //  MatchExecutionData defaultData = MatchExecutionData.GetDefaultExecutionData();
-      
       for (int i = 0; i < gridCells.Count; i++)
       {
          gridCells[i].ToggleInputInteractibility(true);
          gridCells[i].executionData = null;
-         // gridCells[i].isMarkedForDestory = false;
+         gridCells[i].renderer.color= Color.gray;
       }
    }
 
-   // public bool IsColoumnDirty()
-   // {
-   //    for (int i = 0; i < gridCells.Count; i++)
-   //    {
-   //       if (gridCells[i].isMarkedForDestory)
-   //          return true;
-   //    }
-   //
-   //    return false;
-   // }
-   
-   
-   
-   // IEnumerator WaitForGridAnimation(Action onAnimationDone)
-   // {
-   //    // while (Grid.instance.IsAnimating)
-   //        yield return null;
-   //    //
-   //    // onAnimationDone();
-   // }
-   //
-   // public void SetExecutionData(MatchExecutionData executionData)
-   // {
-   //    for (int i = 0; i < gridCells.Count; i++)
-   //    {
-   //       gridCells[i].SetExecutionData(executionData);
-   //
-   //    }
-   // }
+
 }

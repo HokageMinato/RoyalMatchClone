@@ -12,8 +12,6 @@ public class MatchExecutionData
     public List<List<Element>> matchedElements;
     public List<GridCell> patternCells;
     public int swipeId;
-    //public bool isAnimating;
-    public float animationPeriod;
     
     public bool HasMatches
     {
@@ -30,8 +28,7 @@ public class MatchExecutionData
         swipeId = swipeNumber;
         firstCell = fCell;
         secondCell = sCell;
-        animationPeriod = Element.SWIPE_ANIM_TIME;
-    }
+     }
 
     public bool Equals(MatchExecutionData obj)
     {
@@ -70,26 +67,21 @@ public class Matcher : Singleton<Matcher>
     
 
     [ContextMenu("Start Checking")]
-    public void StartChecking(MatchExecutionData executionData)
+    public IEnumerator StartChecking(MatchExecutionData executionData)
     {
         
-        Debug.Log(executionData == null);
         FindMatches(executionData);
         
         if (executionData.HasMatches)
         {
             swipeCount++;
-            WaitForGridAnimation(()=>
-            {
-                DestoryMatchesTillNoMatchPossible(executionData);
-            },executionData);
+            yield return WaitForGridAnimationRoutine(executionData);
+            DestoryMatchesTillNoMatchPossible(executionData);
         }
         else
         {
-            WaitForGridAnimation(() =>
-            {
-                ReswapCells(executionData);
-            },executionData);
+            yield return WaitForGridAnimationRoutine(executionData); 
+            ReswapCells(executionData);
         }
     }
 
@@ -129,14 +121,12 @@ public class Matcher : Singleton<Matcher>
     }
 
 
-    private void WaitForGridAnimation(Action action,MatchExecutionData executionData)
-    {
-        StartCoroutine(WaitForGridAnimationRoutine(executionData,action));
-    }
-
     private IEnumerator WaitForGridAnimationRoutine(MatchExecutionData executionData,Action action=null)
-    {
+    { 
+        Debug.Log($"Waiting{executionData.swipeId}");
         yield return new WaitForSeconds(Element.SWIPE_ANIM_TIME);
+        Debug.Log($"Wait over{executionData.swipeId}");
+
        action?.Invoke();
     }
 
@@ -155,7 +145,6 @@ public class Matcher : Singleton<Matcher>
             matchedElements.RemoveAt(i);
         }
 
-       // matchExecutionDatas.Remove(executionData);
     }
 
     private void FindMatches(MatchExecutionData executionData)
@@ -191,7 +180,6 @@ public class Matcher : Singleton<Matcher>
                         {
                             //Debug.Log($"<Matcher> Cell count {_patternCells.Count}");
                             ExtractElementsToDestroyList(executionData);
-                          //  grid.LockDirtyColoumns(executionData);
                            // Debug.Log("--------------------------------------------------------------");
                             //Debug.Log(".");
                             //Debug.Log(".");
@@ -213,11 +201,12 @@ public class Matcher : Singleton<Matcher>
         List<Element> sameElementList = new List<Element>();
         for (int k = 0; k < patternCells.Count; k++)
         {
-         //   Debug.Log($"<Matcher> Adding element fomr{_patternCells[k].gameObject.name} to matched list");
+            //Debug.Log($"<Matcher> Adding element fomr{_patternCells[k].gameObject.name} to matched list");
             Element element = patternCells[k].GetElement();
            //patternCells[k].isMarkedForDestory = true;
             sameElementList.Add(element);
         }
+        
         grid.LockDirtyColoumns(matchExecutionData);
         matchExecutionData.matchedElements.Add(sameElementList);
         patternCells.Clear();
@@ -262,6 +251,7 @@ public class Matcher : Singleton<Matcher>
             int iPaired = i + offsetIndexPair.i_Offset;
             int jPaired = j + offsetIndexPair.j_Offset;
 
+            
             if (iPaired >= grid.GridHeight || jPaired >= grid.GridWidth ||
                 grid[iPaired, jPaired] == null || grid[iPaired,jPaired].IsEmpty)
             {
@@ -280,7 +270,6 @@ public class Matcher : Singleton<Matcher>
        
             GridCell cellOfPattern = grid[iPaired, jPaired];
             patternCells.Add(cellOfPattern);
-            
         }
 
     }

@@ -151,7 +151,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   patterns:
+  - {fileID: 11400000, guid: 8007b98aeab3e4e4b842e40c2d0c2364, type: 2}
+  - {fileID: 11400000, guid: e72ad1940304adb4da92ab40d20e0471, type: 2}
+  - {fileID: 11400000, guid: 6c17708d0bd0cea46ba2304891b7683b, type: 2}
+  - {fileID: 11400000, guid: 02105cbeb9c9ab248b52684b3e9a83a6, type: 2}
+  - {fileID: 11400000, guid: d3dd40d44f3f03c41a1871687571dd1d, type: 2}
+  - {fileID: 11400000, guid: a50b5394066a69840b80efbb8f31b67e, type: 2}
+  - {fileID: 11400000, guid: bd46a34abc52c7744a772b6c85636a1c, type: 2}
+  - {fileID: 11400000, guid: 5f6de3182aba7d742ba26248b18f761a, type: 2}
+  - {fileID: 11400000, guid: 349b100dd0d1190468fea9bfaf770a2e, type: 2}
+  - {fileID: 11400000, guid: 96fee0f247e44854db100291394f2ada, type: 2}
   - {fileID: 11400000, guid: 3e5fba3d6d0db0c4ca1133490d628345, type: 2}
+  - {fileID: 11400000, guid: 223e6726b33e7cd4e9c5d6491d663522, type: 2}
+  - {fileID: 11400000, guid: e6d82c8380fdbac4c87d2016467fc8cf, type: 2}
   swipeCount: 0
 --- !u!4 &322992770
 Transform:

@@ -9,7 +9,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     [SerializeField] private int hIndex;
     [SerializeField] private int wIndex;
     [SerializeField] private BoxCollider2D inputCollider;
-    [SerializeField] private SpriteRenderer renderer;
+    public SpriteRenderer renderer;
     #pragma  warning restore 0649
     
     private Element _element;
@@ -30,12 +30,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         }
     }
 
-    public bool IsInputActive {
-        get
-        {
-            return inputCollider.enabled;
-        }
-    }
+   
 
     //public bool isMarkedForDestory = false;
     public MatchExecutionData executionData;
