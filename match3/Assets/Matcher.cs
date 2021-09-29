@@ -1,47 +1,48 @@
 ﻿using System;
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
+using UnityEngine;
 
 public class MatchExecutionData
 {
-    private const int DefaultSwipeId=-99;
+    #region CONSTANTS
+
+    private const int DefaultSwipeId = -99;
+
+    #endregion
+
+    #region PUBLIC_VARIABLES
+
     public GridCell firstCell;
     public GridCell secondCell;
     public List<List<Element>> matchedElements;
     public List<GridCell> patternCells;
     public int swipeId;
-    
+
+    #endregion
+
+    #region PUBLIC_PROPERTIES
+
     public bool HasMatches
     {
-        get
-        {
-            return matchedElements.Count > 0;
-        }
+        get { return matchedElements.Count > 0; }
     }
 
-    public MatchExecutionData( List<List<Element>>matchedElementList,List<GridCell> patternCellList,int swipeNumber,GridCell fCell,GridCell sCell)
-    {
-        matchedElements = matchedElementList;
-        patternCells = patternCellList;
-        swipeId = swipeNumber;
-        firstCell = fCell;
-        secondCell = sCell;
-     }
+    #endregion
+
+    #region PUBLIC_METHODS
 
     public bool Equals(MatchExecutionData obj)
     {
-        if (obj==null)
+        if (obj == null)
             return false;
-        
-        if (obj.swipeId == DefaultSwipeId || swipeId==DefaultSwipeId)
+
+        if (obj.swipeId == DefaultSwipeId || swipeId == DefaultSwipeId)
         {
             return true;
         }
 
         return obj.swipeId == swipeId;
-
     }
 
     public override string ToString()
@@ -49,43 +50,57 @@ public class MatchExecutionData
         return $"Execution data id:{swipeId}";
     }
 
-    
+
     public static MatchExecutionData GetDefaultExecutionData()
     {
-        return new MatchExecutionData(new List<List<Element>>(), new List<GridCell>(), DefaultSwipeId,null,null);
+        return new MatchExecutionData(new List<List<Element>>(), new List<GridCell>(), DefaultSwipeId, null, null);
     }
 
+    #endregion
 
+    #region CONSTRUCTOR
+
+    public MatchExecutionData(List<List<Element>> matchedElementList, List<GridCell> patternCellList, int swipeNumber,
+        GridCell fCell, GridCell sCell)
+    {
+        matchedElements = matchedElementList;
+        patternCells = patternCellList;
+        swipeId = swipeNumber;
+        firstCell = fCell;
+        secondCell = sCell;
+    }
+
+    #endregion
 }
 
 public class Matcher : Singleton<Matcher>
 {
-    
+    #region PRIVATE_VARIABLES
     [SerializeField] private MatchPattern[] patterns;
-
-    public int swipeCount = 0;
     
+    private int swipeCount = 0;
+    #endregion
+    
+    #region PUBLIC_METHODS
 
-    [ContextMenu("Start Checking")]
-    public IEnumerator StartChecking(MatchExecutionData executionData)
+    public void StartChecking(MatchExecutionData executionData)
     {
-        
         FindMatches(executionData);
-        
+
         if (executionData.HasMatches)
         {
             swipeCount++;
-            yield return WaitForGridAnimationRoutine(executionData);
             DestoryMatchesTillNoMatchPossible(executionData);
         }
         else
         {
-            yield return WaitForGridAnimationRoutine(executionData); 
             ReswapCells(executionData);
         }
     }
+    
+    #endregion
 
-
+    #region PRIVATE_VARIABLES
     private void DestoryMatchesTillNoMatchPossible(MatchExecutionData executionData)
     {
         StartCoroutine(IterativeCheckRoutine(executionData));
@@ -99,11 +114,11 @@ public class Matcher : Singleton<Matcher>
     private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData)
     {
         Grid grid = Grid.instance;
-        
+
         while (executionData.HasMatches)
         {
-           // Debug.Log("ForceWait ");
-           // yield return new WaitForSeconds(2f);
+            // Debug.Log("ForceWait ");
+            // yield return new WaitForSeconds(2f);
             DestroyMatchedItems(executionData);
             grid.CollapseColoumns(executionData);
             yield return WaitForGridAnimationRoutine(executionData);
@@ -111,30 +126,29 @@ public class Matcher : Singleton<Matcher>
         }
 
         swipeCount--;
-        while (swipeCount!=0)
+        while (swipeCount != 0)
         {
             yield return null;
         }
-        
+
         grid.UnlockCells(executionData);
-         
     }
 
 
-    private IEnumerator WaitForGridAnimationRoutine(MatchExecutionData executionData,Action action=null)
-    { 
+    private IEnumerator WaitForGridAnimationRoutine(MatchExecutionData executionData, Action action = null)
+    {
         Debug.Log($"Waiting{executionData.swipeId}");
         yield return new WaitForSeconds(Element.SWIPE_ANIM_TIME);
         Debug.Log($"Wait over{executionData.swipeId}");
 
-       action?.Invoke();
+        action?.Invoke();
     }
 
 
     private void DestroyMatchedItems(MatchExecutionData executionData)
     {
         List<List<Element>> matchedElements = executionData.matchedElements;
-        
+
         for (int i = 0; i < matchedElements.Count;)
         {
             List<Element> sameElementsList = matchedElements[i];
@@ -142,16 +156,15 @@ public class Matcher : Singleton<Matcher>
             {
                 Destroy(sameElementsList[j].gameObject);
             }
+
             matchedElements.RemoveAt(i);
         }
-
     }
 
     private void FindMatches(MatchExecutionData executionData)
     {
-        
         Grid grid = Grid.instance;
-     
+
         for (int i = 0; i < grid.GridHeight; i++)
         {
             for (int j = 0; j < grid.GridWidth; j++)
@@ -163,27 +176,28 @@ public class Matcher : Singleton<Matcher>
                     {
                         //Matching started for a single pattern 'p'
                         MatchPattern matchPattern = patterns[p];
-                        
+
                         //We extract the cells according to pattern specified offsets
-                        ExtractPatternCells(startingCell, matchPattern, i, j,executionData);
-                        
+                        ExtractPatternCells(startingCell, matchPattern, i, j, executionData);
+
                         if (!IsExtractionValid(executionData))
                         {
                             //Incase the geometry of grid doesnt allow us to continue,
                             // we skip the pattern for this 'Starting Cell' and check for next pattern 'p' at the 'Starting Cell'.
                             continue;
                         }
-                        
+
                         //At this point we have cells with current pattern 'p', We can now safely check if 
                         //all the listed elements are same or not.
-                        if (DoesSelectedCellsHaveSameElements(executionData)) 
+                        if (DoesSelectedCellsHaveSameElements(executionData))
                         {
                             //Debug.Log($"<Matcher> Cell count {_patternCells.Count}");
                             ExtractElementsToDestroyList(executionData);
-                           // Debug.Log("--------------------------------------------------------------");
+                            // Debug.Log("--------------------------------------------------------------");
                             //Debug.Log(".");
                             //Debug.Log(".");
                         }
+
                         //Pattern 'p' checked successfully here
                     }
                 }
@@ -191,7 +205,6 @@ public class Matcher : Singleton<Matcher>
         }
 
         //Debug.Log($"Total patterns detected {_matchedElements.Count}");
-
     }
 
     private void ExtractElementsToDestroyList(MatchExecutionData matchExecutionData)
@@ -203,10 +216,10 @@ public class Matcher : Singleton<Matcher>
         {
             //Debug.Log($"<Matcher> Adding element fomr{_patternCells[k].gameObject.name} to matched list");
             Element element = patternCells[k].GetElement();
-           //patternCells[k].isMarkedForDestory = true;
+            //patternCells[k].isMarkedForDestory = true;
             sameElementList.Add(element);
         }
-        
+
         grid.LockDirtyColoumns(matchExecutionData);
         matchExecutionData.matchedElements.Add(sameElementList);
         patternCells.Clear();
@@ -215,21 +228,20 @@ public class Matcher : Singleton<Matcher>
     private bool IsExtractionValid(MatchExecutionData executionData)
     {
         List<GridCell> patternCells = executionData.patternCells;
-        return (patternCells.Count > 0) ;
+        return (patternCells.Count > 0);
     }
 
     private bool DoesSelectedCellsHaveSameElements(MatchExecutionData matchExecutionData)
     {
-        
         List<GridCell> patternCells = matchExecutionData.patternCells;
-        
+
         Element startingElement = patternCells[0].ReadElement();
         for (int k = 1; k < patternCells.Count; k++)
         {
             Element patternCellElement = patternCells[k].ReadElement();
             if (!patternCellElement.IsSame(startingElement))
             {
-          //      Debug.Log($"<Matcher> Terminating check due to different elements present at {_patternCells[k].gameObject.name} or is empty");
+                //      Debug.Log($"<Matcher> Terminating check due to different elements present at {_patternCells[k].gameObject.name} or is empty");
                 patternCells.Clear();
                 return false;
             }
@@ -238,49 +250,40 @@ public class Matcher : Singleton<Matcher>
         return true;
     }
 
-    private void ExtractPatternCells(GridCell startingCell,MatchPattern matchPattern, int i, int j,MatchExecutionData matchExecutionData)
+    private void ExtractPatternCells(GridCell startingCell, MatchPattern matchPattern, int i, int j,
+        MatchExecutionData matchExecutionData)
     {
         List<GridCell> patternCells = matchExecutionData.patternCells;
         Grid grid = Grid.instance;
-        
-      //  Debug.Log($"<Matcher> Checking {matchPattern.patternName} at cell {startingCell.gameObject.name}");
+
+        //  Debug.Log($"<Matcher> Checking {matchPattern.patternName} at cell {startingCell.gameObject.name}");
 
         for (int k = 0; k < matchPattern.Length; k++) //Generate a list of cell from patterm
         {
             IndexPair offsetIndexPair = matchPattern[k];
-            int iPaired = i + offsetIndexPair.i_Offset;
-            int jPaired = j + offsetIndexPair.j_Offset;
+            int iPaired = i + offsetIndexPair.I_Offset;
+            int jPaired = j + offsetIndexPair.J_Offset;
 
-            
+
             if (iPaired >= grid.GridHeight || jPaired >= grid.GridWidth ||
-                grid[iPaired, jPaired] == null || grid[iPaired,jPaired].IsEmpty)
+                grid[iPaired, jPaired] == null || grid[iPaired, jPaired].IsEmpty)
             {
                 // Either grid geometry doesn't allow further check or previous pattern locked and extracted the cell thus current pattern will fail,
                 // so we terminate execution instantly and clear the extractList;
                 patternCells.Clear();
-               
+
                 //editor logging
-                 //   Debug.Log($"<Matcher> Terminating check due i{iPaired} j{jPaired} >= {grid.GridHeight} {grid.GridWidth}");
-                  //  Debug.Log($"<Matcher> OR");
-                   // Debug.Log($"<Matcher> Terminating check due to no cell present at or is Empty {i}{j}");
+                //   Debug.Log($"<Matcher> Terminating check due i{iPaired} j{jPaired} >= {grid.GridHeight} {grid.GridWidth}");
+                //  Debug.Log($"<Matcher> OR");
+                // Debug.Log($"<Matcher> Terminating check due to no cell present at or is Empty {i}{j}");
                 //end logging
-                
+
                 return;
             }
-       
+
             GridCell cellOfPattern = grid[iPaired, jPaired];
             patternCells.Add(cellOfPattern);
         }
-
     }
-
-    private static void LogCellsSelectedInPattern(List<GridCell> patternCells)
-    {
-        //DEB
-        for (int k = 0; k < patternCells.Count; k++)
-        {
-            Debug.Log($"<Matcher> Cell selected {patternCells[k]}");
-        }
-        ////
-    }
+    #endregion
 }

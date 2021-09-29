@@ -64,9 +64,11 @@
      <Compile Include="Assets\MainGame\Scripts\Gameplay\ElementGenerator.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\Grid.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\GridCell.cs" />
+     <Compile Include="Assets\MainGame\Scripts\Gameplay\GridCellStateHandler.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\GridColoumn.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\InputManager.cs" />
-     <Compile Include="Assets\MainGame\Scripts\Gameplay\MatchPattern.cs" />
+     <Compile Include="Assets\MainGame\Scripts\Scriptable\CellLayer.cs" />
+     <Compile Include="Assets\MainGame\Scripts\Scriptable\MatchPattern.cs" />
      <Compile Include="Assets\MainGame\Scripts\Utilities\MinatoUtils.cs" />
      <Compile Include="Assets\Matcher.cs" />
      <Compile Include="Assets\NativePooler.cs" />

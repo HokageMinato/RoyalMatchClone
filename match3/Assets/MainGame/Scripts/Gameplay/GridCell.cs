@@ -16,12 +16,10 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     #endregion
 
     #region PUBLIC_VARIABLES
-
     public int HIndex
     {
         get { return wIndex; }
     }
-
     public bool IsEmpty
     {
         get
@@ -29,10 +27,6 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
             return _element == null;
         }
     }
-
-   
-
-    //public bool isMarkedForDestory = false;
     public MatchExecutionData executionData;
     #endregion
 

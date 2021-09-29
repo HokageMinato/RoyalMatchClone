@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class Element : MonoBehaviour
 {
+   
+   
    public const float SWIPE_ANIM_TIME = 0.2f;
   
    

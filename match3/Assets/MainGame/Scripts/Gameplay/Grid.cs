@@ -6,27 +6,24 @@ using UnityEngine;
 public class Grid : Singleton<Grid>
 {
 
+    #region PRIVATE_VARIABLES
+    [SerializeField] private GridColoumn GridColoumnPrefab;
+    [SerializeField] private GridCell gridCellPrefab;
+    [SerializeField] private ElementGenerator elementGeneratorPrefab;
+    #endregion
+    
     #region PUBLIC_VARIABLES
-    public GridColoumn GridColoumnPrefab;
-    public GridCell gridCellPrefab;
-    public ElementGenerator elementGeneratorPrefab;
-    
-    
     public GridCell this[int i,int j]
     {
         get { return _grid[i,j]; }
         set { _grid[i,j] = value; }
     }
     public int GridHeight
-    {
-        get { return GridDesignTemp.gridHeight; }
-    }
+    { get { return GridDesignTemp.gridHeight; } }
     
     public int GridWidth
-    {
-        get { return GridDesignTemp.gridHeight; }
-    }
-   // public bool IsAnimating=false;
+    { get { return GridDesignTemp.gridHeight; } }
+   
     #endregion
    
     #region PRIVATE_VARIABLES
@@ -147,7 +144,8 @@ public class Grid : Singleton<Grid>
     
     #endregion
 
-  
+    #region PUBLIC_METHODS
+
     public void CollapseColoumns(MatchExecutionData executionData)
     {
         for (int l = 0; l < _gridC.Count; l++)
@@ -193,6 +191,10 @@ public class Grid : Singleton<Grid>
 
     }
 
+    #endregion
+
+
+    #region ASYNC_METHODS
     private void WaitForGridAnimation(Action action)
     {
         StartCoroutine(WaitForGridAnimationRoutine(action));
@@ -200,14 +202,11 @@ public class Grid : Singleton<Grid>
 
     private IEnumerator WaitForGridAnimationRoutine(Action action=null)
     {
-        Grid grid = Grid.instance;
-       // while (grid.IsAnimating)
-        {
-            yield return new WaitForSeconds(02f);
-            yield return null;
-        }
+        yield return new WaitForSeconds(0.2f);
+        yield return null;
         action?.Invoke();
     }
+    #endregion
 }
 
 public class GridDesignTemp
@@ -220,19 +219,10 @@ public class GridDesignTemp
         {0,0,1,1,1,1,1,0,0},
         {0,0,1,1,1,1,1,0,0},
         {0,0,1,1,1,1,1,0,0},
-        {1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1}
+        {2,2,1,1,1,1,1,2,2},
+        {2,2,1,1,1,1,1,2,2},
+        {2,2,1,1,1,1,1,2,2}
     };
-    // public static readonly int[,] gridDesignTemp = new[,]
-    // {
-    //     {1,1,1,1,1},
-    //     {1,1,1,1,1},
-    //     {1,1,1,1,1},
-    //     {1,1,1,1,1},
-    //     {1,1,1,1,1},
-    //     
-    // };
     public const float gridSpacing = 2.0f;
     public const float maxWidthMidPointForThisPattern = 7; 
     public const float maxHeightMidPointForThisPattern = 7; 
