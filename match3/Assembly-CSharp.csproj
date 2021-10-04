@@ -60,6 +60,7 @@
   <ItemGroup>
      <Compile Include="Assets\CellGroup.cs" />
      <Compile Include="Assets\GridEditor\Scripts\GridGeneratorUtility.cs" />
+     <Compile Include="Assets\MainGame\Scripts\Gameplay\CellBlocker.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\Element.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\ElementGenerator.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\Grid.cs" />
