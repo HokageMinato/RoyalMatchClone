@@ -9,10 +9,11 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     [SerializeField] private int hIndex;
     [SerializeField] private int wIndex;
     [SerializeField] private BoxCollider2D inputCollider;
-    public SpriteRenderer renderer;
+    public new SpriteRenderer renderer;
     #pragma  warning restore 0649
     
     private Element _element;
+    private CellBlocker _blocker;
     #endregion
 
     #region PUBLIC_VARIABLES
@@ -27,6 +28,16 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
             return _element == null;
         }
     }
+
+    public bool IsBlocked 
+    {
+        get 
+        {
+            return _blocker == null;
+        }
+    }
+
+
     public MatchExecutionData executionData;
     #endregion
 
@@ -86,7 +97,10 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         _element.SetHolder(this);
     }
 
-    
+    public void SetBlocker(CellBlocker blocker) {
+
+        _blocker = blocker;
+    }
 
     #endregion
     

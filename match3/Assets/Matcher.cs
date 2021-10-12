@@ -56,6 +56,8 @@ public class MatchExecutionData
         return new MatchExecutionData(new List<List<Element>>(), new List<GridCell>(), DefaultSwipeId, null, null);
     }
 
+
+    
     #endregion
 
     #region CONSTRUCTOR
@@ -78,33 +80,22 @@ public class Matcher : Singleton<Matcher>
     #region PRIVATE_VARIABLES
     [SerializeField] private MatchPattern[] patterns;
     
-    private int swipeCount = 0;
+    private List<MatchExecutionData> activeThreads = new List<MatchExecutionData>();
     #endregion
     
     #region PUBLIC_METHODS
 
     public void StartChecking(MatchExecutionData executionData)
     {
-        FindMatches(executionData);
-
-        if (executionData.HasMatches)
-        {
-            swipeCount++;
-            DestoryMatchesTillNoMatchPossible(executionData);
-        }
-        else
-        {
-            ReswapCells(executionData);
-        }
+        
+        StartCoroutine(IterativeCheckRoutine(executionData));
     }
-    
+
+
     #endregion
 
     #region PRIVATE_VARIABLES
-    private void DestoryMatchesTillNoMatchPossible(MatchExecutionData executionData)
-    {
-        StartCoroutine(IterativeCheckRoutine(executionData));
-    }
+
 
     private void ReswapCells(MatchExecutionData executionData)
     {
@@ -113,23 +104,33 @@ public class Matcher : Singleton<Matcher>
 
     private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData)
     {
+        activeThreads.Add(executionData);
+        FindMatches(executionData);
+        yield return WaitForGridAnimationRoutine(executionData);
+
+        if (!executionData.HasMatches)
+        {
+            ReswapCells(executionData);
+            activeThreads.Remove(executionData);
+            yield break;
+        }
+      
+
         Grid grid = Grid.instance;
 
         while (executionData.HasMatches)
         {
-            // Debug.Log("ForceWait ");
-            // yield return new WaitForSeconds(2f);
             DestroyMatchedItems(executionData);
             grid.CollapseColoumns(executionData);
             yield return WaitForGridAnimationRoutine(executionData);
             FindMatches(executionData);
         }
 
-        swipeCount--;
-        while (swipeCount != 0)
-        {
+        activeThreads.Remove(executionData);
+
+        while (activeThreads.Count > 0)
             yield return null;
-        }
+
 
         grid.UnlockCells(executionData);
     }
@@ -137,10 +138,8 @@ public class Matcher : Singleton<Matcher>
 
     private IEnumerator WaitForGridAnimationRoutine(MatchExecutionData executionData, Action action = null)
     {
-        Debug.Log($"Waiting{executionData.swipeId}");
         yield return new WaitForSeconds(Element.SWIPE_ANIM_TIME);
-        Debug.Log($"Wait over{executionData.swipeId}");
-
+       
         action?.Invoke();
     }
 
@@ -192,6 +191,7 @@ public class Matcher : Singleton<Matcher>
                         if (DoesSelectedCellsHaveSameElements(executionData))
                         {
                             //Debug.Log($"<Matcher> Cell count {_patternCells.Count}");
+                            HitPotentialObstacles(executionData);
                             ExtractElementsToDestroyList(executionData);
                             // Debug.Log("--------------------------------------------------------------");
                             //Debug.Log(".");
@@ -207,6 +207,12 @@ public class Matcher : Singleton<Matcher>
         //Debug.Log($"Total patterns detected {_matchedElements.Count}");
     }
 
+    private void HitPotentialObstacles(MatchExecutionData executionData) {
+        
+        ObstacleHandler.instance.CheckForNeighbourHit(executionData);
+
+    }
+
     private void ExtractElementsToDestroyList(MatchExecutionData matchExecutionData)
     {
         Grid grid = Grid.instance;
@@ -214,9 +220,7 @@ public class Matcher : Singleton<Matcher>
         List<Element> sameElementList = new List<Element>();
         for (int k = 0; k < patternCells.Count; k++)
         {
-            //Debug.Log($"<Matcher> Adding element fomr{_patternCells[k].gameObject.name} to matched list");
             Element element = patternCells[k].GetElement();
-            //patternCells[k].isMarkedForDestory = true;
             sameElementList.Add(element);
         }
 

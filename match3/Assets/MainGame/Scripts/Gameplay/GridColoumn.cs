@@ -9,10 +9,20 @@ public class GridColoumn : MonoBehaviour
    private List<GridCell> gridCells= new List<GridCell>();
    private List<Element> _generatedElementList = new List<Element>();
    private int cellIndex = 0;
-   #endregion
-   
-   #region PUBLIC_VARIABLES
-   public void CollapseColoumn(MatchExecutionData executionData)
+    #endregion
+
+    #region PUBLIC_METHODS
+    public void Init(ElementGenerator elementGenerat)
+    {
+        elementGenerator = elementGenerat;
+        elementGenerator.transform.SetParent(transform);
+        elementGenerator.transform.localPosition = Vector3.up * 1.5f;
+        cellIndex = gridCells.Count - 1;
+        GenerateNewElementBuffer();
+        SetNewlyGeneratedElementsToEmptyCells(null);
+    }
+
+    public void CollapseColoumn(MatchExecutionData executionData)
    {
          ShiftRemainingCellsToEmptySpaces(executionData);
          GenerateNewElementBuffer();
@@ -23,11 +33,7 @@ public class GridColoumn : MonoBehaviour
       gridCells.Add(newCell);
    } 
    
-   public void SetGenerator(ElementGenerator elementGenerat)
-   {
-      elementGenerator = elementGenerat;
-      elementGenerator.transform.SetParent(transform);
-   }
+  
 
    public void LockColoumn(MatchExecutionData executionData)
    {
@@ -77,10 +83,8 @@ public class GridColoumn : MonoBehaviour
          if (cell.IsEmpty)
          {
             Element element = elementGenerator.GetRandomElement(cell);
-            
             Transform elementTransform = element.transform;
-
-            Vector3 initialPosition = elementTransform.InverseTransformPoint(elementGenerator.transform.localPosition);
+            Vector3 initialPosition = elementTransform.InverseTransformPoint(transform.position);
             initialPosition.y += i;
             elementTransform.localPosition = initialPosition;
             _generatedElementList.Add(element);

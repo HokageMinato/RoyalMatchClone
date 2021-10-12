@@ -57,7 +57,6 @@ public class InputManager : Singleton<InputManager>
 
     private void OnValidMove()
     {
-        Debug.Log("PERFORM SWIPE");
         MatchExecutionData matchExecutionData = new MatchExecutionData(new List<List<Element>>(),new List<GridCell>(),swipeNumber,_firstCell,_secondCell);
         matchExecutionData.firstCell.executionData = matchExecutionData;
         matchExecutionData.secondCell.executionData = matchExecutionData;
