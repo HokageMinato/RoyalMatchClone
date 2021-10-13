@@ -187,9 +187,6 @@ public class Grid : Singleton<Grid>
             }
         }
         
-        _gridC[matchExecutionData.firstCell.HIndex].UnLockColoumn();
-        _gridC[matchExecutionData.secondCell.HIndex].UnLockColoumn();
-
     }
 
     #endregion

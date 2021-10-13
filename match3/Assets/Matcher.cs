@@ -209,7 +209,7 @@ public class Matcher : Singleton<Matcher>
 
     private void HitPotentialObstacles(MatchExecutionData executionData) {
         
-        ObstacleHandler.instance.CheckForNeighbourHit(executionData);
+        GameplayObstacleHandler.instance.CheckForNeighbourHit(executionData);
 
     }
 

@@ -37,9 +37,8 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         }
     }
 
-
-    public MatchExecutionData executionData;
-    #endregion
+   public MatchExecutionData executionData { get; private set; }
+   #endregion
 
     
     #region PUBLIC_METHODS
@@ -102,6 +101,13 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         _blocker = blocker;
     }
 
+    public void SetExecutionData(MatchExecutionData executionData) {
+        this.executionData = executionData;
+    }
+
+    public void ClearExecutionData() {
+        SetExecutionData(null);
+    }
     #endregion
     
     #region PRIVATE_METHODS
@@ -121,9 +127,6 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     #endregion
 
 
-    public void SetExecutionData(MatchExecutionData matchExecutionData)
-    {
-        executionData = matchExecutionData;
-    }
+   
 }
 

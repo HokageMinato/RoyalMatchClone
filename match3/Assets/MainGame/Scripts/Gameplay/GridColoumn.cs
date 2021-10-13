@@ -40,7 +40,7 @@ public class GridColoumn : MonoBehaviour
       for (int i = 0; i < gridCells.Count; i++)
       {
          gridCells[i].renderer.color= Color.red;
-         gridCells[i].executionData = executionData;
+         gridCells[i].SetExecutionData(executionData);
          gridCells[i].ToggleInputInteractibility(false);
       }
    }
@@ -50,7 +50,7 @@ public class GridColoumn : MonoBehaviour
       for (int i = 0; i < gridCells.Count; i++)
       {
          gridCells[i].ToggleInputInteractibility(true);
-         gridCells[i].executionData = null;
+         gridCells[i].ClearExecutionData();
          gridCells[i].renderer.color= Color.gray;
       }
    }
@@ -66,7 +66,7 @@ public class GridColoumn : MonoBehaviour
          Element element = gridCells[i].GetElement();
          if (element != null)
          {
-            gridCells[cellIndex].executionData = executionData;
+          //  gridCells[cellIndex].executionData = executionData;
             gridCells[cellIndex].SetElement(element);
             cellIndex--;
          }
@@ -76,6 +76,9 @@ public class GridColoumn : MonoBehaviour
    private void GenerateNewElementBuffer()
    {
       _generatedElementList.Clear();
+
+        
+
       for (int i = 0; i < gridCells.Count; i++)
       {
          GridCell cell = gridCells[i];
@@ -87,6 +90,7 @@ public class GridColoumn : MonoBehaviour
             Vector3 initialPosition = elementTransform.InverseTransformPoint(transform.position);
             initialPosition.y += i;
             elementTransform.localPosition = initialPosition;
+            
             _generatedElementList.Add(element);
          }
       }
@@ -97,7 +101,7 @@ public class GridColoumn : MonoBehaviour
       for (int i = 0; i < _generatedElementList.Count; i++)
       {
          GridCell cell = gridCells[cellIndex];
-         cell.executionData = executionData;
+         cell.SetExecutionData(executionData);
         
          Element element = _generatedElementList[i];
          cell.SetElement(element);
@@ -105,6 +109,23 @@ public class GridColoumn : MonoBehaviour
       }
 
    }
+
+
+    private int GetMaxReachableCellInColoumn() {
+        
+        int maxRechable = gridCells.Count;
+
+        for (int i = 0; i < gridCells.Count; i++)
+        {
+            GridCell cell = gridCells[i];
+            if (cell.IsBlocked) {
+                maxRechable = i;            
+            }
+
+        }
+
+        return maxRechable;
+    }
    #endregion
    
 
