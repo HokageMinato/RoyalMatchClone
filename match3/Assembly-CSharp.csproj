@@ -68,7 +68,7 @@
     <Compile Include="Assets\GridEditor\Scripts\GridGeneratorUtility.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\Element.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\Factories\ElementGenerator.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Gameplay\Factories\ObstacleFactory.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Gameplay\Factories\ObstacleGenerator.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\Grid.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\GridBlockers\Blockers\BoxCellBlocker.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\GridBlockers\CellBlocker.cs" />

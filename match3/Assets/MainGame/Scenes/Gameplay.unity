@@ -526,11 +526,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1732962978}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 596015e47a025794d8b9b6a50b18ba70, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b14deaff0cb38442a94938287241ff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellBlockers:
-  - {fileID: 5136120999112097909, guid: a8852d1479396a54585787032f09f377, type: 3}
+  obstacleData:
+  - obstacleId: 66
+    prefab: {fileID: 5136120999112097909, guid: a8852d1479396a54585787032f09f377,
+      type: 3}
+  - obstacleId: 67
+    prefab: {fileID: 5136120999112097909, guid: b149817f2158df34b87fa4d8e03fdba7,
+      type: 3}
 --- !u!1 &1864868102
 GameObject:
   m_ObjectHideFlags: 0
