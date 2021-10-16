@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
-using System;
+
 
 public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
 {
-
     public List<CellBlocker> activeBlockers;
     
     public void GenerateObstacles(GridDesignTemp levelData)
@@ -34,12 +32,15 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
     public void CheckForNeighbourHit(MatchExecutionData executionData) {
 
         List<GridCell> matchedCell = executionData.patternCells;
-
-
         for (int i = 0; i < activeBlockers.Count; i++)
         {
-                activeBlockers[i].Hit(matchedCell);
+              activeBlockers[i].Hit(matchedCell);
         }
+    }
+
+    public void UnblockObstacle(CellBlocker blocker) {
+        activeBlockers.Remove(blocker);
+        Destroy(blocker.gameObject);
     }
 
 }

@@ -3,17 +3,18 @@ using UnityEngine;
 
 public class BoxCellBlocker : CellBlocker
 {
+    #region PUBLIC_VARIABLES
     public int requiredHitCount;
     public SpriteRenderer spriteRenderer;
     public Sprite[] spriteLayers;
+    #endregion
+
+    #region PUBLIC_REFERENCES
     GridCell targetCell;
+    #endregion
 
-    public override void Init(Grid g)
-    {
-        base.Init(g);
-        OnBlockCells();
-    }
-
+    #region PUBLIC_METHODS
+    
     public override void OnBlockCells()
     {
         targetCell = grid[initial_h, initial_w];
@@ -22,18 +23,15 @@ public class BoxCellBlocker : CellBlocker
         UpdateView();
     }
 
-    public override bool IsNeighbourOf(GridCell otherCell)
-    {
-        return targetCell.IsNeighbourOf(otherCell);
-    }
-
+    
     public override void Hit(List<GridCell> matchedCells)
     {
 
-        
         for (int i = 0; i < matchedCells.Count; i++)
         {
-            if (matchedCells[i].IsNeighbourOf(targetCell)) {
+            GridCell matchedCell = matchedCells[i];
+           
+            if(grid.AreNeighbours(matchedCell,targetCell))
                 requiredHitCount --;
                 if (requiredHitCount >= 0)
                 {
@@ -47,15 +45,13 @@ public class BoxCellBlocker : CellBlocker
             }
         }
 
-        
-    }
-
     public override void OnUnblocked()
     {
         targetCell.SetBlocker(null);
-        Destroy(gameObject);
+        GameplayObstacleHandler.instance.UnblockObstacle(this);
     }
 
+    #endregion
 
     private void UpdateView()
     {

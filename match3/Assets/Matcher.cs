@@ -79,7 +79,6 @@ public class Matcher : Singleton<Matcher>
 {
     #region PRIVATE_VARIABLES
     [SerializeField] private MatchPattern[] patterns;
-    
     private List<MatchExecutionData> activeThreads = new List<MatchExecutionData>();
     #endregion
     
@@ -87,9 +86,9 @@ public class Matcher : Singleton<Matcher>
 
     public void StartChecking(MatchExecutionData executionData)
     {
-        
         StartCoroutine(IterativeCheckRoutine(executionData));
     }
+
 
 
     #endregion
@@ -97,11 +96,7 @@ public class Matcher : Singleton<Matcher>
     #region PRIVATE_VARIABLES
 
 
-    private void ReswapCells(MatchExecutionData executionData)
-    {
-        InputManager.instance.SwapCells(executionData);
-    }
-
+   
     private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData)
     {
         activeThreads.Add(executionData);
@@ -110,14 +105,14 @@ public class Matcher : Singleton<Matcher>
 
         if (!executionData.HasMatches)
         {
-            ReswapCells(executionData);
+            //reswap cells;
+            InputManager.instance.SwapCells(executionData);
             activeThreads.Remove(executionData);
             yield break;
         }
       
 
         Grid grid = Grid.instance;
-
         while (executionData.HasMatches)
         {
             DestroyMatchedItems(executionData);

@@ -48,7 +48,7 @@ public class InputManager : Singleton<InputManager>
     {
         if (IsFirstCellAssigned())
         {
-            if (_secondCell.IsNeighbourOf(_firstCell))
+            if (Grid.instance.AreNeighbours(_firstCell,_secondCell))
             {
                 OnValidMove();
             }

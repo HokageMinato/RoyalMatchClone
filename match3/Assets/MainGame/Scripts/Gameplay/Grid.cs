@@ -51,7 +51,29 @@ public class Grid : Singleton<Grid>
     #endregion
 
     #region PUBLIC_METHODS
+    public bool AreNeighbours(GridCell firstCell, GridCell secondCell){
 
+        bool isVerticalPositionSame = firstCell.HIndex == secondCell.HIndex;
+        bool isHorizontalPositionSame = firstCell.WIndex == secondCell.WIndex;
+        int cellDistance;
+
+        if (isHorizontalPositionSame)
+        {
+            cellDistance = Mathf.Abs(firstCell.HIndex - secondCell.HIndex);
+        }
+        else if (isVerticalPositionSame)
+        {
+            cellDistance = Mathf.Abs(firstCell.WIndex - secondCell.WIndex);
+        }
+        else 
+        {
+            return false;
+        }
+
+        bool areNeighbours = cellDistance <=1  && (isVerticalPositionSame || isHorizontalPositionSame);
+
+        return areNeighbours;
+    }
     
     #endregion
 
@@ -74,7 +96,6 @@ public class Grid : Singleton<Grid>
                     continue;
                  
                 CreateCellAt(j, i);
-               // FillInitialElementAt(j, i,c);
                 c++;
             }
 
@@ -117,20 +138,7 @@ public class Grid : Singleton<Grid>
     }
     
 
-    //private void FillInitialElementAt(int j, int i,int c)
-    //{
-    //    GridCell parentCell = _grid[i, j];
-        
-    //    if(!parentCell.IsEmpty)
-    //        return;
-        
-    //    Element element = ElementGeneratorHandler.instance.ElementGeneratorPrefab.GetRandomElement(parentCell);
-    //    Transform elementTransform = element.transform;
-    //    //elementTransform.localPosition = new Vector3(0f,15f,0f);
-    //    elementTransform.localPosition = parentCell.transform.localPosition;
-    //    element.gameObject.name = c.ToString();
-    //    parentCell.SetElement(element);
-    //}
+
 
     private void ToggleColoumnLock(bool toggleValue)
     {
@@ -159,11 +167,11 @@ public class Grid : Singleton<Grid>
     public void LockDirtyColoumns(MatchExecutionData executionData)
     {
         List<GridCell> cells = executionData.patternCells;
-        _gridC[executionData.firstCell.HIndex].LockColoumn(executionData);
-        _gridC[executionData.secondCell.HIndex].LockColoumn(executionData);
+        _gridC[executionData.firstCell.WIndex].LockColoumn(executionData);
+        _gridC[executionData.secondCell.WIndex].LockColoumn(executionData);
         for (int i = 0; i < cells.Count; i++)
         {
-            _gridC[cells[i].HIndex].LockColoumn(executionData);
+            _gridC[cells[i].WIndex].LockColoumn(executionData);
             
         }
         

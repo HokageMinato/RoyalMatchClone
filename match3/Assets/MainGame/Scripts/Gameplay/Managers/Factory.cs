@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class Factory : Singleton<Factory>
 {
-
+    #region PRIVATE_VARIABLES
     [SerializeField] private ElementGenerator elementGeneratorActivePrefab;
     [SerializeField] private ObstacleGenerator obstacleGenerator;
+    #endregion
     
-
+    #region PUBLIC_METHODS
     public ObstacleGenerator ObstacleGenerator
     {
         get { return obstacleGenerator; }
@@ -25,6 +26,6 @@ public class Factory : Singleton<Factory>
             _grid[j].Init(generator);
         }
     }
-
+    #endregion
     
 }

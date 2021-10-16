@@ -5,22 +5,26 @@ using UnityEngine.EventSystems;
 public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 {
     #region PRIVATE_VARIABLES
-    #pragma  warning disable 0649
     [SerializeField] private int hIndex;
     [SerializeField] private int wIndex;
     [SerializeField] private BoxCollider2D inputCollider;
     public new SpriteRenderer renderer;
-    #pragma  warning restore 0649
     
     private Element _element;
     private CellBlocker _blocker;
     #endregion
 
     #region PUBLIC_VARIABLES
-    public int HIndex
+    public int WIndex
     {
         get { return wIndex; }
     }
+
+    public int HIndex
+    {
+        get { return hIndex; }
+    }
+
     public bool IsEmpty
     {
         get
@@ -63,10 +67,10 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     }
     
 
-    public bool IsNeighbourOf(GridCell otherCell)
-    {
-        return IsHorizontalNeighbourOf(otherCell) || IsVerticalNeighbourOf(otherCell);
-    }
+    //public bool IsNeighbourOf(GridCell otherCell)
+    //{
+    //    return IsHorizontalNeighbourOf(otherCell) || IsVerticalNeighbourOf(otherCell);
+    //}
 
     public void ToggleInputInteractibility(bool isActive)
     {
@@ -110,21 +114,21 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     }
     #endregion
     
-    #region PRIVATE_METHODS
-    private bool IsHorizontalNeighbourOf(GridCell otherCell)
-    {
-        int absoluteDifference = Mathf.Abs(otherCell.wIndex - wIndex);
-        bool isVerticalPositionSame = otherCell.hIndex == hIndex;
-        return absoluteDifference <= 1 && otherCell != this && isVerticalPositionSame;
-    }
+    //#region PRIVATE_METHODS
+    //private bool IsHorizontalNeighbourOf(GridCell otherCell)
+    //{
+    //    int absoluteDifference = Mathf.Abs(otherCell.wIndex - wIndex);
+    //    bool isVerticalPositionSame = otherCell.hIndex == hIndex;
+    //    return absoluteDifference <= 1 && otherCell != this && isVerticalPositionSame;
+    //}
 
-    private bool IsVerticalNeighbourOf(GridCell otherCell)
-    {
-        int absoluteDifference = Mathf.Abs(otherCell.hIndex - hIndex);
-        bool isHorizontalPositionSame = otherCell.wIndex == wIndex;
-        return absoluteDifference <= 1 && otherCell != this && isHorizontalPositionSame;
-    }
-    #endregion
+    //private bool IsVerticalNeighbourOf(GridCell otherCell)
+    //{
+    //    int absoluteDifference                                             = Mathf.Abs(otherCell.hIndex - hIndex);
+    //    bool isHorizontalPositionSame = otherCell.wIndex == wIndex;
+    //    return absoluteDifference <= 1 && otherCell != this && isHorizontalPositionSame;
+    //}
+    //#endregion
 
 
    

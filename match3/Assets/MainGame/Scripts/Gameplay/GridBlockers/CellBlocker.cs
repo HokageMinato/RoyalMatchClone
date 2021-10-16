@@ -4,26 +4,27 @@ using UnityEngine;
 
 public class CellBlocker : MonoBehaviour
 {
+
+    #region PUBLIC_VARIABLES
     public BlockLayer blockLayer;
     public int initial_h;
     public int initial_w;
+    #endregion
 
+    #region PUBLIC_REFERENCES
     public Grid grid;
+    #endregion
 
+    #region PUBLIC_METHODS
     public virtual void Init(Grid g)
     {
         grid = g;
+        OnBlockCells();
     }
 
-    public virtual bool IsNeighbourOf(GridCell otherCell) { return false; }
     public virtual void Hit(List<GridCell> matchedCells) { }
     public virtual void OnUnblocked() { }
-
-    public virtual void OnBlockCells()
-    {
-
-    }
-
-
+    public virtual void OnBlockCells(){ }
+    #endregion
 
 }
