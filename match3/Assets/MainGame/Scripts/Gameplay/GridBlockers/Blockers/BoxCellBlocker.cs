@@ -48,7 +48,7 @@ public class BoxCellBlocker : CellBlocker
     public override void OnUnblocked()
     {
         targetCell.SetBlocker(null);
-        GameplayObstacleHandler.instance.UnblockObstacle(this);
+        GameplayObstacleHandler.instance.DiscardObstacle(this);
     }
 
     #endregion

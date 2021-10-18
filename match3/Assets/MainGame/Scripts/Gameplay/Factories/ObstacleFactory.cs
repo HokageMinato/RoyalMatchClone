@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObstacleGenerator : Singleton<ObstacleGenerator>
+public class ObstacleFactory : Singleton<ObstacleFactory>
 {
     #region PRIVATE_VARIABLES
     [SerializeField] private ObstacleData[] obstacleData;
@@ -34,8 +34,6 @@ public class ObstacleGenerator : Singleton<ObstacleGenerator>
     #region PRIVATE_VARIABLES
     private void GenerateLookUp()
     {
-       
-
         for (int i = 0; i < obstacleData.Length; i++)
         {
             prefabLookUp.Add(obstacleData[i].obstacleId, obstacleData[i].prefab);

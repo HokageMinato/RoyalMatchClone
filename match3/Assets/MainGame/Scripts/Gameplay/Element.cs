@@ -4,15 +4,18 @@ using System.Collections.Generic;
 
 public class Element : MonoBehaviour
 {
-   
-   
-   public const float SWIPE_ANIM_TIME = 0.2f;
-  
-   
-   private MatchExecutionData _matchExecutionData;
-   public ElementType elementType;
-   
-   public bool IsSame(Element other)
+    public SpriteRenderer spriteRenderer;
+    public const float SWIPE_ANIM_TIME = 0.2f;
+
+    public GameLayer renderLayer;
+    public ElementType elementType;
+    
+    public void Start()
+    {
+        spriteRenderer.sortingOrder = (int)renderLayer;
+    }
+
+    public bool IsSame(Element other)
    {
       if (other == null)
          return false;
@@ -22,7 +25,6 @@ public class Element : MonoBehaviour
 
    public void SetHolder(GridCell newHolder)
    {
-      _matchExecutionData = newHolder.executionData;
       transform.SetParent(newHolder.transform);
       StartCoroutine(ShiftRoutine());
    }

@@ -6,7 +6,7 @@ public class CellBlocker : MonoBehaviour
 {
 
     #region PUBLIC_VARIABLES
-    public BlockLayer blockLayer;
+    public GameLayer blockLayer;
     public int initial_h;
     public int initial_w;
     #endregion
@@ -16,9 +16,11 @@ public class CellBlocker : MonoBehaviour
     #endregion
 
     #region PUBLIC_METHODS
-    public virtual void Init(Grid g)
+    public virtual void Init(Grid g,int hIndex,int wIndex)
     {
         grid = g;
+        initial_h = hIndex;
+        initial_w = wIndex;
         OnBlockCells();
     }
 

@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Factory : Singleton<Factory>
+public class ElementGeneratorFactory : Singleton<ElementGeneratorFactory>
 {
     #region PRIVATE_VARIABLES
     [SerializeField] private ElementGenerator elementGeneratorActivePrefab;
-    [SerializeField] private ObstacleGenerator obstacleGenerator;
+    [SerializeField] private ObstacleFactory obstacleGenerator;
     #endregion
     
     #region PUBLIC_METHODS
-    public ObstacleGenerator ObstacleGenerator
+    public ObstacleFactory ObstacleGenerator
     {
         get { return obstacleGenerator; }
     }

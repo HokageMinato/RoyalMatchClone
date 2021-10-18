@@ -7,7 +7,7 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
     
     public void GenerateObstacles(GridDesignTemp levelData)
     {
-        ObstacleGenerator obstacleGenerator = Factory.instance.ObstacleGenerator;
+        ObstacleFactory obstacleGenerator = ElementGeneratorFactory.instance.ObstacleGenerator;
         int[,] gridDesign = levelData.gridDesignTemp;
         Grid grid = Grid.instance;
 
@@ -19,7 +19,7 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
                 if (blocker!=null)
                 {
                     activeBlockers.Add(blocker);
-                    blocker.Init(grid);
+                    blocker.Init(grid,j-1,i-1);
                 }
                 
             }
@@ -27,7 +27,6 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
         }
        
     }
-
 
     public void CheckForNeighbourHit(MatchExecutionData executionData) {
 
@@ -38,16 +37,18 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
         }
     }
 
-    public void UnblockObstacle(CellBlocker blocker) {
+    public void DiscardObstacle(CellBlocker blocker) {
         activeBlockers.Remove(blocker);
         Destroy(blocker.gameObject);
     }
 
 }
 
-public enum BlockLayer { 
+public enum GameLayer {
 
-    BOTTOM_LAYER = 5,
-    MIDDLE_LAYER = 6,
-    TOP_LAYER = 7
+    BASE_LAYER = 10,
+    BOTTOM_LAYER=11,
+    ELEMENT_LAYER=12,
+    MIDDLE_LAYER=13,
+    TOP_LAYER=14
 }

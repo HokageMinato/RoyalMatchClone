@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public static class GridConstants {
+
+    public const int NO_CELL = 0;
+}
+
+
 public class Grid : Singleton<Grid>
 {
 
@@ -92,14 +98,14 @@ public class Grid : Singleton<Grid>
 
             for (int j = 0; j < _levelData.gridWidth; j++)
             {
-                if (_levelData.gridDesignTemp[i, j] == 0)
+                if (_levelData.gridDesignTemp[i, j] == GridConstants.NO_CELL)
                     continue;
                  
                 CreateCellAt(j, i);
                 c++;
             }
 
-            if (_levelData.gridDesignTemp[0, i] != 0)
+            if (_levelData.gridDesignTemp[0, i] != GridConstants.NO_CELL)
                 _gridC[_gridC.Count - 1].transform.position = _grid[0, i].transform.position + Vector3.up * 0.5f;
 
         }
@@ -114,7 +120,7 @@ public class Grid : Singleton<Grid>
          {
             for (int j = 0; j < _levelData.gridHeight; j++)
             {
-                if (_levelData.gridDesignTemp[i, j] == 0)
+                if (_levelData.gridDesignTemp[i, j] == GridConstants.NO_CELL)
                     continue;
         
                 _gridC[j].AddCell(_grid[i,j]);
@@ -133,8 +139,6 @@ public class Grid : Singleton<Grid>
         cell.gameObject.name = $"({i},{j})";
         _grid[i, j] = cell;
         i++;
-    
-       
     }
     
 
@@ -142,7 +146,6 @@ public class Grid : Singleton<Grid>
 
     private void ToggleColoumnLock(bool toggleValue)
     {
-       // MatchExecutionData defaultData = MatchExecutionData.GetDefaultExecutionData();
         if(toggleValue)
             for (int i = 0; i < _gridC.Count; i++)
                 _gridC[i].LockColoumn(null);
@@ -209,7 +212,6 @@ public class Grid : Singleton<Grid>
     private IEnumerator WaitForGridAnimationRoutine(Action action=null)
     {
         yield return new WaitForSeconds(0.2f);
-        yield return null;
         action?.Invoke();
     }
     #endregion
@@ -217,8 +219,3 @@ public class Grid : Singleton<Grid>
 
 
 
-public enum GridState
-{
-    UNSET,
-    SET
-}

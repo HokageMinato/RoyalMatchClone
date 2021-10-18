@@ -51,6 +51,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     {
         this.hIndex = hIndex;
         this.wIndex = wIndex;
+        renderer.sortingOrder = (int)GameLayer.BASE_LAYER;
         executionData = MatchExecutionData.GetDefaultExecutionData();
     }
 

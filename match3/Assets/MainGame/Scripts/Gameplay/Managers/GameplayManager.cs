@@ -17,7 +17,7 @@ public class GameplayManager: Singleton<GameplayManager>
     {
         Grid.instance.GenerateGrid();
         GameplayObstacleHandler.instance.GenerateObstacles(levelData);
-        Factory.instance.GenerateElementHandlers();
+        ElementGeneratorFactory.instance.GenerateElementHandlers();
     }
 
 
@@ -42,22 +42,30 @@ public class GridDesignTemp
         GridDesignTemp levelData = new GridDesignTemp();
 
        levelData.gridDesignTemp = new[,]
-    {
-        {1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1},
-        {1,1,66,1,1,1,1,1,1},
-        {0,0,1,1,1,1,1,0,0},
-        {0,0,1,1,1,1,1,0,0},
-        {0,0,1,1,1,1,1,0,0},
-        {2,2,1,1,1,1,1,2,2},
-        {2,2,1,1,1,1,1,2,2},
-        {2,2,1,1,1,1,1,2,2}
-    };
+        {
+            {1,1,1,1,1,1,1,1,1},
+            {1,1,1,1,1,1,1,1,1},
+            {1,1,66,1,1,1,1,1,1},
+            {0,0,1,1,1,1,1,0,0},
+            {0,0,1,1,1,1,1,0,0},
+            {0,0,1,1,1,1,67,0,0},
+            {1,1,1,1,1,1,1,1,1},
+            {1,1,1,1,1,1,1,1,1},
+            {1,1,1,1,1,1,1,1,1}
+        };
+
+
+
+
     levelData.gridSpacing = 2.0f;
     levelData.maxWidthMidPointForThisPattern = 7;
     levelData.maxHeightMidPointForThisPattern = 7;
     levelData.gridHeight = 8;
     levelData. gridWidth = 8;
+
+
+
+
 
         return levelData;
 }

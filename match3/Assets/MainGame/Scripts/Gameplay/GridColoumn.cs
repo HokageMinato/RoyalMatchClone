@@ -23,11 +23,11 @@ public class GridColoumn : MonoBehaviour
     }
 
     public void CollapseColoumn(MatchExecutionData executionData)
-   {
+    {
          ShiftRemainingCellsToEmptySpaces(executionData);
          GenerateNewElementBuffer();
          SetNewlyGeneratedElementsToEmptyCells(executionData);
-   }
+    }
    public void AddCell(GridCell newCell)
    {
       gridCells.Add(newCell);
