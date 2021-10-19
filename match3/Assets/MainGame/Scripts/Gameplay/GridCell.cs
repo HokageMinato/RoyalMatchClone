@@ -37,7 +37,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     {
         get 
         {
-            return _blocker == null;
+            return _blocker != null && _blocker.DoesBlockCell();
         }
     }
 
@@ -115,22 +115,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     }
     #endregion
     
-    //#region PRIVATE_METHODS
-    //private bool IsHorizontalNeighbourOf(GridCell otherCell)
-    //{
-    //    int absoluteDifference = Mathf.Abs(otherCell.wIndex - wIndex);
-    //    bool isVerticalPositionSame = otherCell.hIndex == hIndex;
-    //    return absoluteDifference <= 1 && otherCell != this && isVerticalPositionSame;
-    //}
-
-    //private bool IsVerticalNeighbourOf(GridCell otherCell)
-    //{
-    //    int absoluteDifference                                             = Mathf.Abs(otherCell.hIndex - hIndex);
-    //    bool isHorizontalPositionSame = otherCell.wIndex == wIndex;
-    //    return absoluteDifference <= 1 && otherCell != this && isHorizontalPositionSame;
-    //}
-    //#endregion
-
+    
 
    
 }

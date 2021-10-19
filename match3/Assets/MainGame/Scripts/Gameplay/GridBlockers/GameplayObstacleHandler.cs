@@ -15,18 +15,21 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
         {
             for (int j = 0; j < levelData.gridWidth; j++) 
             {
-                CellBlocker blocker =  obstacleGenerator.GenerateBlocker(gridDesign[i, j]);
-                if (blocker!=null)
-                {
-                    activeBlockers.Add(blocker);
-                    blocker.Init(grid,j-1,i-1);
-                }
-                
-            }
+                int cellType = gridDesign[i, j];
 
+                if (obstacleGenerator.IsBlockerType(cellType)) {
+ 
+                    CellBlocker blocker = obstacleGenerator.GenerateBlocker(cellType);
+                    blocker.Init(grid, i, j);
+                    activeBlockers.Add(blocker);
+                }
+
+            }
         }
-       
+
     }
+       
+    
 
     public void CheckForNeighbourHit(MatchExecutionData executionData) {
 

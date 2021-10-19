@@ -19,14 +19,15 @@ public class ObstacleFactory : Singleton<ObstacleFactory>
     #endregion
 
 
-    
+
     #region PUBLIC_METHODS
+    public bool IsBlockerType(int cellType) {
+        return prefabLookUp.ContainsKey(cellType);
+    }
+
     public CellBlocker GenerateBlocker(int blockerType)
     {
-        if (prefabLookUp.ContainsKey(blockerType))
             return Instantiate(prefabLookUp[blockerType]);
-
-        return null;
     }
     #endregion
     
