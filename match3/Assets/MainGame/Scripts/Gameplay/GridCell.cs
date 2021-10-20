@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+
 
 public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 {
@@ -90,6 +91,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         return lastElement;
     }
 
+
     public void SetElement(Element newElement)
     {
         if (!IsEmpty)
@@ -100,6 +102,18 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         _element = newElement;
         _element.SetHolder(this);
     }
+
+
+    public void SetElementWithPath(Element newElement,List<GridCell> path) {
+        if (!IsEmpty)
+        {
+            Debug.LogWarning($"Override at cell {gameObject.name}");
+        }
+
+        _element = newElement;
+        _element.SetHolder(this);
+    }
+
 
     public void SetBlocker(CellBlocker blocker) {
 

@@ -29,23 +29,49 @@ public class Element : MonoBehaviour
       StartCoroutine(ShiftRoutine());
    }
 
-   private IEnumerator ShiftRoutine()
-   {
-       
-      float rate = 1f/SWIPE_ANIM_TIME;
-      float i = 0;
-      Vector3 sourcePosition = transform.localPosition;
-      Vector3 pseudoZero = new Vector3(0.001f, 0.001f,0.01f);
-      
-      while (i <= 1f)
-      {
-         i += rate * Time.deltaTime;
-         transform.localPosition = Vector3.Lerp(sourcePosition, pseudoZero, i);
-         yield return null;
+    public void SetHolderWithPath(List<GridCell> travelPath) {
+        transform.SetParent(travelPath[travelPath.Count - 1].transform);
+
+    }
+
+    private IEnumerator ShiftRoutine()
+    {
+
+        float rate = 1f / SWIPE_ANIM_TIME;
+        float i = 0;
+        Vector3 sourcePosition = transform.localPosition;
+        Vector3 pseudoZero = new Vector3(0.001f, 0.001f, 0.01f);
+
+        while (i <= 1f)
+        {
+            i += rate * Time.deltaTime;
+            transform.localPosition = Vector3.Lerp(sourcePosition, pseudoZero, i);
+            yield return null;
+        }
+    }
+    private IEnumerator PathRoutine(List<GridCell> path)
+    {
+            float rate = 1f / SWIPE_ANIM_TIME;
+            float i = 0;
+            Vector3 sourcePosition = transform.localPosition;
+            Vector3 pseudoZero = new Vector3(0.001f, 0.001f, 0.01f);
+
+        while (path.Count > 0)
+        {
+            int lastIndex = path.Count - 1;
+            pseudoZero = transform.InverseTransformPoint(path[lastIndex].transform.position);
+            while (i <= 1f)
+            {
+                i += rate * Time.deltaTime;
+                transform.localPosition = Vector3.Lerp(sourcePosition, pseudoZero, i);
+                yield return null;
+            }
+            path.RemoveAt(lastIndex);
+        }
+
       }
+
    
-   
-   }
    [ContextMenu("Test")]
    public void Move()
    {

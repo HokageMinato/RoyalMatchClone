@@ -23,7 +23,20 @@ public class ElementGeneratorFactory : Singleton<ElementGeneratorFactory>
         for (int j = 0; j < levelData.gridWidth; j++)
         {
             ElementGenerator generator = Instantiate(elementGeneratorActivePrefab);
-            _grid[j].Init(generator);
+            int colToMyLeftIdx = j - 1;
+            int colToMyRighttIdx = j + 1;
+
+            GridColoumn leftColoumn=null, rightColoumn=null;
+            
+
+            if (colToMyLeftIdx > -1)
+                leftColoumn = _grid[colToMyLeftIdx];
+
+            if (colToMyRighttIdx < _grid.GridWidth)
+                rightColoumn = _grid[colToMyRighttIdx];
+            
+
+            _grid[j].Init(generator,leftColoumn,rightColoumn);
         }
     }
     #endregion

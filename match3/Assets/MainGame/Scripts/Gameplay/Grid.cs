@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class GridConstants {
-
     public const int NO_CELL = 0;
 }
 
@@ -175,9 +174,7 @@ public class Grid : Singleton<Grid>
         for (int i = 0; i < cells.Count; i++)
         {
             _gridC[cells[i].WIndex].LockColoumn(executionData);
-            
         }
-        
     }
 
     public void UnlockCells(MatchExecutionData matchExecutionData)

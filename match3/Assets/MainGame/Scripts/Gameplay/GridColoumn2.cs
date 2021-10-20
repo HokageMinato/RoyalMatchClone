@@ -1,37 +1,19 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class GridColoumn : MonoBehaviour
+public class GridColoumn2 : MonoBehaviour
 {
     #region PRIVATE_VARIABLES
     private ElementGenerator elementGenerator;
     private List<GridCell> gridCells = new List<GridCell>();
     private List<Element> _generatedElementList = new List<Element>();
     private int cellIndex = 0;
-   [SerializeField] private GridColoumn _coloumnToMyLeft;
-    [SerializeField]private GridColoumn _coloumnToMyRight;
-    #endregion
-
-    #region PUBLIC_PROPERTIES
-    public bool IsColoumnBlockedByObstacle
-    {
-        get {
-
-          for (int i = 0; i < gridCells.Count; i++) {
-                if (gridCells[i].IsBlocked)
-                    return true;
-          }
-          return false;
-        }
-    }
     #endregion
 
     #region PUBLIC_METHODS
-    public void Init(ElementGenerator elementGenerat,GridColoumn leftColoumn,GridColoumn rightColoumn)
+    public void Init(ElementGenerator elementGenerat)
     {
         elementGenerator = elementGenerat;
-        _coloumnToMyLeft = leftColoumn;
-        _coloumnToMyRight = rightColoumn;
         elementGenerator.transform.SetParent(transform);
         elementGenerator.transform.localPosition = Vector3.up * 1.5f;
         cellIndex = GetMaxReachableCellInColoumn() - 1;
