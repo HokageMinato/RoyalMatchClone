@@ -29,8 +29,7 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
 
     }
        
-    
-
+  
     public void CheckForNeighbourHit(MatchExecutionData executionData) {
 
         List<GridCell> matchedCell = executionData.patternCells;
@@ -44,6 +43,8 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
         activeBlockers.Remove(blocker);
         Destroy(blocker.gameObject);
     }
+
+
 
 }
 

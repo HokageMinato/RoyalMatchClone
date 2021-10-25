@@ -105,8 +105,10 @@ public class Grid : Singleton<Grid>
             }
 
             if (_levelData.gridDesignTemp[0, i] != GridConstants.NO_CELL)
-                _gridC[_gridC.Count - 1].transform.position = _grid[0, i].transform.position + Vector3.up * 0.5f;
-
+            {
+                _gridC[_gridC.Count - 1].gameObject.name ="col"+( _gridC.Count - 1).ToString();
+                _gridC[_gridC.Count - 1].transform.position = _grid[0, i].transform.position + Vector3.up * _levelData.gridSpacing;
+            }
         }
 
     }

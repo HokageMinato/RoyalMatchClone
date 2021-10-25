@@ -80,13 +80,13 @@ public class GridColoumn2 : MonoBehaviour
 
             if (cell.IsEmpty)
             {
-                Element element = elementGenerator.GetRandomElement(cell);
-                Transform elementTransform = element.transform;
-                Vector3 initialPosition = elementTransform.InverseTransformPoint(transform.position);
-                initialPosition.y += i;
-                elementTransform.localPosition = initialPosition;
+                //Element element = elementGenerator.GetRandomElement(cell);
+                //Transform elementTransform = element.transform;
+                //Vector3 initialPosition = elementTransform.InverseTransformPoint(transform.position);
+                //initialPosition.y += i;
+                //elementTransform.localPosition = initialPosition;
 
-                _generatedElementList.Add(element);
+                //_generatedElementList.Add(element);
             }
         }
     }

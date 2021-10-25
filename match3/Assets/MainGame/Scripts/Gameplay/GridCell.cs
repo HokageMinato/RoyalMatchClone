@@ -38,7 +38,10 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     {
         get 
         {
-            return _blocker != null && _blocker.DoesBlockCell();
+            if (_blocker == null)
+                return false;
+
+            return _blocker.DoesBlockCell();
         }
     }
 

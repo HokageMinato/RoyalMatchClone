@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Element : MonoBehaviour
 {
     public SpriteRenderer spriteRenderer;
-    public const float SWIPE_ANIM_TIME = 0.2f;
+    public const float SWIPE_ANIM_TIME = 0.5f;
 
     public GameLayer renderLayer;
     public ElementType elementType;

@@ -9,9 +9,9 @@ public class ElementGenerator : MonoBehaviour
     #endregion
 
     #region PUBLIC_METHODS
-    public Element GetRandomElement(GridCell parentCell)
+    public Element GetRandomElement()
     {
-       return  Instantiate(elementPrefab[Random.Range(0, elementPrefab.Length)], parentCell.transform);
+       return  Instantiate(elementPrefab[Random.Range(0, elementPrefab.Length)]);
     }
     #endregion
     

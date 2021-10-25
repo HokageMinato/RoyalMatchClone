@@ -113,7 +113,8 @@ public class Matcher : Singleton<Matcher>
       
 
         Grid grid = Grid.instance;
-        while (executionData.HasMatches)
+        //while (executionData.HasMatches)
+        if(executionData.HasMatches)
         {
             DestroyMatchedItems(executionData);
             grid.CollapseColoumns(executionData);

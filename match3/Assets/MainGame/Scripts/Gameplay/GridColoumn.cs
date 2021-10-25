@@ -8,20 +8,22 @@ public class GridColoumn : MonoBehaviour
     private List<GridCell> gridCells = new List<GridCell>();
     private List<Element> _generatedElementList = new List<Element>();
     private int cellIndex = 0;
-   [SerializeField] private GridColoumn _coloumnToMyLeft;
-    [SerializeField]private GridColoumn _coloumnToMyRight;
+    private GridColoumn _coloumnToMyLeft;
+    private GridColoumn _coloumnToMyRight;
+
+    public int ColoumnLength
+    {
+        get {
+            return gridCells.Count;
+        }
+    }
     #endregion
 
     #region PUBLIC_PROPERTIES
-    public bool IsColoumnBlockedByObstacle
+    public GridCell this[int index]
     {
         get {
-
-          for (int i = 0; i < gridCells.Count; i++) {
-                if (gridCells[i].IsBlocked)
-                    return true;
-          }
-          return false;
+            return gridCells[index];
         }
     }
     #endregion
@@ -33,7 +35,7 @@ public class GridColoumn : MonoBehaviour
         _coloumnToMyLeft = leftColoumn;
         _coloumnToMyRight = rightColoumn;
         elementGenerator.transform.SetParent(transform);
-        elementGenerator.transform.localPosition = Vector3.up * 1.5f;
+        elementGenerator.transform.localPosition = Vector3.zero;
         cellIndex = GetMaxReachableCellInColoumn() - 1;
         GenerateNewElementBuffer();
         SetNewlyGeneratedElementsToEmptyCells(null);
@@ -42,8 +44,8 @@ public class GridColoumn : MonoBehaviour
     public void CollapseColoumn(MatchExecutionData executionData)
     {
         ShiftRemainingCellsToEmptySpaces(executionData);
-        GenerateNewElementBuffer();
-        SetNewlyGeneratedElementsToEmptyCells(executionData);
+      //  GenerateNewElementBuffer();
+       // SetNewlyGeneratedElementsToEmptyCells(executionData);
     }
     public void AddCell(GridCell newCell)
     {
@@ -75,10 +77,21 @@ public class GridColoumn : MonoBehaviour
     #region PRIVATE_VARIABLES
     private void ShiftRemainingCellsToEmptySpaces(MatchExecutionData executionData)
     {
+        //shift only downwards
         int max = GetMaxReachableCellInColoumn() - 1;
+        
+
+
         cellIndex = max;
         for (int i = max; i >= 0; i--)
         {
+
+            if (IsAdjacentCellAvailable(i, _coloumnToMyLeft)) {
+                Debug.Log($"Adjacent cell available at my left{_coloumnToMyLeft.gameObject.name} and im{gameObject.name}");
+            }
+
+
+
             Element element = gridCells[i].GetElement();
             if (element != null)
             {
@@ -86,23 +99,78 @@ public class GridColoumn : MonoBehaviour
                 cellIndex--;
             }
         }
+
+
     }
 
+    private bool IsAdjacentCellAvailable(int currentIndex,GridColoumn otherColoumn) {
+
+        if (otherColoumn == null)
+            return false;
+
+        if (!otherColoumn.IsBlockedByObstacle())
+            return false;
+
+        int adjacentIndex = currentIndex + 1;
+        if (adjacentIndex >= otherColoumn.ColoumnLength)
+            return false;
+
+        GridCell adjacentCell = otherColoumn[adjacentIndex];
+
+        if (adjacentCell.IsBlocked || !adjacentCell.IsEmpty)
+            return false;
+
+        return true;
+    }
+
+
+    private int ExtraCellsRequired()
+    {
+        int cellsRequired = 0;
+        bool hasBlockades = false;
+        for (int i = 0; i < gridCells.Count; i++)
+        {
+            if (gridCells[i].IsBlocked && !hasBlockades)
+            {
+                hasBlockades = true;
+            }
+
+            if (hasBlockades)
+            {
+                cellsRequired++;
+            }
+        }
+
+        return cellsRequired;
+    }
+
+
+    private bool IsBlockedByObstacle() {
+
+        for (int i = 0; i < gridCells.Count; i++)
+        {
+            if (gridCells[i].IsBlocked)
+                return true;
+        }
+        return false;
+    }
+    //-----------------------
     private void GenerateNewElementBuffer()
     {
         _generatedElementList.Clear();
         int max = GetMaxReachableCellInColoumn();
+        Vector3 initialPosition;
         for (int i = 0; i < max; i++)
         {
             GridCell cell = gridCells[i];
 
             if (cell.IsEmpty)
             {
-                Element element = elementGenerator.GetRandomElement(cell);
-                Transform elementTransform = element.transform;
-                Vector3 initialPosition = elementTransform.InverseTransformPoint(transform.position);
+                Element element = elementGenerator.GetRandomElement();
+                element.transform.SetParent(Grid.instance.transform);
+                initialPosition = elementGenerator.transform.position;
                 initialPosition.y += i;
-                elementTransform.localPosition = initialPosition;
+                element.transform.position = initialPosition;
 
                 _generatedElementList.Add(element);
             }
@@ -122,7 +190,6 @@ public class GridColoumn : MonoBehaviour
         }
 
     }
-
 
     private int GetMaxReachableCellInColoumn()
     {

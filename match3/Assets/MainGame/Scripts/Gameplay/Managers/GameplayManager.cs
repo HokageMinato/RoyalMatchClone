@@ -29,11 +29,11 @@ public class GridDesignTemp
 {
 
     public int[,] gridDesignTemp;
-    public float gridSpacing = 2.0f;
-    public float maxWidthMidPointForThisPattern = 7;
-    public float maxHeightMidPointForThisPattern = 7;
-    public int gridHeight = 8;
-    public int gridWidth = 8;
+    public float gridSpacing;
+    public float maxWidthMidPointForThisPattern;
+    public float maxHeightMidPointForThisPattern;
+    public int gridHeight;
+    public int gridWidth;
 
 
 
@@ -57,11 +57,11 @@ public class GridDesignTemp
 
 
 
-    levelData.gridSpacing = 2.0f;
-    levelData.maxWidthMidPointForThisPattern = 7;
-    levelData.maxHeightMidPointForThisPattern = 7;
+    levelData.gridSpacing = .9f;
+    levelData.maxWidthMidPointForThisPattern = 3.4f;
+    levelData.maxHeightMidPointForThisPattern = 3.4f;
     levelData.gridHeight = 8;
-    levelData. gridWidth = 8;
+    levelData.gridWidth = 8;
 
 
 
