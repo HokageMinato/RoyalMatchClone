@@ -4,14 +4,21 @@ using UnityEngine;
 public class BoxCellBlocker : CellBlocker
 {
     #region PUBLIC_VARIABLES
-    public int requiredHitCount;
+    public int RequiredHitCount {
+        get {
+            return spriteLayers.Length - 1;
+        }
+    }
     public SpriteRenderer spriteRenderer;
     public Sprite[] spriteLayers;
+    public int hitCount=0;
     #endregion
 
     #region PUBLIC_REFERENCES
     GridCell targetCell;
     #endregion
+
+
 
     #region PUBLIC_METHODS
     
@@ -30,10 +37,11 @@ public class BoxCellBlocker : CellBlocker
         for (int i = 0; i < matchedCells.Count; i++)
         {
             GridCell matchedCell = matchedCells[i];
-           
-            if(grid.AreNeighbours(matchedCell,targetCell))
-                requiredHitCount --;
-                if (requiredHitCount >= 0)
+
+            if (grid.AreNeighbours(matchedCell, targetCell))
+                hitCount++;
+
+                if (hitCount < RequiredHitCount)
                 {
                     UpdateView();
                 }
@@ -56,6 +64,6 @@ public class BoxCellBlocker : CellBlocker
     private void UpdateView()
     {
         spriteRenderer.sortingOrder = (int)blockLayer;
-        spriteRenderer.sprite = spriteLayers[requiredHitCount];
+        spriteRenderer.sprite = spriteLayers[RequiredHitCount-hitCount];
     }
 }

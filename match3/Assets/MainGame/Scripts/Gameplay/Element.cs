@@ -26,17 +26,18 @@ public class Element : MonoBehaviour
    public void SetHolder(GridCell newHolder)
    {
       transform.SetParent(newHolder.transform);
-      StartCoroutine(ShiftRoutine());
+      StartCoroutine(ShiftRoutine(newHolder.executionData));
    }
 
-    public void SetHolderWithPath(List<GridCell> travelPath) {
-        transform.SetParent(travelPath[travelPath.Count - 1].transform);
-
+    public void SetHolderWithPath(GridCell newHolder,List<GridCell> travelPath) {
+        transform.SetParent(newHolder.transform);
+        StartCoroutine(PathRoutine(newHolder.executionData,travelPath));
     }
 
-    private IEnumerator ShiftRoutine()
+    private IEnumerator ShiftRoutine(MatchExecutionData executionData)
     {
-
+        Debug.Log($"edata null {executionData == null}");
+        executionData.movingElements.Add(this);
         float rate = 1f / SWIPE_ANIM_TIME;
         float i = 0;
         Vector3 sourcePosition = transform.localPosition;
@@ -48,13 +49,16 @@ public class Element : MonoBehaviour
             transform.localPosition = Vector3.Lerp(sourcePosition, pseudoZero, i);
             yield return null;
         }
+       executionData.movingElements.Remove(this);
     }
-    private IEnumerator PathRoutine(List<GridCell> path)
+    private IEnumerator PathRoutine(MatchExecutionData executionData,List<GridCell> path)
     {
-            float rate = 1f / SWIPE_ANIM_TIME;
-            float i = 0;
-            Vector3 sourcePosition = transform.localPosition;
-            Vector3 pseudoZero = new Vector3(0.001f, 0.001f, 0.01f);
+
+       executionData.movingElements.Add(this);
+        float rate = 1f / SWIPE_ANIM_TIME;
+        float i = 0;
+        Vector3 sourcePosition = transform.localPosition;
+        Vector3 pseudoZero = new Vector3(0.001f, 0.001f, 0.01f);
 
         while (path.Count > 0)
         {
@@ -68,16 +72,11 @@ public class Element : MonoBehaviour
             }
             path.RemoveAt(lastIndex);
         }
-
+        executionData.movingElements.Remove(this);
       }
 
    
-   [ContextMenu("Test")]
-   public void Move()
-   {
-      StartCoroutine(ShiftRoutine());
-   }
-   
+  
 
    public enum ElementType
    {

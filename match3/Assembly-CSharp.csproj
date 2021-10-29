@@ -79,10 +79,10 @@
     <Compile Include="Assets\MainGame\Scripts\Gameplay\InputManager.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\Managers\ElementGeneratorFactory.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\Managers\GameplayManager.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Matcher.cs" />
     <Compile Include="Assets\MainGame\Scripts\Scriptable\CellLayer.cs" />
     <Compile Include="Assets\MainGame\Scripts\Scriptable\MatchPattern.cs" />
     <Compile Include="Assets\MainGame\Scripts\Utilities\MinatoUtils.cs" />
-    <Compile Include="Assets\Matcher.cs" />
     <Compile Include="Assets\NativePooler.cs" />
     <Reference Include="UnityEngine">
       <HintPath>D:/Installs/UnityInstalls/2019.4.11f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

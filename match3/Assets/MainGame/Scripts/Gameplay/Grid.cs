@@ -161,7 +161,7 @@ public class Grid : Singleton<Grid>
 
     public void CollapseColoumns(MatchExecutionData executionData)
     {
-        for (int l = 0; l < _gridC.Count; l++)
+        for (int l = _gridC.Count-1; l >=0; l--)
         {
             _gridC[l].CollapseColoumn(executionData);
         }

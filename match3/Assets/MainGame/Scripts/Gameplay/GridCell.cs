@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -30,7 +31,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     {
         get
         {
-            return _element == null;
+            return _element == null ;
         }
     }
 
@@ -72,11 +73,6 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     }
     
 
-    //public bool IsNeighbourOf(GridCell otherCell)
-    //{
-    //    return IsHorizontalNeighbourOf(otherCell) || IsVerticalNeighbourOf(otherCell);
-    //}
-
     public void ToggleInputInteractibility(bool isActive)
     {
         inputCollider.enabled = isActive;
@@ -101,11 +97,12 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         {
             Debug.LogWarning($"Override at cell {gameObject.name}");
         }
-
+       
+        newElement.SetHolder(this);
         _element = newElement;
-        _element.SetHolder(this);
     }
 
+    
 
     public void SetElementWithPath(Element newElement,List<GridCell> path) {
         if (!IsEmpty)
@@ -114,7 +111,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         }
 
         _element = newElement;
-        _element.SetHolder(this);
+        _element.SetHolderWithPath(this,path);
     }
 
 

@@ -8,7 +8,6 @@ public class InputManager : Singleton<InputManager>
 {
     [SerializeField] private GridCell _firstCell;
     [SerializeField] private GridCell _secondCell;
-    private bool _inputValid = false;
     private int swipeNumber = 0;
 
     public void SetFirstCell(GridCell firstCell)
@@ -17,33 +16,31 @@ public class InputManager : Singleton<InputManager>
             return;
         
         _firstCell = firstCell;
-        ValidateInputsForSwipe();
     }
 
    
 
     public void SetSecondCell(GridCell secondCell)
     {
-        if (!_inputValid)
+
+        if (_firstCell== null)
+            return;
+
+        if (_firstCell.Equals(secondCell))
             return;
 
         if (secondCell.IsEmpty)
         {
-            _inputValid = true;
             _firstCell = null;
             _secondCell = null;
+            return;
         }
 
-        InvalidateNextInputsTillFingerLift();
         _secondCell = secondCell;
         ValidateMove();
     }
 
-    private void InvalidateNextInputsTillFingerLift()
-    {
-        _inputValid = false;
-    }
-
+   
     private void ValidateMove()           
     {
         if (IsFirstCellAssigned())
@@ -72,6 +69,7 @@ public class InputManager : Singleton<InputManager>
         Element firstElement = matchExecutionData.firstCell.GetElement();
         Element secondElement = matchExecutionData.secondCell.GetElement();
 
+       
         matchExecutionData.firstCell.SetElement(secondElement);
         matchExecutionData.secondCell.SetElement(firstElement);
     }
@@ -83,10 +81,5 @@ public class InputManager : Singleton<InputManager>
         return _firstCell != null;
     }
 
-    private void ValidateInputsForSwipe()
-    {
-        _inputValid = true;
-    }
-    
-    
+  
 }

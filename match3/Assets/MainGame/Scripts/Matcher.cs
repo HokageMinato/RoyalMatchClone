@@ -12,13 +12,12 @@ public class MatchExecutionData
     #endregion
 
     #region PUBLIC_VARIABLES
-
     public GridCell firstCell;
     public GridCell secondCell;
     public List<List<Element>> matchedElements;
     public List<GridCell> patternCells;
     public int swipeId;
-
+    public HashSet<Element> movingElements;
     #endregion
 
     #region PUBLIC_PROPERTIES
@@ -70,6 +69,7 @@ public class MatchExecutionData
         swipeId = swipeNumber;
         firstCell = fCell;
         secondCell = sCell;
+        movingElements = new HashSet<Element>();
     }
 
     #endregion
@@ -95,8 +95,6 @@ public class Matcher : Singleton<Matcher>
 
     #region PRIVATE_VARIABLES
 
-
-   
     private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData)
     {
         activeThreads.Add(executionData);
@@ -113,7 +111,7 @@ public class Matcher : Singleton<Matcher>
       
 
         Grid grid = Grid.instance;
-        //while (executionData.HasMatches)
+       // while (executionData.HasMatches)
         if(executionData.HasMatches)
         {
             DestroyMatchedItems(executionData);
@@ -134,8 +132,11 @@ public class Matcher : Singleton<Matcher>
 
     private IEnumerator WaitForGridAnimationRoutine(MatchExecutionData executionData, Action action = null)
     {
-        yield return new WaitForSeconds(Element.SWIPE_ANIM_TIME);
-       
+        while (executionData.movingElements.Count > 0)
+        {
+            yield return new WaitForSeconds(.64f);
+        }
+
         action?.Invoke();
     }
 
@@ -219,11 +220,12 @@ public class Matcher : Singleton<Matcher>
             Element element = patternCells[k].GetElement();
             sameElementList.Add(element);
         }
-
-        grid.LockDirtyColoumns(matchExecutionData);
+      
+        Grid.instance.LockDirtyColoumns(matchExecutionData);
         matchExecutionData.matchedElements.Add(sameElementList);
         patternCells.Clear();
     }
+
 
     private bool IsExtractionValid(MatchExecutionData executionData)
     {
@@ -250,7 +252,7 @@ public class Matcher : Singleton<Matcher>
         return true;
     }
 
-    private void ExtractPatternCells(GridCell startingCell, MatchPattern matchPattern, int i, int j,
+    private void ExtractPatternCells(GridCell startingCell, MatchPattern currentPattern, int i, int j,
         MatchExecutionData matchExecutionData)
     {
         List<GridCell> patternCells = matchExecutionData.patternCells;
@@ -258,9 +260,9 @@ public class Matcher : Singleton<Matcher>
 
         //  Debug.Log($"<Matcher> Checking {matchPattern.patternName} at cell {startingCell.gameObject.name}");
 
-        for (int k = 0; k < matchPattern.Length; k++) //Generate a list of cell from patterm
+        for (int k = 0; k < currentPattern.Length; k++) //Generate a list of cell from patterm
         {
-            IndexPair offsetIndexPair = matchPattern[k];
+            IndexPair offsetIndexPair = currentPattern[k];
             int iPaired = i + offsetIndexPair.I_Offset;
             int jPaired = j + offsetIndexPair.J_Offset;
 

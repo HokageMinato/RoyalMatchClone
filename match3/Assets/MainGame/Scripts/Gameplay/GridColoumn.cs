@@ -38,14 +38,15 @@ public class GridColoumn : MonoBehaviour
         elementGenerator.transform.localPosition = Vector3.zero;
         cellIndex = GetMaxReachableCellInColoumn() - 1;
         GenerateNewElementBuffer();
-        SetNewlyGeneratedElementsToEmptyCells(null);
+        SetNewlyGeneratedElementsToEmptyCells(MatchExecutionData.GetDefaultExecutionData());
     }
 
     public void CollapseColoumn(MatchExecutionData executionData)
     {
+      
         ShiftRemainingCellsToEmptySpaces(executionData);
-      //  GenerateNewElementBuffer();
-       // SetNewlyGeneratedElementsToEmptyCells(executionData);
+        // GenerateNewElementBuffer();
+        // SetNewlyGeneratedElementsToEmptyCells(executionData);
     }
     public void AddCell(GridCell newCell)
     {
@@ -66,8 +67,9 @@ public class GridColoumn : MonoBehaviour
     {
         for (int i = 0; i < gridCells.Count; i++)
         {
+            Debug.Log("Unlocking");
             gridCells[i].ToggleInputInteractibility(true);
-            gridCells[i].ClearExecutionData();
+            gridCells[i].SetExecutionData(null);
             gridCells[i].renderer.color = Color.gray;
         }
     }
@@ -75,73 +77,73 @@ public class GridColoumn : MonoBehaviour
     #endregion
 
     #region PRIVATE_VARIABLES
+   
+
     private void ShiftRemainingCellsToEmptySpaces(MatchExecutionData executionData)
     {
-        //shift only downwards
-        int max = GetMaxReachableCellInColoumn() - 1;
+          int max = GetMaxReachableCellInColoumn() - 1;
+            cellIndex = max;
+            for (int i = max; i >= 0; i--)
+            {
+                Element element = gridCells[i].GetElement();
+                if (element != null)
+                {
+                    gridCells[cellIndex].SetExecutionData(executionData);
+                    gridCells[cellIndex].SetElement(element);
+                    cellIndex--;
+                }
+            }
+    }
+
+    public int idxT;
+    [ContextMenu("Testt")]
+    public void Test() {
+        GridCell[] cp = CreateCellPairList(idxT);
+        for (int i = 0; i < cp.Length; i++)
+        {
+            if(cp[i]!=null)
+            cp[i].renderer.color = Color.green;
+        }
+
         
-
-
-        cellIndex = max;
-        for (int i = max; i >= 0; i--)
-        {
-
-            if (IsAdjacentCellAvailable(i, _coloumnToMyLeft)) {
-                Debug.Log($"Adjacent cell available at my left{_coloumnToMyLeft.gameObject.name} and im{gameObject.name}");
-            }
-
-
-
-            Element element = gridCells[i].GetElement();
-            if (element != null)
-            {
-                gridCells[cellIndex].SetElement(element);
-                cellIndex--;
-            }
-        }
-
-
     }
 
-    private bool IsAdjacentCellAvailable(int currentIndex,GridColoumn otherColoumn) {
+    private GridCell[] CreateCellPairList(int index) {
+        const int leftIndex = 1;
+        const int rightIndex = 2;
+        const int middleIndex = 0;
 
-        if (otherColoumn == null)
-            return false;
+        GridCell[] cellPair = new GridCell[3];
 
-        if (!otherColoumn.IsBlockedByObstacle())
-            return false;
+        cellPair[middleIndex] = SearchForEmptyCellFromBottomTill(index);
 
-        int adjacentIndex = currentIndex + 1;
-        if (adjacentIndex >= otherColoumn.ColoumnLength)
-            return false;
+        
+        if (_coloumnToMyLeft != null)
+            cellPair[leftIndex] = _coloumnToMyLeft.SearchForEmptyCellFromBottomTill(index);
 
-        GridCell adjacentCell = otherColoumn[adjacentIndex];
-
-        if (adjacentCell.IsBlocked || !adjacentCell.IsEmpty)
-            return false;
-
-        return true;
+        if (_coloumnToMyRight != null)
+            cellPair[rightIndex] = _coloumnToMyRight.SearchForEmptyCellFromBottomTill(index);
+    
+        return cellPair;
     }
 
 
-    private int ExtraCellsRequired()
-    {
-        int cellsRequired = 0;
-        bool hasBlockades = false;
-        for (int i = 0; i < gridCells.Count; i++)
-        {
-            if (gridCells[i].IsBlocked && !hasBlockades)
-            {
-                hasBlockades = true;
-            }
+    
 
-            if (hasBlockades)
-            {
-                cellsRequired++;
-            }
+
+
+    public GridCell SearchForEmptyCellFromBottomTill(int currentIdx) {
+
+        Debug.Log($"Searching from {ColoumnLength-1} to {currentIdx}");
+
+        for (int i = ColoumnLength-1; i > currentIdx; i--)
+        {
+            if (this[i].IsEmpty && !this[i].IsBlocked)
+                return this[i];
+
         }
 
-        return cellsRequired;
+        return null;
     }
 
 
@@ -154,6 +156,8 @@ public class GridColoumn : MonoBehaviour
         }
         return false;
     }
+
+    
     //-----------------------
     private void GenerateNewElementBuffer()
     {
@@ -208,3 +212,5 @@ public class GridColoumn : MonoBehaviour
 
 
 }
+
+
