@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3306471474140310277}
   - component: {fileID: 3649137515392342350}
   - component: {fileID: 3620018301269111305}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GridCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,6 +48,7 @@ MonoBehaviour:
   hIndex: 0
   wIndex: 0
   inputCollider: {fileID: 3620018301269111305}
+  renderLayer: 0
   renderer: {fileID: 3649137515392342350}
 --- !u!212 &3649137515392342350
 SpriteRenderer:

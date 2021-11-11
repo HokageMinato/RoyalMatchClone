@@ -35,6 +35,8 @@ public class Grid : Singleton<Grid>
     public int GridWidth
     { get { return _levelData.gridWidth; } }
 
+    
+    
     #endregion
    
     #region PRIVATE_VARIABLES
@@ -95,7 +97,7 @@ public class Grid : Singleton<Grid>
 
         for (int i = 0; i < _levelData.gridHeight; i++)
         {
-            _gridC.Add(Instantiate(GridColoumnPrefab));
+            _gridC.Add(Instantiate(GridColoumnPrefab,GetLayerTransformParent(ElementConfig.renderLayer)));
 
             for (int j = 0; j < _levelData.gridWidth; j++)
             {
