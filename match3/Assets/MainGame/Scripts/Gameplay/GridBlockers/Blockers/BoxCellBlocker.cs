@@ -12,6 +12,7 @@ public class BoxCellBlocker : CellBlocker
     public SpriteRenderer spriteRenderer;
     public Sprite[] spriteLayers;
     public int hitCount=0;
+    public bool immune;
     #endregion
 
     #region PUBLIC_REFERENCES
@@ -33,6 +34,8 @@ public class BoxCellBlocker : CellBlocker
     
     public override void Hit(List<GridCell> matchedCells)
     {
+        if (immune)
+            return;
 
         for (int i = 0; i < matchedCells.Count; i++)
         {
@@ -63,7 +66,7 @@ public class BoxCellBlocker : CellBlocker
 
     private void UpdateView()
     {
-        spriteRenderer.sortingOrder = (int)blockLayer;
+        UpdateRenderLayer();
         spriteRenderer.sprite = spriteLayers[RequiredHitCount-hitCount];
     }
 }

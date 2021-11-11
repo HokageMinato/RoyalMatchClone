@@ -7,7 +7,7 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
     
     public void GenerateObstacles(GridDesignTemp levelData)
     {
-        ObstacleFactory obstacleGenerator = ElementGeneratorFactory.instance.ObstacleGenerator;
+        ObstacleFactory obstacleGenerator = ObstacleFactory.instance;
         int[,] gridDesign = levelData.gridDesignTemp;
         Grid grid = Grid.instance;
 
@@ -17,9 +17,10 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
             {
                 int cellType = gridDesign[i, j];
 
-                if (obstacleGenerator.IsBlockerType(cellType)) {
- 
-                    CellBlocker blocker = obstacleGenerator.GenerateBlocker(cellType);
+                //if (obstacleGenerator.IsBlockerType(cellType)) {
+                if((UnityEngine.Random.Range(0,100)) % 6 == 0 && cellType!=0){ 
+                     //CellBlocker blocker = obstacleGenerator.GenerateBlocker(cellType);
+                    CellBlocker blocker = obstacleGenerator.GenerateBlocker(66);
                     blocker.Init(grid, i, j);
                     activeBlockers.Add(blocker);
                 }
@@ -48,11 +49,12 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
 
 }
 
-public enum GameLayer {
+public enum RenderLayer {
 
-    BASE_LAYER = 10,
-    BOTTOM_LAYER=11,
-    ELEMENT_LAYER=12,
-    MIDDLE_LAYER=13,
-    TOP_LAYER=14
+    GridLayer,
+    ElementUnderlayBlockerLayer,
+    ElementLayer,
+    ElementBlockerLayer,
+    OverlayBlockerLayer
+
 }

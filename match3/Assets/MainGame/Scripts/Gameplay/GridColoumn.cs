@@ -4,17 +4,16 @@ using UnityEngine;
 public class GridColoumn : MonoBehaviour
 {
     #region PRIVATE_VARIABLES
-    private ElementGenerator elementGenerator;
-    private List<GridCell> gridCells = new List<GridCell>();
+    private ElementFactory _elementFactory;
+    private List<GridCell> _gridCells = new List<GridCell>();
     private List<Element> _generatedElementList = new List<Element>();
-    private int cellIndex = 0;
     private GridColoumn _coloumnToMyLeft;
     private GridColoumn _coloumnToMyRight;
 
     public int ColoumnLength
     {
         get {
-            return gridCells.Count;
+            return _gridCells.Count;
         }
     }
     #endregion
@@ -23,22 +22,20 @@ public class GridColoumn : MonoBehaviour
     public GridCell this[int index]
     {
         get {
-            return gridCells[index];
+            return _gridCells[index];
         }
     }
     #endregion
 
     #region PUBLIC_METHODS
-    public void Init(ElementGenerator elementGenerat,GridColoumn leftColoumn,GridColoumn rightColoumn)
+    public void Init(ElementFactory elementFactory,GridColoumn leftColoumn,GridColoumn rightColoumn)
     {
-        elementGenerator = elementGenerat;
+        _elementFactory = elementFactory;
         _coloumnToMyLeft = leftColoumn;
         _coloumnToMyRight = rightColoumn;
-        elementGenerator.transform.SetParent(transform);
-        elementGenerator.transform.localPosition = Vector3.zero;
-        cellIndex = GetMaxReachableCellInColoumn() - 1;
-        GenerateNewElementBuffer();
-        SetNewlyGeneratedElementsToEmptyCells(MatchExecutionData.GetDefaultExecutionData());
+        _elementFactory.transform.SetParent(transform);
+        _elementFactory.transform.localPosition = Vector3.zero;
+        GenerateElements();
     }
 
     public void CollapseColoumn(MatchExecutionData executionData)
@@ -50,60 +47,126 @@ public class GridColoumn : MonoBehaviour
     }
     public void AddCell(GridCell newCell)
     {
-        gridCells.Add(newCell);
+        _gridCells.Add(newCell);
     }
 
     public void LockColoumn(MatchExecutionData executionData)
     {
-        for (int i = 0; i < gridCells.Count; i++)
+        for (int i = 0; i < _gridCells.Count; i++)
         {
-            gridCells[i].renderer.color = Color.red;
-            gridCells[i].SetExecutionData(executionData);
-            gridCells[i].ToggleInputInteractibility(false);
+       //    _gridCells[i].renderer.color = Color.red;
+            _gridCells[i].SetExecutionData(executionData);
+            _gridCells[i].ToggleInputInteractibility(false);
         }
     }
 
     public void UnLockColoumn()
     {
-        for (int i = 0; i < gridCells.Count; i++)
+        for (int i = 0; i < _gridCells.Count; i++)
         {
-            Debug.Log("Unlocking");
-            gridCells[i].ToggleInputInteractibility(true);
-            gridCells[i].SetExecutionData(null);
-            gridCells[i].renderer.color = Color.gray;
+            _gridCells[i].ToggleInputInteractibility(true);
+            _gridCells[i].SetExecutionData(null);
+          // _gridCells[i].renderer.color = Color.gray;
         }
     }
 
+    public override string ToString()
+    {
+        return gameObject.name;
+    }
     #endregion
 
     #region PRIVATE_VARIABLES
-   
+
 
     private void ShiftRemainingCellsToEmptySpaces(MatchExecutionData executionData)
     {
-          int max = GetMaxReachableCellInColoumn() - 1;
-            cellIndex = max;
-            for (int i = max; i >= 0; i--)
+            List<int[]> fromToIndexPairs = new List<int[]>();
+    
+            fromToIndexPairs.Add(new int[2]);
+            fromToIndexPairs[fromToIndexPairs.Count-1][0] = 0;
+            fromToIndexPairs[fromToIndexPairs.Count-1][1] = 0;
+
+            for (int i = 0; i < _gridCells.Count; i++)
             {
-                Element element = gridCells[i].GetElement();
-                if (element != null)
+                if (_gridCells[i]==null || !_gridCells[i].IsBlocked)
                 {
-                    gridCells[cellIndex].SetExecutionData(executionData);
-                    gridCells[cellIndex].SetElement(element);
-                    cellIndex--;
+                    fromToIndexPairs[fromToIndexPairs.Count - 1][1] = i;
+                }
+                else if(_gridCells[i].IsBlocked && i < _gridCells.Count - 1){
+                    fromToIndexPairs.Add(new int[2]);
+                    fromToIndexPairs[fromToIndexPairs.Count - 1][0] = i + 1;
+                    fromToIndexPairs[fromToIndexPairs.Count - 1][1] = i + 1;
+                }
+
+            }
+
+
+            for (int i = 0; i < fromToIndexPairs.Count; i++)
+            {
+                int start = fromToIndexPairs[i][0];
+                int endt = fromToIndexPairs[i][1];
+
+
+                if (start == endt)
+                {
+                    _gridCells[start].renderer.color = Color.red;
+                    continue;
+                }
+
+                Color color = Random.ColorHSV();
+
+                for (int j = endt; j >= start;j--)
+                {
+                    _gridCells[j].renderer.color = color;
+
+                    GridCell currentCell = _gridCells[j];
+                    if (currentCell.IsEmpty)
+                    {
+                        GridCell filledCell = GetTopMostFilledCell(start, j);
+                        
+                        if (filledCell == null)
+                        {
+                            break;
+                        }
+                        currentCell.SetElement(filledCell.GetElement());
+                    }
                 }
             }
+
+        GridCell GetTopMostFilledCell(int st, int ed)
+        {
+
+            for (int i = ed; i >=st; i--)
+            {
+                if (!_gridCells[i].IsEmpty) 
+                {
+                    return _gridCells[i];    
+                }
+            }
+            return null;
+            
+        }
+
+
     }
 
-    public int idxT;
+    
     [ContextMenu("Testt")]
     public void Test() {
-        GridCell[] cp = CreateCellPairList(idxT);
-        for (int i = 0; i < cp.Length; i++)
+
+
+        for (int j = 0; j < _gridCells.Count; j++)
         {
-            if(cp[i]!=null)
-            cp[i].renderer.color = Color.green;
+            Color random = Random.ColorHSV();
+            GridCell[] cp = CreateCellPairList(j);
+            for (int i = 0; i < cp.Length; i++)
+            {
+                if (cp[i] != null)
+                    cp[i].renderer.color = random;
+            }
         }
+        
 
         
     }
@@ -117,11 +180,10 @@ public class GridColoumn : MonoBehaviour
 
         cellPair[middleIndex] = SearchForEmptyCellFromBottomTill(index);
 
-        
-        if (_coloumnToMyLeft != null)
+        if (_coloumnToMyLeft != null && _coloumnToMyLeft.IsBlockedByObstacle())
             cellPair[leftIndex] = _coloumnToMyLeft.SearchForEmptyCellFromBottomTill(index);
 
-        if (_coloumnToMyRight != null)
+        if (_coloumnToMyRight != null && _coloumnToMyRight.IsBlockedByObstacle())
             cellPair[rightIndex] = _coloumnToMyRight.SearchForEmptyCellFromBottomTill(index);
     
         return cellPair;
@@ -134,7 +196,7 @@ public class GridColoumn : MonoBehaviour
 
     public GridCell SearchForEmptyCellFromBottomTill(int currentIdx) {
 
-        Debug.Log($"Searching from {ColoumnLength-1} to {currentIdx}");
+       // Debug.Log($"Searching from {ColoumnLength-1} to {currentIdx}");
 
         for (int i = ColoumnLength-1; i > currentIdx; i--)
         {
@@ -146,71 +208,52 @@ public class GridColoumn : MonoBehaviour
         return null;
     }
 
-
+    
     private bool IsBlockedByObstacle() {
 
-        for (int i = 0; i < gridCells.Count; i++)
+        for (int i = 0; i < _gridCells.Count; i++)
         {
-            if (gridCells[i].IsBlocked)
+            if (_gridCells[i].IsBlocked)
                 return true;
         }
         return false;
     }
 
     
-    //-----------------------
-    private void GenerateNewElementBuffer()
-    {
-        _generatedElementList.Clear();
-        int max = GetMaxReachableCellInColoumn();
-        Vector3 initialPosition;
-        for (int i = 0; i < max; i++)
+    
+
+    private void GenerateElements() {
+
+        for (int i = 0; i < _gridCells.Count; i++)
         {
-            GridCell cell = gridCells[i];
+            if (_gridCells[i].IsBlocked)
+                continue;
 
-            if (cell.IsEmpty)
-            {
-                Element element = elementGenerator.GetRandomElement();
-                element.transform.SetParent(Grid.instance.transform);
-                initialPosition = elementGenerator.transform.position;
-                initialPosition.y += i;
-                element.transform.position = initialPosition;
-
-                _generatedElementList.Add(element);
-            }
+            Element randomElement = _elementFactory.GetRandomElement();
+            randomElement.transform.position = _gridCells[i].transform.position;
+            _gridCells[i].SetElement(randomElement);
         }
     }
 
     private void SetNewlyGeneratedElementsToEmptyCells(MatchExecutionData executionData)
     {
-        for (int i = 0; i < _generatedElementList.Count; i++)
-        {
-            GridCell cell = gridCells[cellIndex];
-            cell.SetExecutionData(executionData);
+        //for (int i = 0; i < _generatedElementList.Count; i++)
+        //{
+        //    GridCell cell = _gridCells[_cellIndex];
+        //    cell.SetExecutionData(executionData);
 
-            Element element = _generatedElementList[i];
-            cell.SetElement(element);
-            cellIndex--;
-        }
+        //    Element element = _generatedElementList[i];
+        //    cell.SetElement(element);
+        //    _cellIndex--;
+        //}
 
     }
 
-    private int GetMaxReachableCellInColoumn()
-    {
-        int maxRechable = gridCells.Count;
-        for (int i = 0; i < gridCells.Count; i++)
-        {
-            GridCell cell = gridCells[i];
-            if (cell.IsBlocked)
-            {
-                return i;
-            }
-        }
-        return maxRechable;
-    }
+    
     #endregion
 
 
+    
 }
 
 

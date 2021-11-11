@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ public class CellBlocker : MonoBehaviour
 {
 
     #region PUBLIC_VARIABLES
-    public GameLayer blockLayer;
+    public RenderLayer renderLayer;
     public int initial_h;
     public int initial_w;
     #endregion
@@ -26,10 +27,17 @@ public class CellBlocker : MonoBehaviour
 
     public virtual void Hit(List<GridCell> matchedCells) { }
     public virtual void OnUnblocked() { }
-    public virtual void OnBlockCells(){ }
+    public virtual void OnBlockCells(){
+        
+    }
 
     public virtual bool DoesBlockCell() {
-        return blockLayer == GameLayer.MIDDLE_LAYER;
+        return renderLayer == RenderLayer.ElementBlockerLayer;
+    }
+
+    internal void UpdateRenderLayer()
+    {
+        transform.SetParent(Grid.instance.GetLayerTransformParent(renderLayer));
     }
     #endregion
 

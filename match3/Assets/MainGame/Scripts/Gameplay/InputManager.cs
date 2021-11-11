@@ -61,7 +61,6 @@ public class InputManager : Singleton<InputManager>
         SwapCells(matchExecutionData);
         swipeNumber++;
         Matcher.instance.StartChecking(matchExecutionData);
-
     }
 
     public void SwapCells(MatchExecutionData matchExecutionData)
@@ -69,7 +68,6 @@ public class InputManager : Singleton<InputManager>
         Element firstElement = matchExecutionData.firstCell.GetElement();
         Element secondElement = matchExecutionData.secondCell.GetElement();
 
-       
         matchExecutionData.firstCell.SetElement(secondElement);
         matchExecutionData.secondCell.SetElement(firstElement);
     }

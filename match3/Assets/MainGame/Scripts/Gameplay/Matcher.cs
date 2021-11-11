@@ -12,6 +12,7 @@ public class MatchExecutionData
     #endregion
 
     #region PUBLIC_VARIABLES
+
     public GridCell firstCell;
     public GridCell secondCell;
     public List<List<Element>> matchedElements;
@@ -80,6 +81,7 @@ public class Matcher : Singleton<Matcher>
     #region PRIVATE_VARIABLES
     [SerializeField] private MatchPattern[] patterns;
     private List<MatchExecutionData> activeThreads = new List<MatchExecutionData>();
+    private const float FOUR_FRAME_WAITTIME = 0.64f;
     #endregion
     
     #region PUBLIC_METHODS
@@ -89,54 +91,51 @@ public class Matcher : Singleton<Matcher>
         StartCoroutine(IterativeCheckRoutine(executionData));
     }
 
-
-
     #endregion
+
 
     #region PRIVATE_VARIABLES
 
+   
     private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData)
     {
         activeThreads.Add(executionData);
         FindMatches(executionData);
         yield return WaitForGridAnimationRoutine(executionData);
-
+        //Debug.Log("VSI");
         if (!executionData.HasMatches)
         {
-            //reswap cells;
+            //reswap cells and end execution;
             InputManager.instance.SwapCells(executionData);
             activeThreads.Remove(executionData);
-            yield break;
         }
-      
-
-        Grid grid = Grid.instance;
-       // while (executionData.HasMatches)
-        if(executionData.HasMatches)
+        else
         {
-            DestroyMatchedItems(executionData);
-            grid.CollapseColoumns(executionData);
-            yield return WaitForGridAnimationRoutine(executionData);
-            FindMatches(executionData);
+            Grid grid = Grid.instance;
+            while (executionData.HasMatches)
+            //if (executionData.HasMatches)
+            {
+                DestroyMatchedItems(executionData);
+                grid.CollapseColoumns(executionData);
+                yield return WaitForGridAnimationRoutine(executionData);
+                FindMatches(executionData);
+            }
+
+            activeThreads.Remove(executionData);
+
+            while (activeThreads.Count > 0)
+                yield return null;
+
+            grid.UnlockCells(executionData);
         }
-
-        activeThreads.Remove(executionData);
-
-        while (activeThreads.Count > 0)
-            yield return null;
-
-
-        grid.UnlockCells(executionData);
     }
 
 
     private IEnumerator WaitForGridAnimationRoutine(MatchExecutionData executionData, Action action = null)
     {
-        while (executionData.movingElements.Count > 0)
-        {
-            yield return new WaitForSeconds(.64f);
-        }
-
+           while (executionData.movingElements.Count > 0)
+            yield return FOUR_FRAME_WAITTIME;
+       
         action?.Invoke();
     }
 
@@ -220,12 +219,11 @@ public class Matcher : Singleton<Matcher>
             Element element = patternCells[k].GetElement();
             sameElementList.Add(element);
         }
-      
-        Grid.instance.LockDirtyColoumns(matchExecutionData);
+
+        grid.LockDirtyColoumns(matchExecutionData);
         matchExecutionData.matchedElements.Add(sameElementList);
         patternCells.Clear();
     }
-
 
     private bool IsExtractionValid(MatchExecutionData executionData)
     {
@@ -241,7 +239,7 @@ public class Matcher : Singleton<Matcher>
         for (int k = 1; k < patternCells.Count; k++)
         {
             Element patternCellElement = patternCells[k].ReadElement();
-            if (!patternCellElement.IsSame(startingElement))
+            if (!patternCellElement.Equals(startingElement))
             {
                 //      Debug.Log($"<Matcher> Terminating check due to different elements present at {_patternCells[k].gameObject.name} or is empty");
                 patternCells.Clear();
@@ -252,7 +250,7 @@ public class Matcher : Singleton<Matcher>
         return true;
     }
 
-    private void ExtractPatternCells(GridCell startingCell, MatchPattern currentPattern, int i, int j,
+    private void ExtractPatternCells(GridCell startingCell, MatchPattern matchPattern, int i, int j,
         MatchExecutionData matchExecutionData)
     {
         List<GridCell> patternCells = matchExecutionData.patternCells;
@@ -260,9 +258,9 @@ public class Matcher : Singleton<Matcher>
 
         //  Debug.Log($"<Matcher> Checking {matchPattern.patternName} at cell {startingCell.gameObject.name}");
 
-        for (int k = 0; k < currentPattern.Length; k++) //Generate a list of cell from patterm
+        for (int k = 0; k < matchPattern.Length; k++) //Generate a list of cell from patterm
         {
-            IndexPair offsetIndexPair = currentPattern[k];
+            IndexPair offsetIndexPair = matchPattern[k];
             int iPaired = i + offsetIndexPair.I_Offset;
             int jPaired = j + offsetIndexPair.J_Offset;
 

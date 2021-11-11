@@ -14,7 +14,7 @@ public class Grid : Singleton<Grid>
     #region PRIVATE_VARIABLES
     [SerializeField] private GridColoumn GridColoumnPrefab;
     [SerializeField] private GridCell gridCellPrefab;
-   
+    [SerializeField] private Transform[] layerTransforms;
     #endregion
     
     #region PUBLIC_VARIABLES
@@ -34,7 +34,7 @@ public class Grid : Singleton<Grid>
     
     public int GridWidth
     { get { return _levelData.gridWidth; } }
-   
+
     #endregion
    
     #region PRIVATE_VARIABLES
@@ -50,8 +50,6 @@ public class Grid : Singleton<Grid>
         _levelData = GameplayManager.instance.levelData;
         CreateGrid();
         SetColoumnCells();
-        ToggleColoumnLock(true);
-        WaitForGridAnimation(() => { ToggleColoumnLock(false);});      
     }
     #endregion
 
@@ -79,7 +77,11 @@ public class Grid : Singleton<Grid>
 
         return areNeighbours;
     }
-    
+
+
+    public Transform GetLayerTransformParent(RenderLayer renderLayer) {
+        return layerTransforms[(int)renderLayer];
+    }
     #endregion
 
     #region PRIVATE_METHODS
@@ -93,7 +95,7 @@ public class Grid : Singleton<Grid>
 
         for (int i = 0; i < _levelData.gridHeight; i++)
         {
-            _gridC.Add(Instantiate(GridColoumnPrefab,transform));
+            _gridC.Add(Instantiate(GridColoumnPrefab));
 
             for (int j = 0; j < _levelData.gridWidth; j++)
             {
@@ -131,36 +133,24 @@ public class Grid : Singleton<Grid>
 
     private void CreateCellAt(int j, int i)
     {
-        GridCell cell = Instantiate(gridCellPrefab, transform);
+        GridCell cell = Instantiate(gridCellPrefab);
         Vector3 newPosition = transform.position + new Vector3(j, -i) * _levelData.gridSpacing;
         newPosition.x -= _levelData.maxWidthMidPointForThisPattern;  // | To make sure gridPivot is in center
-        newPosition.y += _levelData.maxHeightMidPointForThisPattern;//  |
+        newPosition.y += _levelData.maxHeightMidPointForThisPattern;
+        cell.transform.SetParent(GetLayerTransformParent(cell.RenderLayer));
         cell.transform.position = newPosition;
         cell.Init(i,j);
         cell.gameObject.name = $"({i},{j})";
         _grid[i, j] = cell;
         i++;
     }
-    
-
-
-
-    private void ToggleColoumnLock(bool toggleValue)
-    {
-        if(toggleValue)
-            for (int i = 0; i < _gridC.Count; i++)
-                _gridC[i].LockColoumn(null);
-        else
-            for (int i = 0; i < _gridC.Count; i++)
-                _gridC[i].UnLockColoumn();
-    }
-    
     #endregion
 
     #region PUBLIC_METHODS
 
     public void CollapseColoumns(MatchExecutionData executionData)
     {
+        
         for (int l = _gridC.Count-1; l >=0; l--)
         {
             _gridC[l].CollapseColoumn(executionData);
@@ -201,19 +191,6 @@ public class Grid : Singleton<Grid>
 
     #endregion
 
-
-    #region ASYNC_METHODS
-    private void WaitForGridAnimation(Action action)
-    {
-        StartCoroutine(WaitForGridAnimationRoutine(action));
-    }
-
-    private IEnumerator WaitForGridAnimationRoutine(Action action=null)
-    {
-        yield return new WaitForSeconds(0.2f);
-        action?.Invoke();
-    }
-    #endregion
 }
 
 

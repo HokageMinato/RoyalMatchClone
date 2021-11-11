@@ -27,7 +27,9 @@ public class ObstacleFactory : Singleton<ObstacleFactory>
 
     public CellBlocker GenerateBlocker(int blockerType)
     {
-            return Instantiate(prefabLookUp[blockerType]);
+        CellBlocker blocker = Instantiate(prefabLookUp[blockerType]);
+        blocker.UpdateRenderLayer();
+        return blocker;
     }
     #endregion
     

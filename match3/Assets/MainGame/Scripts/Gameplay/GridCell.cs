@@ -10,8 +10,9 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     [SerializeField] private int hIndex;
     [SerializeField] private int wIndex;
     [SerializeField] private BoxCollider2D inputCollider;
+    [SerializeField] private RenderLayer renderLayer;
+
     public new SpriteRenderer renderer;
-    
     private Element _element;
     private CellBlocker _blocker;
     #endregion
@@ -31,18 +32,24 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     {
         get
         {
-            return _element == null ;
+            return _element == null;
         }
     }
 
-    public bool IsBlocked 
+    public bool IsBlocked
     {
-        get 
+        get
         {
             if (_blocker == null)
                 return false;
 
             return _blocker.DoesBlockCell();
+        }
+    }
+
+    public RenderLayer RenderLayer{
+        get{
+            return renderLayer;
         }
     }
 
@@ -56,7 +63,6 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     {
         this.hIndex = hIndex;
         this.wIndex = wIndex;
-        renderer.sortingOrder = (int)GameLayer.BASE_LAYER;
         executionData = MatchExecutionData.GetDefaultExecutionData();
     }
 
@@ -107,7 +113,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     public void SetElementWithPath(Element newElement,List<GridCell> path) {
         if (!IsEmpty)
         {
-            Debug.LogWarning($"Override at cell {gameObject.name}");
+         //   Debug.LogWarning($"Override at cell {gameObject.name}");
         }
 
         _element = newElement;
@@ -127,10 +133,16 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     public void ClearExecutionData() {
         SetExecutionData(null);
     }
-    #endregion
-    
-    
 
-   
+    public override string ToString()
+    {
+        return gameObject.name;
+    }
+
+    #endregion
+
+
+
+
 }
 

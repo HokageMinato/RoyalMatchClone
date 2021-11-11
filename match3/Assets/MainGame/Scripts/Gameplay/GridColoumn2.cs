@@ -4,14 +4,14 @@ using UnityEngine;
 public class GridColoumn2 : MonoBehaviour
 {
     #region PRIVATE_VARIABLES
-    private ElementGenerator elementGenerator;
+    private ElementFactory elementGenerator;
     private List<GridCell> gridCells = new List<GridCell>();
     private List<Element> _generatedElementList = new List<Element>();
     private int cellIndex = 0;
     #endregion
 
     #region PUBLIC_METHODS
-    public void Init(ElementGenerator elementGenerat)
+    public void Init(ElementFactory elementGenerat)
     {
         elementGenerator = elementGenerat;
         elementGenerator.transform.SetParent(transform);

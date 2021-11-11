@@ -44,11 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c7711c7d55058e4f88d9c77db4021f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockLayer: 13
+  renderLayer: 3
   initial_h: 1
   initial_w: 1
   grid: {fileID: 0}
-  requiredHitCount: 4
   spriteRenderer: {fileID: 5136120999791476970}
   spriteLayers:
   - {fileID: 21300000, guid: bc1161d97c48940499def1f47ffe18d0, type: 3}
@@ -56,6 +55,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 8b237690933f47a42b46024703a8b4a3, type: 3}
   - {fileID: 21300000, guid: 7afefe49e2caeb745b7c76afda4bcfdf, type: 3}
   - {fileID: 21300000, guid: 044932d0b05361c49a67614fa1abc2ec, type: 3}
+  hitCount: 0
+  immune: 1
 --- !u!1 &5136120999791476971
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,8 +124,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -520103351
-  m_SortingLayer: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c16e30033d5f5b5469564c507814d8d7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

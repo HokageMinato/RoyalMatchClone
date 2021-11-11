@@ -5,24 +5,19 @@ using UnityEngine;
 public class ElementGeneratorFactory : Singleton<ElementGeneratorFactory>
 {
     #region PRIVATE_VARIABLES
-    [SerializeField] private ElementGenerator elementGeneratorActivePrefab;
-    [SerializeField] private ObstacleFactory obstacleGenerator;
-    #endregion
+    [SerializeField] private ElementFactory elementGeneratorActivePrefab;
     
-    #region PUBLIC_METHODS
-    public ObstacleFactory ObstacleGenerator
-    {
-        get { return obstacleGenerator; }
-    }
-
 
     public void GenerateElementHandlers()
     {
         GridDesignTemp levelData = GameplayManager.instance.levelData;
         Grid _grid = Grid.instance;
+
+        Transform layeredTransformParent = Grid.instance.GetLayerTransformParent(ElementConfig.renderLayer);
+
         for (int j = 0; j < levelData.gridWidth; j++)
         {
-            ElementGenerator generator = Instantiate(elementGeneratorActivePrefab);
+            ElementFactory generator = Instantiate(elementGeneratorActivePrefab,layeredTransformParent);
             int colToMyLeftIdx = j - 1;
             int colToMyRighttIdx = j + 1;
 
@@ -38,7 +33,12 @@ public class ElementGeneratorFactory : Singleton<ElementGeneratorFactory>
 
             _grid[j].Init(generator,leftColoumn,rightColoumn);
         }
+
+        
+
     }
+
+
     #endregion
-    
+
 }
