@@ -103,12 +103,12 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         {
             Debug.LogWarning($"Override at cell {gameObject.name}");
         }
-       
+
         newElement.SetHolder(this);
         _element = newElement;
     }
 
-    
+
 
     public void SetElementWithPath(Element newElement,List<GridCell> path) {
         if (!IsEmpty)
@@ -124,6 +124,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     public void SetBlocker(CellBlocker blocker) {
 
         _blocker = blocker;
+        inputCollider.enabled = (blocker==null);
     }
 
     public void SetExecutionData(MatchExecutionData executionData) {

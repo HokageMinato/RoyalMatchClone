@@ -26,30 +26,33 @@ public class Element : MonoBehaviour
 
    public void SetHolder(GridCell newHolder)
    {
-      StartCoroutine(ShiftRoutine(newHolder));
+      StartCoroutine(ShiftRoutine(newHolder, new List<GridCell> { newHolder }));
    }
 
     public void SetHolderWithPath(GridCell newHolder,List<GridCell> travelPath) {
-   
+        StartCoroutine(ShiftRoutine(newHolder,travelPath));
     }
 
-    private IEnumerator ShiftRoutine(GridCell newHolder)
+    private IEnumerator ShiftRoutine(GridCell newHolder,List<GridCell> travelPath)
     {
 
         MatchExecutionData executionData = newHolder.executionData;
         executionData.movingElements.Add(this);
 
 
-        float rate = 1f / ElementConfig.SWIPE_ANIM_TIME;
-        float i = 0;
-        Vector3 sourcePosition = transform.position;
-        Vector3 destinationPosition = newHolder.transform.position;
-
-        while (i <= 1f)
+        for (int p = 0; p < travelPath.Count; p++)
         {
-            i += rate * Time.deltaTime;
-            transform.localPosition = Vector3.Lerp(sourcePosition, destinationPosition, i);
-            yield return null;
+            float rate = 1 / ElementConfig.SWIPE_ANIM_TIME;
+            float i = 0;
+            Vector3 sourcePosition = transform.position;
+            Vector3 destinationPosition = travelPath[p].transform.position;
+
+            while (i <= 1f)
+            {
+                i += rate * Time.deltaTime;
+                transform.localPosition = Vector3.Lerp(sourcePosition, destinationPosition, i);
+                yield return null;
+            }
         }
 
         executionData.movingElements.Remove(this);

@@ -112,10 +112,12 @@ public class Matcher : Singleton<Matcher>
         else
         {
             Grid grid = Grid.instance;
-            while (executionData.HasMatches)
-            //if (executionData.HasMatches)
+            //while (executionData.HasMatches)
+            if (executionData.HasMatches)
             {
+                
                 DestroyMatchedItems(executionData);
+                yield return new WaitForSeconds(1f);
                 grid.CollapseColoumns(executionData);
                 yield return WaitForGridAnimationRoutine(executionData);
                 FindMatches(executionData);

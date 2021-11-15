@@ -14,6 +14,7 @@ public class Grid : Singleton<Grid>
     #region PRIVATE_VARIABLES
     [SerializeField] private GridColoumn GridColoumnPrefab;
     [SerializeField] private GridCell gridCellPrefab;
+    [SerializeField] private GridColoumnCollapser coloumnCollapser;
     [SerializeField] private Transform[] layerTransforms;
     #endregion
     
@@ -152,12 +153,7 @@ public class Grid : Singleton<Grid>
 
     public void CollapseColoumns(MatchExecutionData executionData)
     {
-        
-        for (int l = _gridC.Count-1; l >=0; l--)
-        {
-            _gridC[l].CollapseColoumn(executionData);
-        }
-        
+        coloumnCollapser.CollapseColomuns();
     }
 
     public void LockDirtyColoumns(MatchExecutionData executionData)

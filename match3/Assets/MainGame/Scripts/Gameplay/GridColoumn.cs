@@ -38,13 +38,85 @@ public class GridColoumn : MonoBehaviour
         GenerateElements();
     }
 
-    public void CollapseColoumn(MatchExecutionData executionData)
-    {
-      
-        ShiftRemainingCellsToEmptySpaces(executionData);
-        // GenerateNewElementBuffer();
-        // SetNewlyGeneratedElementsToEmptyCells(executionData);
+
+    //public void ShiftRemainingCellsDownwards(MatchExecutionData executionData)
+    //{
+    //    List<int[]> fromToIndexPairs = new List<int[]>();
+
+    //    fromToIndexPairs.Add(new int[2]);
+    //    fromToIndexPairs[fromToIndexPairs.Count - 1][0] = 0;
+    //    fromToIndexPairs[fromToIndexPairs.Count - 1][1] = 0;
+
+    //    for (int i = 0; i < _gridCells.Count; i++)
+    //    {
+    //        if (_gridCells[i] == null || !_gridCells[i].IsBlocked)
+    //        {
+    //            fromToIndexPairs[fromToIndexPairs.Count - 1][1] = i;
+    //        }
+    //        else if (_gridCells[i].IsBlocked && i < _gridCells.Count - 1)
+    //        {
+    //            fromToIndexPairs.Add(new int[2]);
+    //            fromToIndexPairs[fromToIndexPairs.Count - 1][0] = i + 1;
+    //            fromToIndexPairs[fromToIndexPairs.Count - 1][1] = i + 1;
+    //        }
+
+    //    }
+
+    //    for (int i = 0; i < fromToIndexPairs.Count; i++)
+    //    {
+    //        int start = fromToIndexPairs[i ][0];
+    //        int endt = fromToIndexPairs[i][1];
+
+
+    //        if (start == endt)
+    //        {
+    //            _gridCells[start].renderer.color = Color.red;
+    //            continue;
+    //        }
+
+    //        Color color = Random.ColorHSV();
+
+    //        for (int j = endt; j >= start; j--)
+    //        {
+    //            _gridCells[j].renderer.color = color;
+
+    //            GridCell currentCell = _gridCells[j];
+    //            if (currentCell.IsEmpty)
+    //            {
+    //                GridCell filledCell = GetTopMostFilledCell(start, j);
+
+    //                if (filledCell == null)
+    //                {
+    //                    break;
+    //                }
+    //                currentCell.SetElement(filledCell.GetElement());
+    //            }
+    //        }
+    //    }
+
+    //    GridCell GetTopMostFilledCell(int st, int ed)
+    //    {
+
+    //        for (int i = ed; i >= st; i--)
+    //        {
+    //            if (!_gridCells[i].IsEmpty)
+    //            {
+    //                return _gridCells[i];
+    //            }
+    //        }
+    //        return null;
+
+    //    }
+
+
+    //}
+
+    public void ShiftRemainingCellsPyramid(MatchExecutionData executionData) {
+        
+
+
     }
+
     public void AddCell(GridCell newCell)
     {
         _gridCells.Add(newCell);
@@ -54,7 +126,7 @@ public class GridColoumn : MonoBehaviour
     {
         for (int i = 0; i < _gridCells.Count; i++)
         {
-       //    _gridCells[i].renderer.color = Color.red;
+           _gridCells[i].renderer.color = Color.red;
             _gridCells[i].SetExecutionData(executionData);
             _gridCells[i].ToggleInputInteractibility(false);
         }
@@ -66,7 +138,7 @@ public class GridColoumn : MonoBehaviour
         {
             _gridCells[i].ToggleInputInteractibility(true);
             _gridCells[i].SetExecutionData(null);
-          // _gridCells[i].renderer.color = Color.gray;
+           _gridCells[i].renderer.color = Color.gray;
         }
     }
 
@@ -76,101 +148,8 @@ public class GridColoumn : MonoBehaviour
     }
     #endregion
 
-    #region PRIVATE_VARIABLES
-
-
-    private void ShiftRemainingCellsToEmptySpaces(MatchExecutionData executionData)
-    {
-            List<int[]> fromToIndexPairs = new List<int[]>();
+    #region PRIVATE_METHODS
     
-            fromToIndexPairs.Add(new int[2]);
-            fromToIndexPairs[fromToIndexPairs.Count-1][0] = 0;
-            fromToIndexPairs[fromToIndexPairs.Count-1][1] = 0;
-
-            for (int i = 0; i < _gridCells.Count; i++)
-            {
-                if (_gridCells[i]==null || !_gridCells[i].IsBlocked)
-                {
-                    fromToIndexPairs[fromToIndexPairs.Count - 1][1] = i;
-                }
-                else if(_gridCells[i].IsBlocked && i < _gridCells.Count - 1){
-                    fromToIndexPairs.Add(new int[2]);
-                    fromToIndexPairs[fromToIndexPairs.Count - 1][0] = i + 1;
-                    fromToIndexPairs[fromToIndexPairs.Count - 1][1] = i + 1;
-                }
-
-            }
-
-
-            for (int i = 0; i < fromToIndexPairs.Count; i++)
-            {
-                int start = fromToIndexPairs[i][0];
-                int endt = fromToIndexPairs[i][1];
-
-
-                if (start == endt)
-                {
-                    _gridCells[start].renderer.color = Color.red;
-                    continue;
-                }
-
-                Color color = Random.ColorHSV();
-
-                for (int j = endt; j >= start;j--)
-                {
-                    _gridCells[j].renderer.color = color;
-
-                    GridCell currentCell = _gridCells[j];
-                    if (currentCell.IsEmpty)
-                    {
-                        GridCell filledCell = GetTopMostFilledCell(start, j);
-                        
-                        if (filledCell == null)
-                        {
-                            break;
-                        }
-                        currentCell.SetElement(filledCell.GetElement());
-                    }
-                }
-            }
-
-        GridCell GetTopMostFilledCell(int st, int ed)
-        {
-
-            for (int i = ed; i >=st; i--)
-            {
-                if (!_gridCells[i].IsEmpty) 
-                {
-                    return _gridCells[i];    
-                }
-            }
-            return null;
-            
-        }
-
-
-    }
-
-    
-    [ContextMenu("Testt")]
-    public void Test() {
-
-
-        for (int j = 0; j < _gridCells.Count; j++)
-        {
-            Color random = Random.ColorHSV();
-            GridCell[] cp = CreateCellPairList(j);
-            for (int i = 0; i < cp.Length; i++)
-            {
-                if (cp[i] != null)
-                    cp[i].renderer.color = random;
-            }
-        }
-        
-
-        
-    }
-
     private GridCell[] CreateCellPairList(int index) {
         const int leftIndex = 1;
         const int rightIndex = 2;
@@ -178,34 +157,15 @@ public class GridColoumn : MonoBehaviour
 
         GridCell[] cellPair = new GridCell[3];
 
-        cellPair[middleIndex] = SearchForEmptyCellFromBottomTill(index);
+        //cellPair[middleIndex] = SearchForEmptyCellFromBottomTill(index);
 
-        if (_coloumnToMyLeft != null && _coloumnToMyLeft.IsBlockedByObstacle())
-            cellPair[leftIndex] = _coloumnToMyLeft.SearchForEmptyCellFromBottomTill(index);
+        //if (_coloumnToMyLeft != null && _coloumnToMyLeft.IsBlockedByObstacle())
+        //    cellPair[leftIndex] = _coloumnToMyLeft.SearchForEmptyCellFromBottomTill(index);
 
-        if (_coloumnToMyRight != null && _coloumnToMyRight.IsBlockedByObstacle())
-            cellPair[rightIndex] = _coloumnToMyRight.SearchForEmptyCellFromBottomTill(index);
+        //if (_coloumnToMyRight != null && _coloumnToMyRight.IsBlockedByObstacle())
+        //    cellPair[rightIndex] = _coloumnToMyRight.SearchForEmptyCellFromBottomTill(index);
     
         return cellPair;
-    }
-
-
-    
-
-
-
-    public GridCell SearchForEmptyCellFromBottomTill(int currentIdx) {
-
-       // Debug.Log($"Searching from {ColoumnLength-1} to {currentIdx}");
-
-        for (int i = ColoumnLength-1; i > currentIdx; i--)
-        {
-            if (this[i].IsEmpty && !this[i].IsBlocked)
-                return this[i];
-
-        }
-
-        return null;
     }
 
     
@@ -235,21 +195,6 @@ public class GridColoumn : MonoBehaviour
         }
     }
 
-    private void SetNewlyGeneratedElementsToEmptyCells(MatchExecutionData executionData)
-    {
-        //for (int i = 0; i < _generatedElementList.Count; i++)
-        //{
-        //    GridCell cell = _gridCells[_cellIndex];
-        //    cell.SetExecutionData(executionData);
-
-        //    Element element = _generatedElementList[i];
-        //    cell.SetElement(element);
-        //    _cellIndex--;
-        //}
-
-    }
-
-    
     #endregion
 
 

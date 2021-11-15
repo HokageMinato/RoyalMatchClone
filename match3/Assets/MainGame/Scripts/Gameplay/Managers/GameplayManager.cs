@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class GameplayManager: Singleton<GameplayManager>
 {
+    
     public GridDesignTemp levelData;
 
+    
 
     private void Start()
     {

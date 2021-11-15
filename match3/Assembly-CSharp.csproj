@@ -67,6 +67,8 @@
      <Compile Include="Assets\MainGame\Scripts\Gameplay\GridCell.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\GridColoumn.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\GridColoumn2.cs" />
+     <Compile Include="Assets\MainGame\Scripts\Gameplay\GridColoumn3.cs" />
+     <Compile Include="Assets\MainGame\Scripts\Gameplay\GridColoumnCollapser.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\InputManager.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\Managers\GameplayManager.cs" />
      <Compile Include="Assets\MainGame\Scripts\Gameplay\Matcher.cs" />
