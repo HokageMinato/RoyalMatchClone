@@ -18,6 +18,7 @@ public class MatchExecutionData
     public List<List<Element>> matchedElements;
     public List<GridCell> patternCells;
     public int swipeId;
+    public HashSet<int> dirtyColoumns;
     public HashSet<Element> movingElements;
     #endregion
 
@@ -71,6 +72,7 @@ public class MatchExecutionData
         firstCell = fCell;
         secondCell = sCell;
         movingElements = new HashSet<Element>();
+        dirtyColoumns = new HashSet<int>();
     }
 
     #endregion
@@ -112,12 +114,12 @@ public class Matcher : Singleton<Matcher>
         else
         {
             Grid grid = Grid.instance;
-            //while (executionData.HasMatches)
-            if (executionData.HasMatches)
+            while (executionData.HasMatches)
+            //if (executionData.HasMatches)
             {
                 
                 DestroyMatchedItems(executionData);
-                yield return new WaitForSeconds(1f);
+                //yield return new WaitForSeconds(1f);
                 grid.CollapseColoumns(executionData);
                 yield return WaitForGridAnimationRoutine(executionData);
                 FindMatches(executionData);
@@ -221,9 +223,8 @@ public class Matcher : Singleton<Matcher>
             Element element = patternCells[k].GetElement();
             sameElementList.Add(element);
         }
-
-        grid.LockDirtyColoumns(matchExecutionData);
         matchExecutionData.matchedElements.Add(sameElementList);
+        grid.LockDirtyColoumns(matchExecutionData);
         patternCells.Clear();
     }
 

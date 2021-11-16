@@ -153,33 +153,53 @@ public class Grid : Singleton<Grid>
 
     public void CollapseColoumns(MatchExecutionData executionData)
     {
-        coloumnCollapser.CollapseColomuns();
+        coloumnCollapser.CollapseColomuns(executionData);
     }
 
-    public void LockDirtyColoumns(MatchExecutionData executionData)
-    {
+    public void LockDirtyColoumns(MatchExecutionData executionData) {
+
         List<GridCell> cells = executionData.patternCells;
-        _gridC[executionData.firstCell.WIndex].LockColoumn(executionData);
-        _gridC[executionData.secondCell.WIndex].LockColoumn(executionData);
+        cells.Add(executionData.firstCell);
+        cells.Add(executionData.secondCell);
+        
         for (int i = 0; i < cells.Count; i++)
         {
-            _gridC[cells[i].WIndex].LockColoumn(executionData);
+            int coloumnIndex = cells[i].WIndex;
+            if (!executionData.dirtyColoumns.Contains(coloumnIndex))
+            {
+                LockColoumn(coloumnIndex);
+                executionData.dirtyColoumns.Add(coloumnIndex);
+            }
+
+
+        }
+
+        void LockColoumn(int coloumnIndex)
+        {
+            for (int c = 0; c < GridHeight; c++)
+            {
+                GridCell cell = this[c, coloumnIndex];
+                if (cell)
+                    cell.LockCell(executionData);
+            }
         }
     }
+
+    
 
     public void UnlockCells(MatchExecutionData matchExecutionData)
     {
         
-        for (int i = 0; i < _levelData.gridWidth; i++)
+        for (int i = 0; i < GridWidth; i++)
         {
-            for (int j = 0; j < _levelData.gridHeight ; j++)
+            for (int j = 0; j < GridHeight ; j++)
             {
                 GridCell cell = _grid[i, j];
                 if (cell)
                 {
                     if (cell.executionData!=null && cell.executionData.Equals(matchExecutionData))
                     {
-                        _gridC[j].UnLockColoumn();
+                        cell.UnlockCell();
                     }
                 }
             }

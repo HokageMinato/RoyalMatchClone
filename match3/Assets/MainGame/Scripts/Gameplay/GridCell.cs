@@ -95,29 +95,44 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         _element = null;
         return lastElement;
     }
+      
+
+   
+    //public void SetElement(Element newElement)
+    //{
+    //    if (!IsEmpty)
+    //    {
+    //        throw new Exception($"Write before read at cell {gameObject.name}");
+    //    }
+
+    //    newElement.SetHolder(this);
+    //    _element = newElement;
+    //}
 
 
-    public void SetElement(Element newElement)
-    {
+
+    public void SetElement(Element newElement) {
+        
         if (!IsEmpty)
         {
-            Debug.LogWarning($"Override at cell {gameObject.name}");
+            throw new Exception($"Write before read at cell {gameObject.name}");
         }
 
-        newElement.SetHolder(this);
         _element = newElement;
     }
 
 
+    public void LockCell(MatchExecutionData executionData) {
+        renderer.color = Color.red;
+        SetExecutionData(executionData);
+        ToggleInputInteractibility(false);
+    }
 
-    public void SetElementWithPath(Element newElement,List<GridCell> path) {
-        if (!IsEmpty)
-        {
-         //   Debug.LogWarning($"Override at cell {gameObject.name}");
-        }
+    public void UnlockCell() {
 
-        _element = newElement;
-        _element.SetHolderWithPath(this,path);
+        ToggleInputInteractibility(true);
+        SetExecutionData(null);
+        renderer.color = Color.gray;
     }
 
 
@@ -131,9 +146,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         this.executionData = executionData;
     }
 
-    public void ClearExecutionData() {
-        SetExecutionData(null);
-    }
+   
 
     public override string ToString()
     {

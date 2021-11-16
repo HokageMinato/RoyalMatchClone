@@ -70,6 +70,9 @@ public class InputManager : Singleton<InputManager>
 
         matchExecutionData.firstCell.SetElement(secondElement);
         matchExecutionData.secondCell.SetElement(firstElement);
+
+        secondElement.AnimateToCell(matchExecutionData.firstCell);
+        firstElement.AnimateToCell(matchExecutionData.secondCell);
     }
 
    

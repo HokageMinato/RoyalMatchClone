@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class Singleton<T> : MonoBehaviour where T: Singleton<T>
 {
@@ -70,5 +71,37 @@ public readonly struct PeristantString
     {
         get { return PlayerPrefs.GetString(_key, string.Empty); }
         set { PlayerPrefs.SetString(_key, value); }
+    }
+}
+
+
+public static class FastConvertorUtils 
+{
+    public static T[] FastHashSetToArray<T>(HashSet<T> source) 
+    {
+        T[] array = new T[source.Count];
+        int idx = 0;
+
+        foreach (T item in source)
+        {
+            array[idx] = item;
+            idx++;
+        }
+
+        return array;
+    }
+    
+    public static List<T> FastHashSetToList<T>(HashSet<T> source) 
+    {
+        List<T> list= new List<T>(source.Count);
+        int idx = 0;
+
+        foreach (T item in source)
+        {
+            list[idx] = item;
+            idx++;
+        }
+
+        return list;
     }
 }

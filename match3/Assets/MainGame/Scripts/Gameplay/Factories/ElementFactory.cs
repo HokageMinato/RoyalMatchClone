@@ -6,13 +6,17 @@ public class ElementFactory : MonoBehaviour
 {
     #region PRIVATE_VARIABLES
     [SerializeField] private Element[] elementPrefab;
-    [SerializeField] private Transform elementTransformParent;
     #endregion
 
     #region PUBLIC_METHODS
     public Element GetRandomElement()
     {
-       return  Instantiate(elementPrefab[Random.Range(0, elementPrefab.Length)],elementTransformParent);
+        Element element = Instantiate(elementPrefab[Random.Range(0, elementPrefab.Length)]);
+        Transform elementTransformParent = Grid.instance.GetLayerTransformParent(element.RenderLayer);
+        element.transform.SetParent(elementTransformParent);
+
+        return element;
+
     }
     #endregion
     

@@ -124,22 +124,22 @@ public class GridColoumn : MonoBehaviour
 
     public void LockColoumn(MatchExecutionData executionData)
     {
-        for (int i = 0; i < _gridCells.Count; i++)
-        {
-           _gridCells[i].renderer.color = Color.red;
-            _gridCells[i].SetExecutionData(executionData);
-            _gridCells[i].ToggleInputInteractibility(false);
-        }
+        //for (int i = 0; i < _gridCells.Count; i++)
+        //{
+        //    _gridCells[i].renderer.color = Color.red;
+        //    _gridCells[i].SetExecutionData(executionData);
+        //    _gridCells[i].ToggleInputInteractibility(false);
+        //}
     }
 
     public void UnLockColoumn()
     {
-        for (int i = 0; i < _gridCells.Count; i++)
-        {
-            _gridCells[i].ToggleInputInteractibility(true);
-            _gridCells[i].SetExecutionData(null);
-           _gridCells[i].renderer.color = Color.gray;
-        }
+        //for (int i = 0; i < _gridCells.Count; i++)
+        //{
+        //    _gridCells[i].ToggleInputInteractibility(true);
+        //    _gridCells[i].SetExecutionData(null);
+        //   _gridCells[i].renderer.color = Color.gray;
+        //}
     }
 
     public override string ToString()
