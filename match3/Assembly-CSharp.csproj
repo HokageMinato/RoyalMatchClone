@@ -74,7 +74,7 @@
      <Compile Include="Assets\MainGame\Scripts\Gameplay\Matcher.cs" />
      <Compile Include="Assets\MainGame\Scripts\Scriptable\ElementConfig.cs" />
      <Compile Include="Assets\MainGame\Scripts\Scriptable\MatchPattern.cs" />
-     <Compile Include="Assets\MainGame\Scripts\Utilities\MinatoUtils.cs" />
+     <Compile Include="Assets\MainGame\Utilities\MinatoUtils.cs" />
      <Compile Include="Assets\NativePooler.cs" />
  <Reference Include="UnityEngine">
  <HintPath>D:/Installs/Unity Installs/2019.4.11f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

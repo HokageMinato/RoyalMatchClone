@@ -117,13 +117,14 @@ public class Matcher : Singleton<Matcher>
             while (executionData.HasMatches)
             //if (executionData.HasMatches)
             {
-                
+                Debug.LogError("ITR 1 MAIN START");
                 DestroyMatchedItems(executionData);
-                //yield return new WaitForSeconds(1f);
                 grid.CollapseColoumns(executionData);
                 yield return WaitForGridAnimationRoutine(executionData);
                 FindMatches(executionData);
+                Debug.LogError("ITR 1 MAIN END");
             }
+            
 
             activeThreads.Remove(executionData);
 

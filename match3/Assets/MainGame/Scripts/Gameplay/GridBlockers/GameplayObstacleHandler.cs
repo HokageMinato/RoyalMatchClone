@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 
 public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
@@ -11,7 +12,7 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
         int[,] gridDesign = levelData.gridDesignTemp;
         Grid grid = Grid.instance;
 
-        for (int i = 0; i < levelData.gridWidth; i++)
+        for (int i = 0; i < levelData.gridHeight; i++)
         {
             for (int j = 0; j < levelData.gridWidth; j++) 
             {
@@ -45,8 +46,16 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
         Destroy(blocker.gameObject);
     }
 
-
-
+    internal bool IsCellBelowObstacle(int i_HIndex, int j_WIndex)
+    {
+        for (int i = 0; i < activeBlockers.Count; i++)
+        {
+            CellBlocker blocker = activeBlockers[i];
+            if (blocker.initial_h < i_HIndex && blocker.initial_w == j_WIndex)
+                return true;
+        }
+        return false;
+    }
 }
 
 public enum RenderLayer {
