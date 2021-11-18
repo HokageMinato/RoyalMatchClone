@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class GridColoumnCollapser : MonoBehaviour
 {
 
-    private readonly WaitForSeconds interAnimationChainDispatchDelay = new WaitForSeconds(0.04f);
+    private readonly WaitForSeconds interAnimationChainDispatchDelay = new WaitForSeconds(0.1f);
 
     [ContextMenu("Test")]
     public void CollapseColomuns(MatchExecutionData executionData) {
@@ -29,7 +30,7 @@ public class GridColoumnCollapser : MonoBehaviour
 
 
 
-
+        #region LOCAL_FUNCTION_DECLARATIONS
         void ShiftCellsDown()
         {
             int whileSafeCheck = 0;
@@ -357,6 +358,9 @@ public class GridColoumnCollapser : MonoBehaviour
         
         IEnumerator AnimateElementChain(List<ElementAnimationData> elementAnimationDatas) {
 
+
+           //Reverse sort by ToIndex and if similar reverseSort that set by FromIndex to get dependency chain.
+
             for (int i = 0; i < elementAnimationDatas.Count; i++)
             {
                 ElementAnimationData animationData = elementAnimationDatas[i];
@@ -375,10 +379,11 @@ public class GridColoumnCollapser : MonoBehaviour
 
             yield return null;
         }
+        #endregion
 
     }
 
-   
+
 
     public struct ElementAnimationData
     {
