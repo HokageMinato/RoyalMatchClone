@@ -101,6 +101,7 @@ public class Matcher : Singleton<Matcher>
    
     private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData)
     {
+        Debug.LogError($"ITR {executionData.swipeId} MAIN START");
         activeThreads.Add(executionData);
         FindMatches(executionData);
         yield return WaitForGridAnimationRoutine(executionData);
@@ -115,18 +116,20 @@ public class Matcher : Singleton<Matcher>
         {
             Grid grid = Grid.instance;
             while (executionData.HasMatches)
-            //if (executionData.HasMatches)
+           // if (executionData.HasMatches)
             {
-                Debug.LogError("ITR 1 MAIN START");
+                
                 DestroyMatchedItems(executionData);
                 grid.CollapseColoumns(executionData);
                 yield return WaitForGridAnimationRoutine(executionData);
                 FindMatches(executionData);
-                Debug.LogError("ITR 1 MAIN END");
+                
             }
             
 
             activeThreads.Remove(executionData);
+
+            Debug.LogError($"ITR {executionData.swipeId} MAIN END");
 
             while (activeThreads.Count > 0)
                 yield return null;

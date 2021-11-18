@@ -13,6 +13,7 @@ public class Element : MonoBehaviour
             return ElementConfig.renderLayer;
         }
     }
+
     
     
 
@@ -55,7 +56,7 @@ public class Element : MonoBehaviour
     //}
     
    
-    private IEnumerator AnimateToCellRoutine(GridCell newHolder)
+    public IEnumerator AnimateToCellRoutine(GridCell newHolder)
     {
         MatchExecutionData executionData = newHolder.executionData;
         executionData.movingElements.Add(this);

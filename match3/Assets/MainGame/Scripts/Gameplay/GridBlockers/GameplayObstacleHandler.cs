@@ -24,6 +24,9 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
                     CellBlocker blocker = obstacleGenerator.GenerateBlocker(66);
                     blocker.Init(grid, i, j);
                     activeBlockers.Add(blocker);
+
+                    
+
                 }
 
             }
@@ -56,6 +59,8 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
         }
         return false;
     }
+
+    
 }
 
 public enum RenderLayer {

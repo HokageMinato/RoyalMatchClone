@@ -213,19 +213,103 @@
 
 //public void CollapseColoumns(MatchExecutionData executionData)
 //    {
-        
+
 //        for (int l = _gridC.Count-1; l >=0; l--)
 //        {
 //            _gridC[l].ShiftRemainingCellsDownwards(executionData);
 //        }
-        
+
 //        for (int l = _gridC.Count-1; l >=0; l--)
 //        {
 //            _gridC[l].ShiftRemainingCellsPyramid(executionData);
 //        }
 
 
-        
+
 //    }
- 
+
 // */
+// NEW SHIFT
+//void ShiftCellDownwards(int[] coloumns)
+//{
+//    #region EXECUTION_ORDER
+//    for (int colId = coloumns.Length - 1; colId >= 0; colId--)
+//    {
+
+//        int coloumnIdx = coloumns[colId];
+//        List<int[]> fromToIndexPairs = new List<int[]>();
+
+//        fromToIndexPairs.Add(new int[2]);
+//        fromToIndexPairs[fromToIndexPairs.Count - 1][0] = 0;
+//        fromToIndexPairs[fromToIndexPairs.Count - 1][1] = 0;
+
+//        for (int k = 0; k < grid.GridHeight; k++)
+//        {
+//            if (grid[k, coloumnIdx] == null || !grid[k, coloumnIdx].IsBlocked)
+//            {
+//                fromToIndexPairs[fromToIndexPairs.Count - 1][1] = k;
+//            }
+//            else if (grid[k, coloumnIdx].IsBlocked && k < grid.GridHeight - 1)
+//            {
+//                fromToIndexPairs.Add(new int[2]);
+//                fromToIndexPairs[fromToIndexPairs.Count - 1][0] = k + 1;
+//                fromToIndexPairs[fromToIndexPairs.Count - 1][1] = k + 1;
+//            }
+
+//        }
+
+//        for (int k = 0; k < fromToIndexPairs.Count; k++)
+//        {
+//            int start = fromToIndexPairs[k][0];
+//            int endt = fromToIndexPairs[k][1];
+
+
+//            if (start == endt && grid[start, coloumnIdx] != null)
+//            {
+//                grid[start, coloumnIdx].renderer.color = Color.magenta;
+//                continue;
+//            }
+
+//            Color color = Random.ColorHSV();
+
+//            for (int j = endt; j >= start; j--)
+//            {
+
+//                GridCell currentCell = grid[j, coloumnIdx];
+
+//                if (currentCell == null)
+//                    continue;
+
+//                //currentCell.renderer.color = color;
+//                if (currentCell.IsEmpty)
+//                {
+//                    GridCell filledCell = GetTopMostFilledCell(coloumnIdx, start, j);
+
+//                    if (filledCell == null)
+//                    {
+//                        break;
+//                    }
+
+//                    Element element = filledCell.GetElement();
+//                    currentCell.SetElement(element);
+//                    elementFromToPairs.Add(new ElementFromToPair(element, filledCell, currentCell));
+//                }
+//            }
+//        }
+//    }
+
+
+//GridCell GetTopMostFilledCell(int coloumnIdx, int st, int ed)
+//{
+
+//    for (int tpI = ed; tpI >= st; tpI--)
+//    {
+//        GridCell currentCell = grid[tpI, coloumnIdx];
+//        if (currentCell != null && !currentCell.IsEmpty)
+//        {
+//            return currentCell;
+//        }
+//    }
+//    return null;
+
+//}
