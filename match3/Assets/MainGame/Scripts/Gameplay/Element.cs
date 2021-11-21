@@ -22,7 +22,7 @@ public class Element : MonoBehaviour
       if (other == null)
          return false;
       
-      return elementConfig.elementId.Equals(other.elementConfig.elementId);
+      return elementConfig.Equals(other.elementConfig);
    }
 
    public void AnimateToCell(GridCell newHolder)

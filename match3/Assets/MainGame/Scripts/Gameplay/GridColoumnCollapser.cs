@@ -61,7 +61,7 @@ public class GridColoumnCollapser : MonoBehaviour
         Grid grid = Grid.instance;
 
         List<ElementAnimationData> elementFromToPairForAnimation = new List<ElementAnimationData>();
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < grid.GridHeight; i++)
         {
             ShiftCellsDown();
             ShiftCellsRightAndDown();
@@ -159,8 +159,8 @@ public class GridColoumnCollapser : MonoBehaviour
 
                     GridCell currentCell = grid[gI, gJ];
                     if (currentCell && !currentCell.IsEmpty && !currentCell.IsBlocked)
-                    {
-                        GridCell bottomFromCurrent;
+                     {
+                            GridCell bottomFromCurrent;
                         GridCell bottomRightFromCurrent;
 
                         do
@@ -386,9 +386,7 @@ public class GridColoumnCollapser : MonoBehaviour
 
             foreach (KeyValuePair<Element, List<ElementAnimationData>> pair in elementSeperatedAnimSequence)
             {
-
                 StartCoroutine(AnimateElementChain(pair.Value));
-                yield return interAnimationChainDispatchDelay;
             }
 
 

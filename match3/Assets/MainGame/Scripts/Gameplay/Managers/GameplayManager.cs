@@ -19,7 +19,7 @@ public class GameplayManager: Singleton<GameplayManager>
     public void Init()
     {
         Grid.instance.GenerateGrid();
-        GameplayObstacleHandler.instance.GenerateObstacles(levelData);
+        GameplayObstacleHandler.instance.Init(levelData);
     }
 
 

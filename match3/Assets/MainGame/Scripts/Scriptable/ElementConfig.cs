@@ -12,9 +12,12 @@ public class ElementConfig : ScriptableObject
     
     //Instance Specific Settings
     public ElementId elementId;
-    
-    //PDO Methods
-    
+
+
+    public bool Equals(ElementConfig other)
+    {
+        return other.elementId.id == elementId.id;
+    }
 }
 
 [System.Serializable]
