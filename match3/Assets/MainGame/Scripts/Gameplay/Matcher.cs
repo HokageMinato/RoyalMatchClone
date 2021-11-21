@@ -82,7 +82,7 @@ public class Matcher : Singleton<Matcher>
 {
     #region PRIVATE_VARIABLES
     [SerializeField] private MatchPattern[] patterns;
-    private List<MatchExecutionData> activeThreads = new List<MatchExecutionData>();
+    private HashSet<MatchExecutionData> activeThreads = new HashSet<MatchExecutionData>();
     private const float FOUR_FRAME_WAITTIME = 0.64f;
     #endregion
     
@@ -118,14 +118,18 @@ public class Matcher : Singleton<Matcher>
             while (executionData.HasMatches)
            // if (executionData.HasMatches)
             {
-                
+                System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+                st.Start();
                 DestroyMatchedItems(executionData);
                 grid.CollapseColoumns(executionData);
-                yield return WaitForGridAnimationRoutine(executionData);
+                float time = st.ElapsedMilliseconds;
+                BasicLogger.Log($"{time} ms");
+                st.Stop();
+
                 FindMatches(executionData);
-                
+                yield return WaitForGridAnimationRoutine(executionData);
             }
-            
+
 
             activeThreads.Remove(executionData);
 

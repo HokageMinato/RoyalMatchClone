@@ -20,7 +20,6 @@ public class GameplayManager: Singleton<GameplayManager>
     {
         Grid.instance.GenerateGrid();
         GameplayObstacleHandler.instance.GenerateObstacles(levelData);
-        ElementGeneratorFactory.instance.GenerateElementHandlers();
     }
 
 
@@ -30,14 +29,18 @@ public class GameplayManager: Singleton<GameplayManager>
 
 public class GridDesignTemp
 {
+    public static float gridSpacing=.9f;
 
     public int[,] gridDesignTemp;
-    public float gridSpacing;
     public float maxWidthMidPointForThisPattern;
     public float maxHeightMidPointForThisPattern;
     public int gridHeight;
     public int gridWidth;
 
+    public int this[int i, int j]
+    {
+        get { return gridDesignTemp[i,j]; }
+    }
 
 
     public static GridDesignTemp GetDefault() {
@@ -46,10 +49,10 @@ public class GridDesignTemp
 
        levelData.gridDesignTemp = new[,]
         {
-            {1,1,1,1,1,1,1,1,1},
-            {1,1,1,1,1,1,1,1,1},
-            {1,1,66,1,1,66,1,1,1},
-            {0,0,1,1,1,66,1,0,0},
+            {1,1,1,1,1,66,1,1,1},
+            {1,1,1,66,1,1,66,1,1},
+            {1,1,66,1,66,66,66,1,1},
+            {0,0,1,66,1,66,1,0,0},
             {0,0,1,1,1,1,1,0,0},
             {0,0,1,1,1,1,1,0,0},
             {1,1,1,1,1,1,1,1,1},
@@ -57,16 +60,29 @@ public class GridDesignTemp
             {1,1,1,1,1,1,1,1,1}
         };
 
-
-
-
-    levelData.gridSpacing = .9f;
+       
     levelData.maxWidthMidPointForThisPattern = 3.4f;
     levelData.maxHeightMidPointForThisPattern = 3.4f;
-    levelData.gridHeight = 8;
-    levelData.gridWidth = 8;
+    levelData.gridHeight = 9;
+    levelData.gridWidth = 9;
 
 
+        //temp code random block generate
+        //for (int i = 0; i <levelData.gridWidth ; i++)
+        //{
+        //    for (int j = 0; j < levelData.gridHeight; j++)
+        //    {
+        //        if (levelData.gridDesignTemp[i, j]!= GridConstants.NO_CELL) {
+
+        //            if (Random.Range(0, 100) % 6 == 0) {
+        //                levelData.gridDesignTemp[i, j] = 66;
+        //            }
+                    
+        //        }
+        //    }
+
+        //}
+        //
 
 
 

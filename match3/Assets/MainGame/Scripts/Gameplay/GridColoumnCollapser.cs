@@ -5,26 +5,68 @@ using System.Linq;
 
 public class GridColoumnCollapser : MonoBehaviour
 {
-
+    public Transform transformActivePrefab;
     private readonly WaitForSeconds interAnimationChainDispatchDelay = new WaitForSeconds(0.1f);
+    private Transform[] elementFactories;
 
-    [ContextMenu("Test")]
+    public void Init()
+    {
+        SetElementFactoryTransforms();
+        GenerateInitialElements();
+    }
+
+    private void SetElementFactoryTransforms()
+    {
+        GridDesignTemp gridLevel = GameplayManager.instance.levelData;
+        Grid grid = Grid.instance;
+        int gridWidth = gridLevel.gridWidth;
+
+        elementFactories = new Transform[gridWidth];
+        for (int i = 0; i < elementFactories.Length; i++)
+        {
+            int cellType = gridLevel[0, i];
+
+            if (cellType == GridConstants.NO_CELL ||
+               ObstacleFactory.instance.IsBlockerType(cellType))
+                continue;
+
+            Transform parentTransform = grid.GetLayerTransformParent(RenderLayer.ElementLayer);
+            elementFactories[i] = Instantiate(transformActivePrefab,parentTransform);
+            elementFactories[i].transform.position = grid[0, i].transform.position + Vector3.up * GridDesignTemp.gridSpacing;
+        }
+    }
+
+    private void GenerateInitialElements() {
+        Grid grid = Grid.instance;
+
+        for (int i = 0; i < grid.GridHeight; i++)
+        {
+            for (int j = 0; j < grid.GridWidth; j++) {
+
+                GridCell gridCell = grid[i, j];
+                if (!gridCell || gridCell.IsBlocked)
+                    continue;
+
+                Element element = ElementFactory.instance.GetRandomElement();
+                gridCell.SetElement(element);
+                element.transform.position = gridCell.transform.position; 
+            }
+        }
+    
+    }
+
     public void CollapseColomuns(MatchExecutionData executionData) {
 
         #region FUNCTION_EXECUTION_ORDER
         Grid grid = Grid.instance;
 
         List<ElementAnimationData> elementFromToPairForAnimation = new List<ElementAnimationData>();
-
-        int[] dirtyColoumns = FastConvertorUtils.FastHashSetToArray(executionData.dirtyColoumns);
-        System.Array.Sort(dirtyColoumns);
-
-        ShiftCellsDown();
-        Debug.Log("==============================================================");
-        ShiftCellsRightAndDown();
-        Debug.Log("==============================================================");
-        ShiftCellsLeftAndDown();
-        Debug.Log("==============================================================");
+        for (int i = 0; i < 4; i++)
+        {
+            ShiftCellsDown();
+            ShiftCellsRightAndDown();
+            ShiftCellsLeftAndDown();
+        }
         AnimateMovement();
         #endregion
 
@@ -53,7 +95,7 @@ public class GridColoumnCollapser : MonoBehaviour
                             string log = string.Empty;
                             log += $"Current cell {currentCell} \n";
                             log += ($"Bottom cell {bottomFromCurrent} is null {bottomFromCurrent == null} \n");
-                         //   Debug.Log(log);
+                            //   Debug.Log(log);
 
 
                             if (bottomFromCurrent != null)
@@ -118,21 +160,20 @@ public class GridColoumnCollapser : MonoBehaviour
                     GridCell currentCell = grid[gI, gJ];
                     if (currentCell && !currentCell.IsEmpty && !currentCell.IsBlocked)
                     {
-
                         GridCell bottomFromCurrent;
                         GridCell bottomRightFromCurrent;
-                     
+
                         do
                         {
                             RefreshBR(out bottomFromCurrent, out bottomRightFromCurrent, gI, gJ);
 
-                            string log = string.Empty;
+                            //string log = string.Empty;
 
-                            log += $"Current cell {currentCell} \n";
-                            log += ($"Bottom cell {bottomFromCurrent} is null {bottomFromCurrent == null} \n");
-                            log += ($"BottomRight cell {bottomRightFromCurrent} is null {bottomRightFromCurrent == null} \n");
+                            //log += $"Current cell {currentCell} \n";
+                            //log += ($"Bottom cell {bottomFromCurrent} is null {bottomFromCurrent == null} \n");
+                            //log += ($"BottomRight cell {bottomRightFromCurrent} is null {bottomRightFromCurrent == null} \n");
 
-                         //   Debug.Log(log);
+                            //   Debug.Log(log);
 
                             if (bottomFromCurrent != null)
                             {
@@ -155,7 +196,7 @@ public class GridColoumnCollapser : MonoBehaviour
                                 continue;
                             }
 
-                            
+
                             whileSafeCheck++;
 
                             if (whileSafeCheck >= 150)
@@ -172,7 +213,6 @@ public class GridColoumnCollapser : MonoBehaviour
                         }
 
                     }
-
                 }
             }
 
@@ -182,7 +222,7 @@ public class GridColoumnCollapser : MonoBehaviour
 
                 bottom = null;
                 bottomRight = null;
-               
+
                 //bottom
                 int bottomI = ti + 1;
                 int bottomJ = tj;
@@ -223,20 +263,19 @@ public class GridColoumnCollapser : MonoBehaviour
                     {
 
                         GridCell bottomFromCurrent;
-                        GridCell bottomRightFromCurrent;
                         GridCell bottomLeftFromCurrent;
 
                         do
                         {
-                            RefreshBL(out bottomFromCurrent,out bottomLeftFromCurrent, gI, gJ);
+                            RefreshBL(out bottomFromCurrent, out bottomLeftFromCurrent, gI, gJ);
 
-                            string log = string.Empty;
+                            //string log = string.Empty;
 
-                            log += $"Current cell {currentCell} \n";
-                            log += ($"Bottom cell {bottomFromCurrent} is null {bottomFromCurrent == null} \n");
-                            log += ($"BottomLeft cell {bottomLeftFromCurrent} is null {bottomLeftFromCurrent == null} \n");
-                          
-                          //  Debug.Log(log);
+                            //log += $"Current cell {currentCell} \n";
+                            //log += ($"Bottom cell {bottomFromCurrent} is null {bottomFromCurrent == null} \n");
+                            //log += ($"BottomLeft cell {bottomLeftFromCurrent} is null {bottomLeftFromCurrent == null} \n");
+
+                            //  Debug.Log(log);
 
                             if (bottomFromCurrent != null)
                             {
@@ -298,12 +337,12 @@ public class GridColoumnCollapser : MonoBehaviour
                     bottom = grid[bottomI, bottomJ];
                 }
 
-              
+
                 //bottomLeft
                 int bottomLeftI = ti + 1;
                 int bottomLeftJ = tj - 1;
 
-                bool  isCellBelowObstacle = GameplayObstacleHandler.instance.IsCellBelowObstacle(bottomLeftI, bottomLeftJ);
+                bool isCellBelowObstacle = GameplayObstacleHandler.instance.IsCellBelowObstacle(bottomLeftI, bottomLeftJ);
 
                 if (bottomLeftI < grid.GridHeight && bottomLeftJ >= 0 &&
                     grid[bottomLeftI, bottomLeftJ] && grid[bottomLeftI, bottomLeftJ].IsEmpty &&
@@ -328,12 +367,12 @@ public class GridColoumnCollapser : MonoBehaviour
 
 
             Dictionary<Element, List<ElementAnimationData>> elementSeperatedAnimSequence = new Dictionary<Element, List<ElementAnimationData>>();
-            
+
             for (int i = 0; i < elementFromToPairForAnimation.Count; i++)
             {
                 ElementAnimationData elementAnimationData = elementFromToPairForAnimation[i];
                 Element element = elementAnimationData.Element;
-               
+
 
                 if (!elementSeperatedAnimSequence.ContainsKey(element))
                 {
@@ -355,11 +394,11 @@ public class GridColoumnCollapser : MonoBehaviour
 
             yield return null;
         }
-        
+
         IEnumerator AnimateElementChain(List<ElementAnimationData> elementAnimationDatas) {
 
 
-           //Reverse sort by ToIndex and if similar reverseSort that set by FromIndex to get dependency chain.
+            //Reverse sort by ToIndex and if similar reverseSort that set by FromIndex to get dependency chain.
 
             for (int i = 0; i < elementAnimationDatas.Count; i++)
             {
@@ -368,7 +407,7 @@ public class GridColoumnCollapser : MonoBehaviour
                 Element element = animationData.Element;
 
                 //TEMPORARY FIX 
-                /// ISSUE DUE TO DECLUSION OF BLOCKED COLOUMNS DURING EXECUTIONDATA ASSIGING
+                /// ISSUE DUE TO DECLUSION OF BLOCKED COLOUMNS DURING EXECUTIONDATA's LOCKED COLOUMN ASSIGING
                 /// ADD NEARBY BLOCKED COLOUMNS WHILE LOCKING AND ASSIGN APPROPRIATE EXEC DATA.
                 if (toCell.executionData == null) {
                     toCell.SetExecutionData(executionData);
@@ -378,12 +417,11 @@ public class GridColoumnCollapser : MonoBehaviour
             }
 
             yield return null;
-        }
+        } 
+    }
         #endregion
 
-    }
-
-
+        #region LOCAL_DS_DEFINITIONS
 
     public struct ElementAnimationData
     {
@@ -398,13 +436,17 @@ public class GridColoumnCollapser : MonoBehaviour
             Element = element;
             FromCell = fromCell;
             ToCell = toCell;
-            elementName =  element.gameObject.name;
-           
+            elementName = element.gameObject.name;
+
         }
     }
 
+    #endregion
 
 }
+
+
+
 
 
 

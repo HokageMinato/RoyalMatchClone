@@ -12,7 +12,6 @@ public class Grid : Singleton<Grid>
 {
 
     #region PRIVATE_VARIABLES
-    [SerializeField] private GridColoumn GridColoumnPrefab;
     [SerializeField] private GridCell gridCellPrefab;
     [SerializeField] private GridColoumnCollapser coloumnCollapser;
     [SerializeField] private Transform[] layerTransforms;
@@ -21,38 +20,32 @@ public class Grid : Singleton<Grid>
     #region PUBLIC_VARIABLES
     public GridCell this[int i,int j]
     {
-        get { return _grid[i,j]; }
-        set { _grid[i,j] = value; }
+        get { return _grid[i][j]; }
+        set { _grid[i][j] = value; }
     }
 
-    public GridColoumn this[int j]
-    {
-        get { return _gridC[j]; }
-    }
-
+   
     public int GridHeight
-    { get { return _levelData.gridHeight; } }
+    { get { return GameplayManager.instance.levelData.gridHeight; } }
     
     public int GridWidth
-    { get { return _levelData.gridWidth; } }
+    { get { return GameplayManager.instance.levelData.gridWidth; } }
 
     
     
     #endregion
    
     #region PRIVATE_VARIABLES
-    private GridCell[,] _grid;
-    private List<GridColoumn> _gridC= new List<GridColoumn>();
-    private GridDesignTemp _levelData;
+    private GridCell[][] _grid;
+  //  private GridDesignTemp _levelData;
     #endregion
 
 
     #region UNITY_CALLBACKS
     public void GenerateGrid()
     {
-        _levelData = GameplayManager.instance.levelData;
         CreateGrid();
-        SetColoumnCells();
+        coloumnCollapser.Init();
     }
     #endregion
 
@@ -92,60 +85,44 @@ public class Grid : Singleton<Grid>
     private void CreateGrid()
     {
         int c = 0;
+        GridDesignTemp levelData = GameplayManager.instance.levelData;
         
-        _grid = new GridCell[_levelData.gridHeight,_levelData.gridWidth];
+        _grid = new GridCell[levelData.gridHeight][];
        
 
-        for (int i = 0; i < _levelData.gridHeight; i++)
+        for (int i = 0; i < levelData.gridHeight; i++)
         {
-            _gridC.Add(Instantiate(GridColoumnPrefab,GetLayerTransformParent(ElementConfig.renderLayer)));
+            _grid[i] = new GridCell[levelData.gridWidth];
 
-            for (int j = 0; j < _levelData.gridWidth; j++)
+            for (int j = 0; j < levelData.gridWidth; j++)
             {
-                if (_levelData.gridDesignTemp[i, j] == GridConstants.NO_CELL)
+                if (levelData.gridDesignTemp[i, j] == GridConstants.NO_CELL)
                     continue;
                  
                 CreateCellAt(j, i);
                 c++;
             }
-
-            if (_levelData.gridDesignTemp[0, i] != GridConstants.NO_CELL)
-            {
-                _gridC[_gridC.Count - 1].gameObject.name ="col"+( _gridC.Count - 1).ToString();
-                _gridC[_gridC.Count - 1].transform.position = _grid[0, i].transform.position + Vector3.up * _levelData.gridSpacing;
-            }
+            
         }
 
     }
 
-   
 
-    private void SetColoumnCells()
-    {
-         for (int i = 0; i < _levelData.gridWidth; i++)
-         {
-            for (int j = 0; j < _levelData.gridHeight; j++)
-            {
-                if (_levelData.gridDesignTemp[i, j] == GridConstants.NO_CELL)
-                    continue;
-        
-                _gridC[j].AddCell(_grid[i,j]);
-            }
-         }
-    }
 
     private void CreateCellAt(int j, int i)
     {
+        GridDesignTemp levelData = GameplayManager.instance.levelData;
         GridCell cell = Instantiate(gridCellPrefab);
-        Vector3 newPosition = transform.position + new Vector3(j, -i) * _levelData.gridSpacing;
-        newPosition.x -= _levelData.maxWidthMidPointForThisPattern;  // | To make sure gridPivot is in center
-        newPosition.y += _levelData.maxHeightMidPointForThisPattern;
+        Vector3 newPosition = transform.position + new Vector3(j, -i) * GridDesignTemp.gridSpacing;
+        newPosition.x -= levelData.maxWidthMidPointForThisPattern;  // | To make sure gridPivot is in center
+        newPosition.y += levelData.maxHeightMidPointForThisPattern;
+        
+        
         cell.transform.SetParent(GetLayerTransformParent(cell.RenderLayer));
         cell.transform.position = newPosition;
         cell.Init(i,j);
         cell.gameObject.name = $"({i},{j})";
-        _grid[i, j] = cell;
-        i++;
+        _grid[i][j] = cell;
     }
     #endregion
 
@@ -170,8 +147,6 @@ public class Grid : Singleton<Grid>
                 LockColoumn(coloumnIndex);
                 executionData.dirtyColoumns.Add(coloumnIndex);
             }
-
-
         }
 
         void LockColoumn(int coloumnIndex)
@@ -194,7 +169,7 @@ public class Grid : Singleton<Grid>
         {
             for (int j = 0; j < GridHeight ; j++)
             {
-                GridCell cell = _grid[i, j];
+                GridCell cell = _grid[i][j];
                 if (cell)
                 {
                     if (cell.executionData!=null && cell.executionData.Equals(matchExecutionData))

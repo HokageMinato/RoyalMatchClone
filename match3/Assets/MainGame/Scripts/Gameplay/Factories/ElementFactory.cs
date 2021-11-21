@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ElementFactory : MonoBehaviour
+public class ElementFactory : Singleton<ElementFactory>
 {
     #region PRIVATE_VARIABLES
     [SerializeField] private Element[] elementPrefab;

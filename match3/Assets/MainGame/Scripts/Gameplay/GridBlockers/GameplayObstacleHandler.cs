@@ -18,15 +18,10 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
             {
                 int cellType = gridDesign[i, j];
 
-                //if (obstacleGenerator.IsBlockerType(cellType)) {
-                if((UnityEngine.Random.Range(0,100)) % 6 == 0 && cellType!=0){ 
-                     //CellBlocker blocker = obstacleGenerator.GenerateBlocker(cellType);
-                    CellBlocker blocker = obstacleGenerator.GenerateBlocker(66);
+                if (obstacleGenerator.IsBlockerType(cellType)) {
+                    CellBlocker blocker = obstacleGenerator.GenerateBlocker(cellType);
                     blocker.Init(grid, i, j);
                     activeBlockers.Add(blocker);
-
-                    
-
                 }
 
             }
