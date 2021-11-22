@@ -7,7 +7,7 @@ public class GridColoumnCollapser : MonoBehaviour
 {
     public Transform transformActivePrefab;
     private readonly WaitForSeconds interAnimationChainDispatchDelay = new WaitForSeconds(0.1f);
-    private Transform[] elementFactories;
+    private Transform[] elementSpawnPositions;
 
     public void Init()
     {
@@ -21,8 +21,8 @@ public class GridColoumnCollapser : MonoBehaviour
         Grid grid = Grid.instance;
         int gridWidth = gridLevel.gridWidth;
 
-        elementFactories = new Transform[gridWidth];
-        for (int i = 0; i < elementFactories.Length; i++)
+        elementSpawnPositions = new Transform[gridWidth];
+        for (int i = 0; i < elementSpawnPositions.Length; i++)
         {
             int cellType = gridLevel[0, i];
 
@@ -31,8 +31,8 @@ public class GridColoumnCollapser : MonoBehaviour
                 continue;
 
             Transform parentTransform = grid.GetLayerTransformParent(RenderLayer.ElementLayer);
-            elementFactories[i] = Instantiate(transformActivePrefab,parentTransform);
-            elementFactories[i].transform.position = grid[0, i].transform.position + Vector3.up * GridDesignTemp.gridSpacing;
+            elementSpawnPositions[i] = Instantiate(transformActivePrefab,parentTransform);
+            elementSpawnPositions[i].transform.position = grid[0, i].transform.position + Vector3.up * GridDesignTemp.gridSpacing;
         }
     }
 
@@ -61,16 +61,19 @@ public class GridColoumnCollapser : MonoBehaviour
         Grid grid = Grid.instance;
 
         List<ElementAnimationData> elementFromToPairForAnimation = new List<ElementAnimationData>();
-        for (int i = 0; i < grid.GridHeight; i++)
+        int iterationPassRequiredForZigZagPaths = grid.GridHeight;
+        for (int i = 0; i < iterationPassRequiredForZigZagPaths; i++)
         {
             ShiftCellsDown();
             ShiftCellsRightAndDown();
             ShiftCellsLeftAndDown();
         }
+
+
+
+
         AnimateMovement();
         #endregion
-
-
 
         #region LOCAL_FUNCTION_DECLARATIONS
         void ShiftCellsDown()
@@ -161,7 +164,7 @@ public class GridColoumnCollapser : MonoBehaviour
                     if (currentCell && !currentCell.IsEmpty && !currentCell.IsBlocked)
                      {
                             GridCell bottomFromCurrent;
-                        GridCell bottomRightFromCurrent;
+                            GridCell bottomRightFromCurrent;
 
                         do
                         {
@@ -440,8 +443,7 @@ public class GridColoumnCollapser : MonoBehaviour
     }
 
     #endregion
-
-}
+    }
 
 
 
