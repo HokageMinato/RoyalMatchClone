@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
+
 
 public class GridColoumnCollapser : MonoBehaviour
 {
@@ -47,12 +47,19 @@ public class GridColoumnCollapser : MonoBehaviour
                 if (!gridCell || gridCell.IsBlocked)
                     continue;
 
-                Element element = ElementFactory.instance.GetRandomElement();
-                gridCell.SetElement(element);
-                element.transform.position = gridCell.transform.position; 
+
+               Element newElement= GenerateElementAt(gridCell);
+               newElement.transform.position = gridCell.transform.position; 
             }
         }
     
+    }
+
+    private Element GenerateElementAt(GridCell cell) {
+        
+        Element element = ElementFactory.instance.GenerateRandomElement();
+        cell.SetElement(element);
+        return element;
     }
 
     public void CollapseColomuns(MatchExecutionData executionData) {
@@ -65,12 +72,16 @@ public class GridColoumnCollapser : MonoBehaviour
         for (int i = 0; i < iterationPassRequiredForZigZagPaths; i++)
         {
             ShiftCellsDown();
+            GenerateNewElements();
+
             ShiftCellsRightAndDown();
+            GenerateNewElements();
+
             ShiftCellsLeftAndDown();
+            GenerateNewElements();
+
         }
-
-
-
+        
 
         AnimateMovement();
         #endregion
@@ -361,6 +372,30 @@ public class GridColoumnCollapser : MonoBehaviour
 
         }
 
+        void GenerateNewElements() {
+            
+            for(int i=0;i<grid.GridWidth;i++) {
+
+                Vector3 position = grid[0, i].transform.position;
+                for (int j = 0; j < grid.GridHeight; j++)
+                {
+                    GridCell currentCell = grid[j, i];
+
+                    if (currentCell == null)
+                        continue;
+
+                    if (!currentCell.IsEmpty)
+                        break;
+
+                    position.y += GridDesignTemp.gridSpacing;
+                    Element newElement = GenerateElementAt(currentCell);
+                    newElement.transform.position = position;
+                    elementFromToPairForAnimation.Add(new ElementAnimationData(newElement, currentCell, currentCell));
+
+                }
+            }
+        }
+
         void AnimateMovement() {
 
             StartCoroutine(AnimateMovementRoutine());
@@ -444,12 +479,3 @@ public class GridColoumnCollapser : MonoBehaviour
 
     #endregion
     }
-
-
-
-
-
-
-
-
-

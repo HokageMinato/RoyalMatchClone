@@ -10,7 +10,7 @@ public class ElementFactory : Singleton<ElementFactory>
     #endregion
 
     #region PUBLIC_METHODS
-    public Element GetRandomElement()
+    public Element GenerateRandomElement()
     {
         Element element = Instantiate(elementPrefab[Random.Range(0, elementPrefab.Length)]);
         Transform elementTransformParent = Grid.instance.GetLayerTransformParent(element.RenderLayer);
