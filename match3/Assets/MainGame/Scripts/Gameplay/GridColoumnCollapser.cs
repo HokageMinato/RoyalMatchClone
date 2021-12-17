@@ -373,10 +373,14 @@ public class GridColoumnCollapser : MonoBehaviour
         }
 
         void GenerateNewElements() {
-            
+
             for(int i=0;i<grid.GridWidth;i++) {
 
                 Vector3 position = grid[0, i].transform.position;
+                
+                List<Vector3> positions = new List<Vector3>();
+                List<GridCell> targetCells = new List<GridCell>();
+                
                 for (int j = 0; j < grid.GridHeight; j++)
                 {
                     GridCell currentCell = grid[j, i];
@@ -388,16 +392,20 @@ public class GridColoumnCollapser : MonoBehaviour
                         break;
 
                     position.y += GridDesignTemp.gridSpacing;
-                    Element newElement = GenerateElementAt(currentCell);
-                    newElement.transform.position = position;
-                    elementFromToPairForAnimation.Add(new ElementAnimationData(newElement, currentCell, currentCell));
+                    positions.Insert(0,position);
+                    targetCells.Add(currentCell);
+                }
 
+                for (int k = 0; k < positions.Count; k++)
+                {
+                    Element newElement = GenerateElementAt(targetCells[k]);
+                    newElement.transform.position = positions[k];
+                    elementFromToPairForAnimation.Add(new ElementAnimationData(newElement, targetCells[k], targetCells[k]));
                 }
             }
         }
 
         void AnimateMovement() {
-
             StartCoroutine(AnimateMovementRoutine());
         }
 

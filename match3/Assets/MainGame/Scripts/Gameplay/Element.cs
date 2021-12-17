@@ -14,8 +14,6 @@ public class Element : MonoBehaviour
         }
     }
 
-    
-    
 
     public bool Equals(Element other)
    {
@@ -29,32 +27,7 @@ public class Element : MonoBehaviour
    {
       StartCoroutine(AnimateToCellRoutine(newHolder));
    }
-    
-   // public void AnimateToCell(GridCell newHolder, List<GridCell> travelPath=null)
-   //{
-   //   StartCoroutine(AnimateToCellRoutine(newHolder,travelPath));
-   //}
-
-
-
-    //private IEnumerator AnimateToCellRoutine(GridCell newHolder,List<GridCell> travelPath=null)
-    //{
-
-    //    MatchExecutionData executionData = newHolder.executionData;
-    //    executionData.movingElements.Add(this);
-
-    //    if (travelPath != null)
-    //        for (int p = 0; p < travelPath.Count; p++)
-    //        {
-    //            yield return ShiftToCell(travelPath[p]);
-    //        }
-    //    else
-    //        yield return ShiftToCell(newHolder);
-
-        
-    //    executionData.movingElements.Remove(this);
-    //}
-    
+   
    
     public IEnumerator AnimateToCellRoutine(GridCell newHolder)
     {
