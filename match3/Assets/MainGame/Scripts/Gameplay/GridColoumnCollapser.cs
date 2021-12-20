@@ -31,62 +31,75 @@ public class GridColoumnCollapser : MonoBehaviour
                 continue;
 
             Transform parentTransform = grid.GetLayerTransformParent(RenderLayer.ElementLayer);
-            elementSpawnPositions[i] = Instantiate(transformActivePrefab,parentTransform);
+            elementSpawnPositions[i] = Instantiate(transformActivePrefab, parentTransform);
             elementSpawnPositions[i].transform.position = grid[0, i].transform.position + Vector3.up * GridDesignTemp.gridSpacing;
         }
     }
 
-    private void GenerateInitialElements() {
+    private void GenerateInitialElements()
+    {
         Grid grid = Grid.instance;
 
         for (int i = 0; i < grid.GridHeight; i++)
         {
-            for (int j = 0; j < grid.GridWidth; j++) {
+            for (int j = 0; j < grid.GridWidth; j++)
+            {
 
                 GridCell gridCell = grid[i, j];
                 if (!gridCell || gridCell.IsBlocked)
                     continue;
 
 
-               Element newElement= GenerateElementAt(gridCell);
-               newElement.transform.position = gridCell.transform.position; 
+                Element newElement = GenerateElementAt(gridCell);
+                newElement.transform.position = gridCell.transform.position;
             }
         }
-    
+
     }
 
-    private Element GenerateElementAt(GridCell cell) {
-        
+    private Element GenerateElementAt(GridCell cell)
+    {
+
         Element element = ElementFactory.instance.GenerateRandomElement();
         cell.SetElement(element);
         return element;
     }
 
-    public void CollapseColomuns(MatchExecutionData executionData) {
+    public void CollapseColomuns(MatchExecutionData executionData)
+    {
 
         #region FUNCTION_EXECUTION_ORDER
         Grid grid = Grid.instance;
 
-        List<ElementAnimationData> elementFromToPairForAnimation = new List<ElementAnimationData>();
+        Dictionary<Element, List<ElementAnimationData>> elementFromToPairForAnimation = new Dictionary<Element, List<ElementAnimationData>>();
         int iterationPassRequiredForZigZagPaths = grid.GridHeight;
         for (int i = 0; i < iterationPassRequiredForZigZagPaths; i++)
         {
+
             ShiftCellsDown();
-            GenerateNewElements();
 
             ShiftCellsRightAndDown();
-            GenerateNewElements();
 
             ShiftCellsLeftAndDown();
+
             GenerateNewElements();
 
         }
-        
+
 
         AnimateMovement();
         #endregion
 
         #region LOCAL_FUNCTION_DECLARATIONS
+        void AddPair(Element element, ElementAnimationData animationData)
+        {
+
+            if (!elementFromToPairForAnimation.ContainsKey(element))
+                elementFromToPairForAnimation.Add(element, new List<ElementAnimationData>());
+
+            elementFromToPairForAnimation[element].Add(animationData);
+        }
+
         void ShiftCellsDown()
         {
             int whileSafeCheck = 0;
@@ -118,7 +131,9 @@ public class GridColoumnCollapser : MonoBehaviour
                                 Element element = currentCell.GetElement();
                                 bottomFromCurrent.SetElement(element);
                                 currentCell = bottomFromCurrent;
-                                elementFromToPairForAnimation.Add(new ElementAnimationData(element, currentCell, bottomFromCurrent));
+
+                                //elementFromToPairForAnimation.Add(new ElementAnimationData(element, currentCell, bottomFromCurrent));
+                                AddPair(element, new ElementAnimationData(element, currentCell, bottomFromCurrent));
                                 continue;
                             }
 
@@ -161,7 +176,8 @@ public class GridColoumnCollapser : MonoBehaviour
             }
         }
 
-        void ShiftCellsRightAndDown() {
+        void ShiftCellsRightAndDown()
+        {
 
             int whileSafeCheck = 0;
             bool infLooperror = false;
@@ -173,9 +189,9 @@ public class GridColoumnCollapser : MonoBehaviour
 
                     GridCell currentCell = grid[gI, gJ];
                     if (currentCell && !currentCell.IsEmpty && !currentCell.IsBlocked)
-                     {
-                            GridCell bottomFromCurrent;
-                            GridCell bottomRightFromCurrent;
+                    {
+                        GridCell bottomFromCurrent;
+                        GridCell bottomRightFromCurrent;
 
                         do
                         {
@@ -195,7 +211,8 @@ public class GridColoumnCollapser : MonoBehaviour
                                 Element element = currentCell.GetElement();
                                 bottomFromCurrent.SetElement(element);
                                 currentCell = bottomFromCurrent;
-                                elementFromToPairForAnimation.Add(new ElementAnimationData(element, currentCell, bottomFromCurrent));
+                                //elementFromToPairForAnimation.Add(new ElementAnimationData(element, currentCell, bottomFromCurrent));
+                                AddPair(element, new ElementAnimationData(element, currentCell, bottomFromCurrent));
                                 continue;
                             }
 
@@ -206,7 +223,8 @@ public class GridColoumnCollapser : MonoBehaviour
                                 Element element = currentCell.GetElement();
                                 bottomRightFromCurrent.SetElement(element);
                                 currentCell = bottomRightFromCurrent;
-                                elementFromToPairForAnimation.Add(new ElementAnimationData(element, currentCell, bottomRightFromCurrent));
+                                //elementFromToPairForAnimation.Add(new ElementAnimationData(element, currentCell, bottomRightFromCurrent));
+                                AddPair(element, new ElementAnimationData(element, currentCell, bottomRightFromCurrent));
                                 continue;
                             }
 
@@ -261,7 +279,8 @@ public class GridColoumnCollapser : MonoBehaviour
             }
         }
 
-        void ShiftCellsLeftAndDown() {
+        void ShiftCellsLeftAndDown()
+        {
 
             int whileSafeCheck = 0;
             bool infLooperror = false;
@@ -297,7 +316,8 @@ public class GridColoumnCollapser : MonoBehaviour
                                 Element element = currentCell.GetElement();
                                 bottomFromCurrent.SetElement(element);
                                 currentCell = bottomFromCurrent;
-                                elementFromToPairForAnimation.Add(new ElementAnimationData(element, currentCell, bottomFromCurrent));
+                                //elementFromToPairForAnimation.Add(new ElementAnimationData(element, currentCell, bottomFromCurrent));
+                                AddPair(element, new ElementAnimationData(element, currentCell, bottomFromCurrent));
                                 continue;
                             }
 
@@ -309,7 +329,8 @@ public class GridColoumnCollapser : MonoBehaviour
                                 Element element = currentCell.GetElement();
                                 bottomLeftFromCurrent.SetElement(element);
                                 currentCell = bottomLeftFromCurrent;
-                                elementFromToPairForAnimation.Add(new ElementAnimationData(element, currentCell, bottomLeftFromCurrent));
+                                //elementFromToPairForAnimation.Add(new ElementAnimationData(element, currentCell, bottomLeftFromCurrent));
+                                AddPair(element, new ElementAnimationData(element, currentCell, bottomLeftFromCurrent));
                                 continue;
 
                             }
@@ -372,15 +393,13 @@ public class GridColoumnCollapser : MonoBehaviour
 
         }
 
-        void GenerateNewElements() {
+        void GenerateNewElements()
+        {
 
-            for(int i=0;i<grid.GridWidth;i++) {
+            for (int i = 0; i < grid.GridWidth; i++)
+            {
 
                 Vector3 position = grid[0, i].transform.position;
-                
-                List<Vector3> positions = new List<Vector3>();
-                List<GridCell> targetCells = new List<GridCell>();
-                
                 for (int j = 0; j < grid.GridHeight; j++)
                 {
                     GridCell currentCell = grid[j, i];
@@ -392,54 +411,36 @@ public class GridColoumnCollapser : MonoBehaviour
                         break;
 
                     position.y += GridDesignTemp.gridSpacing;
-                    positions.Insert(0,position);
-                    targetCells.Add(currentCell);
-                }
-
-                for (int k = 0; k < positions.Count; k++)
-                {
-                    Element newElement = GenerateElementAt(targetCells[k]);
-                    newElement.transform.position = positions[k];
-                    elementFromToPairForAnimation.Add(new ElementAnimationData(newElement, targetCells[k], targetCells[k]));
+                    Element newElement = GenerateElementAt(currentCell);
+                    newElement.transform.position = position;
+                    //elementFromToPairForAnimation.Add(new ElementAnimationData(newElement, currentCell, currentCell));
+                    AddPair(newElement, new ElementAnimationData(newElement, currentCell, currentCell));
                 }
             }
         }
 
-        void AnimateMovement() {
+        void AnimateMovement()
+        {
+
             StartCoroutine(AnimateMovementRoutine());
         }
 
-        IEnumerator AnimateMovementRoutine() {
+        IEnumerator AnimateMovementRoutine()
+        {
 
 
-            Dictionary<Element, List<ElementAnimationData>> elementSeperatedAnimSequence = new Dictionary<Element, List<ElementAnimationData>>();
-
-            for (int i = 0; i < elementFromToPairForAnimation.Count; i++)
+            foreach (KeyValuePair<Element, List<ElementAnimationData>> pair in elementFromToPairForAnimation)
             {
-                ElementAnimationData elementAnimationData = elementFromToPairForAnimation[i];
-                Element element = elementAnimationData.Element;
-
-
-                if (!elementSeperatedAnimSequence.ContainsKey(element))
-                {
-                    elementSeperatedAnimSequence.Add(element, new List<ElementAnimationData>() { elementAnimationData });
-                }
-                else {
-                    elementSeperatedAnimSequence[element].Add(elementAnimationData);
-                }
+                yield return StartCoroutine(AnimateElementChain(pair.Value));
             }
 
-
-            foreach (KeyValuePair<Element, List<ElementAnimationData>> pair in elementSeperatedAnimSequence)
-            {
-                StartCoroutine(AnimateElementChain(pair.Value));
-            }
 
 
             yield return null;
         }
 
-        IEnumerator AnimateElementChain(List<ElementAnimationData> elementAnimationDatas) {
+        IEnumerator AnimateElementChain(List<ElementAnimationData> elementAnimationDatas)
+        {
 
 
             //Reverse sort by ToIndex and if similar reverseSort that set by FromIndex to get dependency chain.
@@ -453,7 +454,8 @@ public class GridColoumnCollapser : MonoBehaviour
                 //TEMPORARY FIX 
                 /// ISSUE DUE TO DECLUSION OF BLOCKED COLOUMNS DURING EXECUTIONDATA's LOCKED COLOUMN ASSIGING
                 /// ADD NEARBY BLOCKED COLOUMNS WHILE LOCKING AND ASSIGN APPROPRIATE EXEC DATA.
-                if (toCell.executionData == null) {
+                if (toCell.executionData == null)
+                {
                     toCell.SetExecutionData(executionData);
                 }
 
@@ -461,11 +463,11 @@ public class GridColoumnCollapser : MonoBehaviour
             }
 
             yield return null;
-        } 
+        }
     }
-        #endregion
+    #endregion
 
-        #region LOCAL_DS_DEFINITIONS
+    #region LOCAL_DS_DEFINITIONS
 
     public struct ElementAnimationData
     {
@@ -486,4 +488,4 @@ public class GridColoumnCollapser : MonoBehaviour
     }
 
     #endregion
-    }
+}
