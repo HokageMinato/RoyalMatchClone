@@ -115,8 +115,8 @@ public class Matcher : Singleton<Matcher>
         else
         {
             Grid grid = Grid.instance;
-           // while (executionData.HasMatches)
-            if (executionData.HasMatches)
+            while(executionData.HasMatches)
+            //if (executionData.HasMatches)
             {
                 System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
                 st.Start();
@@ -161,7 +161,7 @@ public class Matcher : Singleton<Matcher>
             List<Element> sameElementsList = matchedElements[i];
             for (int j = 0; j < sameElementsList.Count; j++)
             {
-                Destroy(sameElementsList[j].gameObject);
+                DestroyImmediate(sameElementsList[j].gameObject);
             }
 
             matchedElements.RemoveAt(i);
@@ -198,12 +198,9 @@ public class Matcher : Singleton<Matcher>
                         //all the listed elements are same or not.
                         if (DoesSelectedCellsHaveSameElements(executionData))
                         {
-                            //Debug.Log($"<Matcher> Cell count {_patternCells.Count}");
+                            
                             HitPotentialObstacles(executionData);
                             ExtractElementsToDestroyList(executionData);
-                            // Debug.Log("--------------------------------------------------------------");
-                            //Debug.Log(".");
-                            //Debug.Log(".");
                         }
 
                         //Pattern 'p' checked successfully here
@@ -212,7 +209,7 @@ public class Matcher : Singleton<Matcher>
             }
         }
 
-        //Debug.Log($"Total patterns detected {_matchedElements.Count}");
+        
     }
 
     private void HitPotentialObstacles(MatchExecutionData executionData) {

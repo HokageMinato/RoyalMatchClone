@@ -12,6 +12,8 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     [SerializeField] private BoxCollider2D inputCollider;
     [SerializeField] private RenderLayer renderLayer;
 
+    public bool lockedInAnimation;
+    
     public new SpriteRenderer renderer;
     private Element _element;
     private CellBlocker _blocker;
@@ -97,19 +99,6 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     }
       
 
-   
-    //public void SetElement(Element newElement)
-    //{
-    //    if (!IsEmpty)
-    //    {
-    //        throw new Exception($"Write before read at cell {gameObject.name}");
-    //    }
-
-    //    newElement.SetHolder(this);
-    //    _element = newElement;
-    //}
-
-
 
     public void SetElement(Element newElement) {
         
@@ -117,6 +106,7 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         {
             throw new Exception($"Write before read at cell {gameObject.name}");
         }
+
 
         _element = newElement;
     }
