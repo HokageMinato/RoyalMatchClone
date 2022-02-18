@@ -122,6 +122,7 @@ public class Matcher : Singleton<Matcher>
                 st.Start();
                 DestroyMatchedItems(executionData);
                 grid.CollapseColoumns(executionData);
+               
                 float time = st.ElapsedMilliseconds;
                 BasicLogger.Log($"{time} ms");
                 st.Stop();
@@ -161,7 +162,7 @@ public class Matcher : Singleton<Matcher>
             List<Element> sameElementsList = matchedElements[i];
             for (int j = 0; j < sameElementsList.Count; j++)
             {
-                DestroyImmediate(sameElementsList[j].gameObject);
+                sameElementsList[j].DestroyElement();
             }
 
             matchedElements.RemoveAt(i);

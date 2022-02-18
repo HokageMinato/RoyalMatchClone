@@ -8,7 +8,7 @@ using UnityEngine;
 public class GridColoumnCollapser : MonoBehaviour
 {
     public Transform transformActivePrefab;
-    private readonly WaitForSeconds interAnimationChainDispatchDelay = new WaitForSeconds(0.01f);
+    
     private Transform[] elementSpawnPositions;
 
     public void Init()
@@ -64,14 +64,17 @@ public class GridColoumnCollapser : MonoBehaviour
         return element;
     }
 
-    public void CollapseColomuns(MatchExecutionData executionData) {
+    public void CollapseColomuns(MatchExecutionData executionData) 
+    {
 
         #region FUNCTION_EXECUTION_ORDER
         Grid grid = Grid.instance;
 
-        Dictionary<Element, List<ElementAnimationData>> elementFromToPairForAnimation = new Dictionary<Element, List<ElementAnimationData>>();
+        Dictionary<int, List<ElementAnimationData>> elementFromToPairForAnimation = new Dictionary<int, List<ElementAnimationData>>();
+        
 
         int iterationPassRequiredForZigZagPaths = grid.GridHeight;
+
         for (int i = 0; i < iterationPassRequiredForZigZagPaths; i++)
         {
             ShiftCellsDown();
@@ -91,10 +94,11 @@ public class GridColoumnCollapser : MonoBehaviour
 
         void AddToLookup(Element element, ElementAnimationData animationData)
         {
-            if (!elementFromToPairForAnimation.ContainsKey(element))
-                elementFromToPairForAnimation.Add(element,new List<ElementAnimationData>());
+            int goInstanceId = element.gameObject.GetInstanceID();
+            if (!elementFromToPairForAnimation.ContainsKey(goInstanceId))
+                elementFromToPairForAnimation.Add(goInstanceId,new List<ElementAnimationData>());
 
-            elementFromToPairForAnimation[element].Add(animationData);
+            elementFromToPairForAnimation[goInstanceId].Add(animationData);
 
         }
 
@@ -397,38 +401,40 @@ public class GridColoumnCollapser : MonoBehaviour
 
         }
 
-        //void GenerateNewElements() {
+        void GenerateNewElements()
+        {
 
-        //    for(int i=0;i<grid.GridWidth;i++) {
+            for (int i = 0; i < grid.GridWidth; i++)
+            {
 
-        //        Vector3 position = grid[0, i].transform.position;
-                
-        //        List<Vector3> positions = new List<Vector3>();
-        //        List<GridCell> targetCells = new List<GridCell>();
-                
-        //        for (int j = 0; j < grid.GridHeight; j++)
-        //        {
-        //            GridCell currentCell = grid[j, i];
+                Vector3 position = grid[0, i].transform.position;
 
-        //            if (currentCell == null)
-        //                continue;
+                List<Vector3> positions = new List<Vector3>();
+                List<GridCell> targetCells = new List<GridCell>();
 
-        //            if (!currentCell.IsEmpty)
-        //                break;
+                for (int j = 0; j < grid.GridHeight; j++)
+                {
+                    GridCell currentCell = grid[j, i];
 
-        //            position.y += GridDesignTemp.gridSpacing;
-        //            positions.Insert(0,position);
-        //            targetCells.Add(currentCell);
-        //        }
+                    if (currentCell == null)
+                        continue;
 
-        //        for (int k = 0; k < positions.Count; k++)
-        //        {
-        //            Element newElement = GenerateElementAt(targetCells[k]);
-        //            newElement.transform.position = positions[k];
-        //            elementFromToPairForAnimation.Add(new ElementAnimationData(newElement, targetCells[k], targetCells[k],executionData));
-        //        }
-        //    }
-        //}
+                    if (!currentCell.IsEmpty)
+                        break;
+
+                    position.y += GridDesignTemp.gridSpacing;
+                    positions.Insert(0, position);
+                    targetCells.Add(currentCell);
+                }
+
+                for (int k = 0; k < positions.Count; k++)
+                {
+                    Element newElement = GenerateElementAt(targetCells[k]);
+                    newElement.transform.position = positions[k];
+                  //  elementFromToPairForAnimation.Add(new ElementAnimationData(newElement, targetCells[k], targetCells[k], executionData));
+                }
+            }
+        }
 
         void AnimateMovement() {
 
@@ -438,20 +444,22 @@ public class GridColoumnCollapser : MonoBehaviour
 
         IEnumerator AnimateMovementRoutine()
         {
-
-            List<List<ElementAnimationData>> animDataSortedByElement = ConvertLookupToList();
-            SortListByMaxHIndex(animDataSortedByElement);
             
-            for (int i = 0; i < animDataSortedByElement.Count; i++)
+
+            WaitForSeconds interAnimationChainDispatchDelay = new WaitForSeconds(0.02f);
+            List<List<ElementAnimationData>> animDataSortedByElement = ConvertLookupToList();
+
+        
+            for (int i = 0; i < animDataSortedByElement.Count;i++)
             {
                 StartCoroutine(AnimateElementChain(animDataSortedByElement[i]));
                 yield return interAnimationChainDispatchDelay;
             }
 
+           yield return null;
+        }
+        
 
-            yield return null;
-
-            
         }
 
         IEnumerator AnimateElementChain(List<ElementAnimationData> elementAnimationDatas) {
@@ -463,18 +471,15 @@ public class GridColoumnCollapser : MonoBehaviour
                 GridCell toCell = animationData.ToCell;
                 Element element = animationData.Element;
                 yield return element.AnimateToCellRoutine(toCell);
+                
             }
 
             yield return null;
         }
 
-
-
-        
-
-    }
-
-    private void LogChain(List<List<ElementAnimationData>> animDataSortedByElement)
+    
+    
+    private void LogChain(List<List<ElementAnimationData>> animDataSortedByElement,string msg)
     {
         string vals = string.Empty;
         string seperator = "|";
@@ -483,12 +488,13 @@ public class GridColoumnCollapser : MonoBehaviour
         {
             for (int i = 0; i < animDataSortedByElement[j].Count; i++)
             {
-                vals += animDataSortedByElement[j][i].FromCell.gameObject.name + "->" + animDataSortedByElement[j][i].ToCell.gameObject.name + seperator;
+                vals += "insId"+animDataSortedByElement[j][i].elementName+":"+animDataSortedByElement[j][i].FromCell.gameObject.name + "->" + animDataSortedByElement[j][i].ToCell.gameObject.name + seperator;
             }
             v += vals + "\n";
         }
-        
-        
+
+        Debug.Log(msg + v);
+        v = String.Empty;
     }
 
 
@@ -512,6 +518,7 @@ public class GridColoumnCollapser : MonoBehaviour
         }
 
 
+
         int GetMaxOf(List<ElementAnimationData> dt)
         {
             int max = dt[0].ToCell.HIndex;
@@ -526,10 +533,11 @@ public class GridColoumnCollapser : MonoBehaviour
             return max;
         }
         
-
+       
 
 
     }
+      
     #endregion
 
 
@@ -550,7 +558,7 @@ public struct ElementAnimationData
         Element = element;
         FromCell = fromCell;
         ToCell = toCell;
-        elementName = element.gameObject.name;
+        elementName = element.GetInstanceID().ToString();
 
         if (toCell.executionData == null)
             toCell.SetExecutionData(currentExecutionData);
