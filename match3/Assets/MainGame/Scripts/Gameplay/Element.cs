@@ -16,6 +16,7 @@ public class Element : MonoBehaviour
         }
     }
 
+    
 
     public bool Equals(Element other)
    {

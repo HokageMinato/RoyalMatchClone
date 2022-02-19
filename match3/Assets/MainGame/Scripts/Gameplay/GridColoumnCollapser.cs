@@ -445,11 +445,15 @@ public class GridColoumnCollapser : MonoBehaviour
         IEnumerator AnimateMovementRoutine()
         {
             
+            //Same animationData.ToCell is making problem since both execute together,
+            // SCan for same To tarets and remove that ins chain entirely to a new chain
+            // and make sure the one being removed is with lesser HIndex compared to other one or overlapping will still persist
 
             WaitForSeconds interAnimationChainDispatchDelay = new WaitForSeconds(0.02f);
             List<List<ElementAnimationData>> animDataSortedByElement = ConvertLookupToList();
 
-        
+            LogChain(animDataSortedByElement,"Before");
+
             for (int i = 0; i < animDataSortedByElement.Count;i++)
             {
                 StartCoroutine(AnimateElementChain(animDataSortedByElement[i]));
@@ -467,18 +471,15 @@ public class GridColoumnCollapser : MonoBehaviour
 
             for (int i = 0; i < elementAnimationDatas.Count; i++)
             {
-                ElementAnimationData animationData = elementAnimationDatas[i];
-                GridCell toCell = animationData.ToCell;
-                Element element = animationData.Element;
-                yield return element.AnimateToCellRoutine(toCell);
-                
+                yield return elementAnimationDatas[i].Animate();
             }
 
             yield return null;
         }
 
-    
-    
+
+
+   
     private void LogChain(List<List<ElementAnimationData>> animDataSortedByElement,string msg)
     {
         string vals = string.Empty;
@@ -545,13 +546,16 @@ public class GridColoumnCollapser : MonoBehaviour
 
 }
 
-public struct ElementAnimationData
+public class ElementAnimationData
 {
 
     public Element Element;
     public GridCell FromCell;
     public GridCell ToCell;
     public string elementName;
+    public bool isAnimating= false; 
+
+    public List<ElementAnimationData> waitForAnimation = new List<ElementAnimationData>();
 
     public ElementAnimationData(Element element, GridCell fromCell, GridCell toCell, MatchExecutionData currentExecutionData)
     {
@@ -563,5 +567,25 @@ public struct ElementAnimationData
         if (toCell.executionData == null)
             toCell.SetExecutionData(currentExecutionData);
 
+        
+    }
+
+    public IEnumerator Animate() 
+    {
+        for (int i = 0; i < waitForAnimation.Count; i++)
+        {
+            if (waitForAnimation[i].isAnimating)
+                i=0;
+        }
+
+        yield return Element.AnimateToCellRoutine(ToCell);
+
+    }
+
+    public bool Equals(ElementAnimationData obj)
+    {
+        return Element.GetInstanceID() == obj.Element.GetInstanceID() &&
+               FromCell.HIndex == obj.FromCell.HIndex
+               && ToCell.HIndex == obj.ToCell.HIndex;
     }
 }
