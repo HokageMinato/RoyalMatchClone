@@ -35,9 +35,15 @@ public class Element : MonoBehaviour
     public void DestroyElement() 
     {
         if (animateRoutine == null)
-            DestroyImmediate(gameObject);
+        {
+
+            Destroy(gameObject);
+        }
         else
-            destoryPostAnimation = true;
+        {
+            StopCoroutine(animateRoutine);
+            Destroy(gameObject);
+        }
     }
    
     public IEnumerator AnimateToCellRoutine(GridCell newHolder)
@@ -49,11 +55,7 @@ public class Element : MonoBehaviour
             Debug.Log($"null at cell {newHolder.gameObject.name}");
 
         executionData.movingElements.Add(this);
-       
-        while (newHolder.lockedInAnimation)
-            yield return null;
-
-       
+    
         float rate = 1 / ElementConfig.SWIPE_ANIM_TIME;
         float i = 0;
 
@@ -69,7 +71,6 @@ public class Element : MonoBehaviour
         }
 
         executionData.movingElements.Remove(this);
-        newHolder.lockedInAnimation = false;
         animateRoutine = null;
         
         if (destoryPostAnimation) 
