@@ -451,12 +451,11 @@ public class GridColoumnCollapser : MonoBehaviour
 
 
             LogChain(animDataSortedByElement,"Before");
+            SortChainsByLength(animDataSortedByElement);
+            LogChain(animDataSortedByElement,"After");
 
             for (int i = 0; i < animDataSortedByElement.Count;i++)
             {
-                while (!CanStartChain(animDataSortedByElement[i], animDataSortedByElement))
-                    yield return null;
-
                 StartCoroutine(AnimateElementChain(animDataSortedByElement[i]));
                 yield return interAnimationChainDispatchDelay;
 
@@ -468,43 +467,29 @@ public class GridColoumnCollapser : MonoBehaviour
         }
         
 
-    }
-
-   private bool CanStartChain(ElementAnimationChain chain, List<ElementAnimationChain> otherChains) 
-    {
-        for (int i = 0; i < chain.animationChain.Count; i++)
-        {
-            for (int j = 0; j < otherChains.Count; j++)
-            {
-                if (otherChains[i].isAnimating && otherChains[i].isLockingCell(chain.animationChain[i].ToCell)) 
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
    
 
-   private IEnumerator AnimateElementChain(ElementAnimationChain animationChain)
+    
+   
+
+    IEnumerator AnimateElementChain(ElementAnimationChain animationChain)
        {
             List<ElementAnimationData> elementAnimationDatas = animationChain.animationChain;
-            animationChain.isAnimating = true;
 
             for (int i = 0; i < elementAnimationDatas.Count; i++)
             {
                 yield return elementAnimationDatas[i].Animate();
             }
 
-            animationChain.isAnimating = false;
             yield return null;
         }
 
 
-   private void LogChain(List<ElementAnimationChain> animDataSortedByElement,string msg)
+    }
+
+    private void LogChain(List<ElementAnimationChain> animDataSortedByElement,string msg)
    {
-        
+        Debug.Log(msg);
         string seperator = "|";
 
         for (int j = 0; j < animDataSortedByElement.Count; j++)
@@ -520,7 +505,7 @@ public class GridColoumnCollapser : MonoBehaviour
    }
 
 
-    void SortChains(List<ElementAnimationChain> animDatasSortedByElement)
+    void SortChainsByLength(List<ElementAnimationChain> animDatasSortedByElement)
     {
 
         for (int i = 0; i < animDatasSortedByElement.Count; i++)
@@ -530,7 +515,7 @@ public class GridColoumnCollapser : MonoBehaviour
                 int v1 = GetMaxOf(animDatasSortedByElement[i].animationChain);
                 int v2 = GetMaxOf(animDatasSortedByElement[j].animationChain);
 
-                if (v1 < v2) 
+                if (v1 > v2) 
                 {
                     var temp = animDatasSortedByElement[i];
                     animDatasSortedByElement[i] = animDatasSortedByElement[j];
@@ -552,18 +537,48 @@ public class GridColoumnCollapser : MonoBehaviour
             //        max = tm;
             //}
 
-            return dt[dt.Count-1].ToCell.HIndex;
+            return dt.Count;
         }
         
        
 
 
     }
-      
+
+    void SortChainsByMaxH(List<ElementAnimationChain> animDatasSortedByElement)
+    {
+
+        for (int i = 0; i < animDatasSortedByElement.Count; i++)
+        {
+            for (int j = i; j < animDatasSortedByElement.Count; j++)
+            {
+                int v1 = GetMaxOf(animDatasSortedByElement[i].animationChain);
+                int v2 = GetMaxOf(animDatasSortedByElement[j].animationChain);
+
+                if (v1 > v2)
+                {
+                    var temp = animDatasSortedByElement[i];
+                    animDatasSortedByElement[i] = animDatasSortedByElement[j];
+                    animDatasSortedByElement[j] = temp;
+                }
+            }
+        }
+
+
+
+        int GetMaxOf(List<ElementAnimationData> dt)
+        {
+            return dt[dt.Count-1].ToCell.HIndex;
+        }
+
+
+
+
+    }
+
     #endregion
 
 
-    string v = string.Empty;
 
 }
 
@@ -572,19 +587,6 @@ public class ElementAnimationChain
 
     public List<ElementAnimationData> animationChain;
     
-    public bool isAnimating;
-
-    public bool isLockingCell(GridCell cell) 
-    {
-        for (int i = 0; i < animationChain.Count; i++)
-        {
-            if (animationChain[i].ToCell == cell)
-                return true;
-        }
-
-        return false;
-    }
-
     public ElementAnimationChain(List<ElementAnimationData> chain) 
     {
         animationChain = chain;    
@@ -618,9 +620,7 @@ public class ElementAnimationData
 
     public IEnumerator Animate() 
     {
-        
-        yield return Element.AnimateToCellRoutine(ToCell);
-
+         yield return Element.AnimateToCellRoutine(ToCell);
     }
 
     public bool Equals(ElementAnimationData obj)

@@ -8,6 +8,16 @@ public class Element : MonoBehaviour
     [SerializeField] ElementConfig elementConfig;
     IEnumerator animateRoutine;
     bool destoryPostAnimation;
+    bool canMove;
+
+    public Element other;
+
+    [ContextMenu("Check")]
+    public void CHeckDIstance() 
+    {
+        Debug.Log(Vector3.Distance(other.transform.position, transform.position));
+    }
+
 
     public RenderLayer RenderLayer
     {
@@ -16,7 +26,6 @@ public class Element : MonoBehaviour
         }
     }
 
-    
 
     public bool Equals(Element other)
    {
@@ -55,6 +64,7 @@ public class Element : MonoBehaviour
             Debug.Log($"null at cell {newHolder.gameObject.name}");
 
         executionData.movingElements.Add(this);
+        
     
         float rate = 1 / ElementConfig.SWIPE_ANIM_TIME;
         float i = 0;
@@ -71,6 +81,8 @@ public class Element : MonoBehaviour
         }
 
         executionData.movingElements.Remove(this);
+        
+
         animateRoutine = null;
         
         if (destoryPostAnimation) 
@@ -80,7 +92,7 @@ public class Element : MonoBehaviour
     }
 
 
-
+    
 
 
 }

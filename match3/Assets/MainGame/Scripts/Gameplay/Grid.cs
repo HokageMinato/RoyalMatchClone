@@ -47,9 +47,13 @@ public class Grid : Singleton<Grid>
         CreateGrid();
         coloumnCollapser.Init();
     }
+
     #endregion
 
     #region PUBLIC_METHODS
+
+    
+
     public bool AreNeighbours(GridCell firstCell, GridCell secondCell){
 
         bool isVerticalPositionSame = firstCell.HIndex == secondCell.HIndex;
