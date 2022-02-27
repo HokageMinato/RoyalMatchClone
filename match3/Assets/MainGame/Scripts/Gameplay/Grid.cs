@@ -37,22 +37,32 @@ public class Grid : Singleton<Grid>
    
     #region PRIVATE_VARIABLES
     private GridCell[][] _grid;
-  //  private GridDesignTemp _levelData;
+    //  private GridDesignTemp _levelData;
     #endregion
 
+    [ContextMenu("HD")]
+    public void Hide() 
+    {
+        foreach (GridCell[] item in _grid)
+        {
+            foreach (var item2 in item)
+            {
+                item2?.ReadElement()?.gameObject.SetActive(false);
+            }
+        }
+    }
 
     #region UNITY_CALLBACKS
     public void GenerateGrid()
     {
         CreateGrid();
+        InterreferenceGrid();
         coloumnCollapser.Init();
     }
 
     #endregion
 
     #region PUBLIC_METHODS
-
-    
 
     public bool AreNeighbours(GridCell firstCell, GridCell secondCell){
 
@@ -78,13 +88,15 @@ public class Grid : Singleton<Grid>
         return areNeighbours;
     }
 
-
     public Transform GetLayerTransformParent(RenderLayer renderLayer) {
         return layerTransforms[(int)renderLayer];
     }
     #endregion
 
     #region PRIVATE_METHODS
+
+
+
     
     private void CreateGrid()
     {
@@ -111,6 +123,61 @@ public class Grid : Singleton<Grid>
 
     }
 
+    private void InterreferenceGrid()
+    {
+        CreateBottomReferences();
+        CreateBottomLeftReferences();
+        CreateBottomRightReferences();
+
+        void CreateBottomReferences()
+        {
+            for (int j = 0; j < GridWidth; j++)
+            {
+                for (int i = 0; i < GridHeight - 1; i++)
+                {
+
+                    if (_grid[i][j] == null ||
+                        _grid[i + 1][j] == null)
+                        continue;
+
+                    _grid[i][j].bottomCell = _grid[i + 1][j];
+                }
+            }
+        }
+        void CreateBottomLeftReferences() 
+        {
+            for (int j = 1; j < GridWidth; j++)
+            {
+                for (int i = 0; i < GridHeight - 1; i++)
+                {
+
+                    if (_grid[i][j] == null ||
+                        _grid[i + 1][j-1] == null)
+                        continue;
+
+                    _grid[i][j].bottomLeftCell = _grid[i + 1][j-1];
+                }
+            }
+
+        }
+        void CreateBottomRightReferences() 
+        {
+            for (int j = 0; j < GridWidth-1; j++)
+            {
+                for (int i = 0; i < GridHeight - 1; i++)
+                {
+
+                    if (_grid[i][j] == null ||
+                        _grid[i + 1][j+1] == null)
+                        continue;
+
+                    _grid[i][j].bottomRightCell = _grid[i + 1][j+1];
+                }
+            }
+
+        }
+
+    }
 
 
     private void CreateCellAt(int j, int i)

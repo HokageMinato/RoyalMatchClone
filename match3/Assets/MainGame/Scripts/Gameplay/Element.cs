@@ -10,15 +10,9 @@ public class Element : MonoBehaviour
     bool destoryPostAnimation;
     bool canMove;
 
-    public Element other;
+    public GridCell initial;
 
-    [ContextMenu("Check")]
-    public void CHeckDIstance() 
-    {
-        Debug.Log(Vector3.Distance(other.transform.position, transform.position));
-    }
-
-
+    
     public RenderLayer RenderLayer
     {
         get {
@@ -43,16 +37,7 @@ public class Element : MonoBehaviour
 
     public void DestroyElement() 
     {
-        if (animateRoutine == null)
-        {
-
-            Destroy(gameObject);
-        }
-        else
-        {
-            StopCoroutine(animateRoutine);
-            Destroy(gameObject);
-        }
+        DestroyImmediate(gameObject);
     }
    
     public IEnumerator AnimateToCellRoutine(GridCell newHolder)

@@ -12,10 +12,10 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     [SerializeField] private BoxCollider2D inputCollider;
     [SerializeField] private RenderLayer renderLayer;
 
-    public bool lockedInAnimation;
-    
+
+public bool lockedInAnimation;
     public new SpriteRenderer renderer;
-    private Element _element;
+    [SerializeField]private Element _element;
     private CellBlocker _blocker;
     #endregion
 
@@ -55,7 +55,9 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         }
     }
 
-   public MatchExecutionData executionData { get; private set; }
+    public MatchExecutionData executionData { get; private set; }
+
+    public GridCell bottomCell, bottomLeftCell, bottomRightCell;
    #endregion
 
     

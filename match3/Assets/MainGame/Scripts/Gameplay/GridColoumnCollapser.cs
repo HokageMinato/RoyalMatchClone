@@ -61,6 +61,7 @@ public class GridColoumnCollapser : MonoBehaviour
         
         Element element = ElementFactory.instance.GenerateRandomElement();
         cell.SetElement(element);
+        element.initial = cell;
         return element;
     }
 
@@ -73,20 +74,9 @@ public class GridColoumnCollapser : MonoBehaviour
         Grid grid = Grid.instance;
 
         Dictionary<int, List<ElementAnimationData>> elementFromToPairForAnimation = new Dictionary<int, List<ElementAnimationData>>();
-        
-
-        int iterationPassRequiredForZigZagPaths = grid.GridHeight;
-
-        for (int i = 0; i < iterationPassRequiredForZigZagPaths; i++)
-        {
-            ShiftCellsDown();
-
-            ShiftCellsRightAndDown();
-
-            ShiftCellsLeftAndDown();
-
-        }
-        
+        ShiftCells();
+         
+       
         AnimateMovement();
 
 
@@ -117,325 +107,65 @@ public class GridColoumnCollapser : MonoBehaviour
             return animDataSortedByElement;
         }
 
-        void ShiftCellsDown()
+        void ShiftCells() 
         {
-            int whileSafeCheck = 0;
-            bool infLooperror = false;
-
             for (int bI = grid.GridHeight - 1; bI >= 0; bI--)
             {
                 for (int bJ = grid.GridWidth - 1; bJ >= 0; bJ--)
                 {
+                    int c = 0;
+
 
                     GridCell currentCell = grid[bI, bJ];
-                    if (currentCell && !currentCell.IsEmpty && !currentCell.IsBlocked)
-                    {
-
-                        GridCell bottomFromCurrent;
-                        do
-                        {
-                            RefreshB(out bottomFromCurrent, bI, bJ);
-
-                            string log = string.Empty;
-                            log += $"Current cell {currentCell} \n";
-                            log += ($"Bottom cell {bottomFromCurrent} is null {bottomFromCurrent == null} \n");
-                            //   Debug.Log(log);
-
-
-                            if (bottomFromCurrent != null)
-                            {
-                                bI++;
-                                Element element = currentCell.GetElement();
-                                bottomFromCurrent.SetElement(element);
-                                AddToLookup(element, new ElementAnimationData(element, currentCell, bottomFromCurrent, executionData));
-                                currentCell = bottomFromCurrent;
-                                continue;
-                            }
-
-
-
-                            whileSafeCheck++;
-
-                            if (whileSafeCheck >= 900)
-                            {
-                                infLooperror = true;
-                                whileSafeCheck = 0;
-                                break;
-                            }
-                        } while (bottomFromCurrent != null);
-
-                    }
-
-                }
-            }
-
-            void RefreshB(out GridCell bottom, int ti, int tj)
-            {
-
-                bottom = null;
-
-                //bottom
-                int bottomI = ti + 1;
-                int bottomJ = tj;
-
-                if (bottomI < grid.GridHeight && grid[bottomI, bottomJ] && grid[bottomI, bottomJ].IsEmpty && !grid[bottomI, bottomJ].IsBlocked)
-                {
-                    bottom = grid[bottomI, bottomJ];
-                }
-
-            }
-
-            if (infLooperror)
-            {
-                Debug.LogError("INFINITE LOOP ENCOUNTERED BOTTOM!");
-            }
-        }
-
-        void ShiftCellsRightAndDown() {
-
-            int whileSafeCheck = 0;
-            bool infLooperror = false;
-
-            for (int gI = grid.GridHeight - 1; gI >= 0; gI--)
-            {
-                for (int gJ = grid.GridWidth - 1; gJ >= 0; gJ--)
-                {
-
-                    GridCell currentCell = grid[gI, gJ];
-                    if (currentCell && !currentCell.IsEmpty && !currentCell.IsBlocked)
-                     {
-                            GridCell bottomFromCurrent;
-                            GridCell bottomRightFromCurrent;
-
-                        do
-                        {
-                            RefreshBR(out bottomFromCurrent, out bottomRightFromCurrent, gI, gJ);
-
-                            //string log = string.Empty;
-
-                            //log += $"Current cell {currentCell} \n";
-                            //log += ($"Bottom cell {bottomFromCurrent} is null {bottomFromCurrent == null} \n");
-                            //log += ($"BottomRight cell {bottomRightFromCurrent} is null {bottomRightFromCurrent == null} \n");
-
-                            //   Debug.Log(log);
-
-                            if (bottomFromCurrent != null)
-                            {
-                                gI++;
-                                Element element = currentCell.GetElement();
-                                bottomFromCurrent.SetElement(element);
-                                AddToLookup(element, new ElementAnimationData(element, currentCell, bottomFromCurrent, executionData));
-                                currentCell = bottomFromCurrent;
-                                continue;
-                            }
-
-                            if (bottomRightFromCurrent != null)
-                            {
-                                gI++;
-                                gJ++;
-                                Element element = currentCell.GetElement();
-                                bottomRightFromCurrent.SetElement(element);
-                                AddToLookup(element, new ElementAnimationData(element, currentCell, bottomRightFromCurrent, executionData));
-                                currentCell = bottomRightFromCurrent;
-                                continue;
-                            }
-
-
-                            whileSafeCheck++;
-
-                            if (whileSafeCheck >= 900)
-                            {
-                                infLooperror = true;
-                                whileSafeCheck = 0;
-                                break;
-                            }
-                        } while (bottomFromCurrent != null || bottomRightFromCurrent != null);
-
-                        if (infLooperror)
-                        {
-                            Debug.LogError("INFINITE LOOP ENCOUNTERED RIGHT!");
-                        }
-
-                    }
-                }
-            }
-
-
-            void RefreshBR(out GridCell bottom, out GridCell bottomRight, int ti, int tj)
-            {
-
-                bottom = null;
-                bottomRight = null;
-
-                //bottom
-                int bottomI = ti + 1;
-                int bottomJ = tj;
-
-                if (bottomI < grid.GridHeight && grid[bottomI, bottomJ] && grid[bottomI, bottomJ].IsEmpty && !grid[bottomI, bottomJ].IsBlocked)
-                {
-                    bottom = grid[bottomI, bottomJ];
-                }
-
-                //bottomRight
-                int bottomRightI = ti + 1;
-                int bottomRightJ = tj + 1;
-
-
-                bool isCellBelowObstacle = GameplayObstacleHandler.instance.IsCellBelowObstacle(bottomRightI, bottomRightJ);
-                if (bottomRightI < grid.GridHeight && bottomRightJ < grid.GridWidth &&
-                    grid[bottomRightI, bottomRightJ] && grid[bottomRightI, bottomRightJ].IsEmpty &&
-                    !grid[bottomRightI, bottomRightJ].IsBlocked && isCellBelowObstacle)
-                {
-                    bottomRight = grid[bottomRightI, bottomRightJ];
-                }
-            }
-        }
-
-        void ShiftCellsLeftAndDown() {
-
-            int whileSafeCheck = 0;
-            bool infLooperror = false;
-
-
-            for (int gI = grid.GridHeight - 1; gI >= 0; gI--)
-            {
-                for (int gJ = grid.GridWidth - 1; gJ >= 0; gJ--)
-                {
-
-                    GridCell currentCell = grid[gI, gJ];
-                    if (currentCell && !currentCell.IsEmpty && !currentCell.IsBlocked)
-                    {
-
-                        GridCell bottomFromCurrent;
-                        GridCell bottomLeftFromCurrent;
-
-                        do
-                        {
-                            RefreshBL(out bottomFromCurrent, out bottomLeftFromCurrent, gI, gJ);
-
-                            //string log = string.Empty;
-
-                            //log += $"Current cell {currentCell} \n";
-                            //log += ($"Bottom cell {bottomFromCurrent} is null {bottomFromCurrent == null} \n");
-                            //log += ($"BottomLeft cell {bottomLeftFromCurrent} is null {bottomLeftFromCurrent == null} \n");
-
-                            //  Debug.Log(log);
-
-                            if (bottomFromCurrent != null)
-                            {
-                                gI++;
-                                Element element = currentCell.GetElement();
-                                bottomFromCurrent.SetElement(element);
-                                AddToLookup(element, new ElementAnimationData(element, currentCell, bottomFromCurrent, executionData));
-                                currentCell = bottomFromCurrent;
-                                continue;
-                            }
-
-                            if (bottomLeftFromCurrent != null)
-                            {
-
-                                gI++;
-                                gJ--;
-                                Element element = currentCell.GetElement();
-                                bottomLeftFromCurrent.SetElement(element);
-                                AddToLookup(element, new ElementAnimationData(element, currentCell, bottomLeftFromCurrent, executionData));
-                                currentCell = bottomLeftFromCurrent;
-                                continue;
-
-                            }
-
-                            whileSafeCheck++;
-
-                            if (whileSafeCheck >= 900)
-                            {
-                                infLooperror = true;
-                                whileSafeCheck = 0;
-                                break;
-                            }
-                        } while (bottomFromCurrent != null || bottomLeftFromCurrent != null);
-
-                        if (infLooperror)
-                        {
-                            Debug.LogError("INFINITE LOOP ENCOUNTERED RIGHT!");
-                        }
-
-                    }
-
-                }
-            }
-
-
-
-            void RefreshBL(out GridCell bottom, out GridCell bottomLeft, int ti, int tj)
-            {
-
-                bottom = null;
-                bottomLeft = null;
-
-                //bottom
-                int bottomI = ti + 1;
-                int bottomJ = tj;
-
-                if (bottomI < grid.GridHeight && grid[bottomI, bottomJ] && grid[bottomI, bottomJ].IsEmpty && !grid[bottomI, bottomJ].IsBlocked)
-                {
-                    bottom = grid[bottomI, bottomJ];
-                }
-
-
-                //bottomLeft
-                int bottomLeftI = ti + 1;
-                int bottomLeftJ = tj - 1;
-
-                bool isCellBelowObstacle = GameplayObstacleHandler.instance.IsCellBelowObstacle(bottomLeftI, bottomLeftJ);
-
-                if (bottomLeftI < grid.GridHeight && bottomLeftJ >= 0 &&
-                    grid[bottomLeftI, bottomLeftJ] && grid[bottomLeftI, bottomLeftJ].IsEmpty &&
-                    !grid[bottomLeftI, bottomLeftJ].IsBlocked && isCellBelowObstacle)
-                {
-                    bottomLeft = grid[bottomLeftI, bottomLeftJ];
-                }
-
-            }
-
-
-
-
-        }
-
-        void GenerateNewElements()
-        {
-
-            for (int i = 0; i < grid.GridWidth; i++)
-            {
-
-                Vector3 position = grid[0, i].transform.position;
-
-                List<Vector3> positions = new List<Vector3>();
-                List<GridCell> targetCells = new List<GridCell>();
-
-                for (int j = 0; j < grid.GridHeight; j++)
-                {
-                    GridCell currentCell = grid[j, i];
-
-                    if (currentCell == null)
+                    if (currentCell == null || currentCell.IsBlocked || currentCell.IsEmpty)
                         continue;
 
-                    if (!currentCell.IsEmpty)
-                        break;
+                    GridCell nextCell = GetNextCell(currentCell);
 
-                    position.y += GridDesignTemp.gridSpacing;
-                    positions.Insert(0, position);
-                    targetCells.Add(currentCell);
-                }
+                    while (nextCell != null)
+                    {
+                        Element element = currentCell.GetElement();
+                        nextCell.SetElement(element);
 
-                for (int k = 0; k < positions.Count; k++)
-                {
-                    Element newElement = GenerateElementAt(targetCells[k]);
-                    newElement.transform.position = positions[k];
-                  //  elementFromToPairForAnimation.Add(new ElementAnimationData(newElement, targetCells[k], targetCells[k], executionData));
+                        AddToLookup(element, new ElementAnimationData(element, currentCell, nextCell, executionData));
+                        
+                        currentCell = nextCell;
+                        nextCell = GetNextCell(currentCell);
+
+
+                        #region INF_SAFE_CHECK
+                        c++;
+                        if (c > 900)
+                        {
+                            Debug.Log("INFI LOOP");
+                            break;
+                        }
+                        #endregion
+                    }
+
+                    
+
                 }
             }
-        }
+
+            GridCell GetNextCell(GridCell currentCell)
+            {
+                GridCell nextCell;
+                if (currentCell.bottomCell && !currentCell.bottomCell.IsBlocked && currentCell.bottomCell.IsEmpty)
+                    nextCell = currentCell.bottomCell;
+
+                else if (currentCell.bottomLeftCell && !currentCell.bottomLeftCell.IsBlocked && currentCell.bottomLeftCell.IsEmpty)
+                    nextCell = currentCell.bottomLeftCell;
+
+                else if (currentCell.bottomRightCell && !currentCell.bottomRightCell.IsBlocked && currentCell.bottomRightCell.IsEmpty)
+                    nextCell = currentCell.bottomRightCell;
+                else
+                    nextCell = null;
+                return nextCell;
+            }
+        } 
+        
+        
 
         void AnimateMovement() {
 
@@ -445,23 +175,18 @@ public class GridColoumnCollapser : MonoBehaviour
 
         IEnumerator AnimateMovementRoutine()
         {
-            
             WaitForSeconds interAnimationChainDispatchDelay = new WaitForSeconds(0.02f);
             List<ElementAnimationChain> animDataSortedByElement = ConvertLookupToList();
 
 
-            LogChain(animDataSortedByElement,"Before");
-            SortChainsByLength(animDataSortedByElement);
-            LogChain(animDataSortedByElement,"After");
-
+            // SortChainsByLength(animDataSortedByElement);
+            LogChain(animDataSortedByElement,"New");
             for (int i = 0; i < animDataSortedByElement.Count;i++)
             {
                 StartCoroutine(AnimateElementChain(animDataSortedByElement[i]));
                 yield return interAnimationChainDispatchDelay;
 
             }
-
-
 
            yield return null;
         }
