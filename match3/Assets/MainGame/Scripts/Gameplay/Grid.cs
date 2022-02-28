@@ -37,27 +37,19 @@ public class Grid : Singleton<Grid>
    
     #region PRIVATE_VARIABLES
     private GridCell[][] _grid;
-    //  private GridDesignTemp _levelData;
     #endregion
 
-    [ContextMenu("HD")]
-    public void Hide() 
-    {
-        foreach (GridCell[] item in _grid)
-        {
-            foreach (var item2 in item)
-            {
-                item2?.ReadElement()?.gameObject.SetActive(false);
-            }
-        }
-    }
 
     #region UNITY_CALLBACKS
     public void GenerateGrid()
     {
         CreateGrid();
-        InterreferenceGrid();
         coloumnCollapser.Init();
+    }
+
+    public void UpdateInterreferences() 
+    {
+        InterreferenceGrid();
     }
 
     #endregion
@@ -137,7 +129,7 @@ public class Grid : Singleton<Grid>
                 {
 
                     if (_grid[i][j] == null ||
-                        _grid[i + 1][j] == null)
+                        _grid[i + 1][j] == null || _grid[i + 1][j].IsBlocked)
                         continue;
 
                     _grid[i][j].bottomCell = _grid[i + 1][j];
@@ -151,11 +143,15 @@ public class Grid : Singleton<Grid>
                 for (int i = 0; i < GridHeight - 1; i++)
                 {
 
-                    if (_grid[i][j] == null ||
-                        _grid[i + 1][j-1] == null)
+                    GridCell currentCell = _grid[i][j];
+                    GridCell bottomLeftCell = _grid[i + 1][j - 1];
+
+                    if (currentCell == null ||
+                         bottomLeftCell == null || bottomLeftCell.IsBlocked)
                         continue;
 
-                    _grid[i][j].bottomLeftCell = _grid[i + 1][j-1];
+                    if(IsColoumnBlockedFromHere(bottomLeftCell))
+                        currentCell.bottomLeftCell = bottomLeftCell;
                 }
             }
 
@@ -167,14 +163,36 @@ public class Grid : Singleton<Grid>
                 for (int i = 0; i < GridHeight - 1; i++)
                 {
 
-                    if (_grid[i][j] == null ||
-                        _grid[i + 1][j+1] == null)
+                    GridCell currentCell = _grid[i][j];
+                    GridCell bottomRightCell = _grid[i + 1][j + 1];
+
+                    if (currentCell == null ||
+                         bottomRightCell == null || bottomRightCell.IsBlocked)
                         continue;
 
-                    _grid[i][j].bottomRightCell = _grid[i + 1][j+1];
+                    if (IsColoumnBlockedFromHere(bottomRightCell))
+                        currentCell.bottomRightCell = bottomRightCell;
                 }
             }
 
+        }
+
+        bool IsColoumnBlockedFromHere(GridCell cell) 
+        {
+            int h = cell.HIndex;
+            int w = cell.WIndex;
+
+            for (int i = h; i >= 0; i--) 
+            {
+                GridCell ccell = _grid[i][w];
+                if (!ccell)
+                    continue;
+
+                if (ccell.IsBlocked)
+                    return true;
+            }
+
+            return false;
         }
 
     }
@@ -230,8 +248,6 @@ public class Grid : Singleton<Grid>
             }
         }
     }
-
-    
 
     public void UnlockCells(MatchExecutionData matchExecutionData)
     {

@@ -26,10 +26,8 @@ public class CellBlocker : MonoBehaviour
     }
 
     public virtual void Hit(List<GridCell> matchedCells) { }
-    public virtual void OnUnblocked() { }
-    public virtual void OnBlockCells(){
-        
-    }
+    public virtual void OnUnblocked() {}
+    public virtual void OnBlockCells(){}
 
     public virtual bool DoesBlockCell() {
         return renderLayer == RenderLayer.ElementBlockerLayer;

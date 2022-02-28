@@ -20,6 +20,7 @@ public class GameplayManager: Singleton<GameplayManager>
     {
         Grid.instance.GenerateGrid();
         GameplayObstacleHandler.instance.Init(levelData);
+        Grid.instance.UpdateInterreferences();
     }
 
 

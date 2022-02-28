@@ -70,23 +70,21 @@ public class GridColoumnCollapser : MonoBehaviour
         if (executionData == null)
             throw new Exception("Null recievedd");
 
+        HashSet<GridCell> occupiedCells = new HashSet<GridCell>();
+
         #region FUNCTION_EXECUTION_ORDER
         Grid grid = Grid.instance;
-
         Dictionary<int, List<ElementAnimationData>> elementFromToPairForAnimation = new Dictionary<int, List<ElementAnimationData>>();
         ShiftCells();
-         
-       
         AnimateMovement();
-
-
         #endregion
 
+        
         #region LOCAL_FUNCTION_DECLARATIONS
 
-        void AddToLookup(Element element, ElementAnimationData animationData)
+        void AddToLookup(int element, ElementAnimationData animationData)
         {
-            int goInstanceId = element.gameObject.GetInstanceID();
+            int goInstanceId = element;//.gameObject.GetInstanceID();
             if (!elementFromToPairForAnimation.ContainsKey(goInstanceId))
                 elementFromToPairForAnimation.Add(goInstanceId,new List<ElementAnimationData>());
 
@@ -109,13 +107,14 @@ public class GridColoumnCollapser : MonoBehaviour
 
         void ShiftCells() 
         {
+            int o = 0;
             for (int bI = grid.GridHeight - 1; bI >= 0; bI--)
             {
                 for (int bJ = grid.GridWidth - 1; bJ >= 0; bJ--)
                 {
                     int c = 0;
 
-
+                    o++;
                     GridCell currentCell = grid[bI, bJ];
                     if (currentCell == null || currentCell.IsBlocked || currentCell.IsEmpty)
                         continue;
@@ -127,7 +126,7 @@ public class GridColoumnCollapser : MonoBehaviour
                         Element element = currentCell.GetElement();
                         nextCell.SetElement(element);
 
-                        AddToLookup(element, new ElementAnimationData(element, currentCell, nextCell, executionData));
+                        AddToLookup(o, new ElementAnimationData(element, currentCell, nextCell, executionData));
                         
                         currentCell = nextCell;
                         nextCell = GetNextCell(currentCell);
@@ -143,73 +142,68 @@ public class GridColoumnCollapser : MonoBehaviour
                         #endregion
                     }
 
-                    
-
                 }
             }
 
             GridCell GetNextCell(GridCell currentCell)
             {
                 GridCell nextCell;
-                if (currentCell.bottomCell && !currentCell.bottomCell.IsBlocked && currentCell.bottomCell.IsEmpty)
+                if (currentCell.bottomCell && currentCell.bottomCell.IsEmpty)
                     nextCell = currentCell.bottomCell;
 
-                else if (currentCell.bottomLeftCell && !currentCell.bottomLeftCell.IsBlocked && currentCell.bottomLeftCell.IsEmpty)
+                else if (currentCell.bottomRightCell && currentCell.bottomRightCell.IsEmpty)
+                    nextCell = currentCell.bottomRightCell;
+
+                else if (currentCell.bottomLeftCell  && currentCell.bottomLeftCell.IsEmpty)
                     nextCell = currentCell.bottomLeftCell;
 
-                else if (currentCell.bottomRightCell && !currentCell.bottomRightCell.IsBlocked && currentCell.bottomRightCell.IsEmpty)
-                    nextCell = currentCell.bottomRightCell;
                 else
                     nextCell = null;
                 return nextCell;
             }
-        } 
-        
-        
+        }
+
+      
+      
+
+       
 
         void AnimateMovement() {
-
             StartCoroutine(AnimateMovementRoutine());
         }
 
-
         IEnumerator AnimateMovementRoutine()
         {
-            WaitForSeconds interAnimationChainDispatchDelay = new WaitForSeconds(0.02f);
-            List<ElementAnimationChain> animDataSortedByElement = ConvertLookupToList();
+            WaitForSeconds interAnimationChainDispatchDelay = new WaitForSeconds(.01f);
+            List<ElementAnimationChain> animationChains = ConvertLookupToList();
 
+            LogChain(animationChains,"New");
 
-            // SortChainsByLength(animDataSortedByElement);
-            LogChain(animDataSortedByElement,"New");
-            for (int i = 0; i < animDataSortedByElement.Count;i++)
+            for (int i = 0; i < animationChains.Count;i++)
             {
-                StartCoroutine(AnimateElementChain(animDataSortedByElement[i]));
+                StartCoroutine(AnimateElementChain(animationChains[i]));
                 yield return interAnimationChainDispatchDelay;
 
             }
 
            yield return null;
         }
+
         
 
-   
+        IEnumerator AnimateElementChain(ElementAnimationChain animationChain)
+        {
+             List<ElementAnimationData> elementAnimationDatas = animationChain.animationChain;
 
-    
-   
-
-    IEnumerator AnimateElementChain(ElementAnimationChain animationChain)
-       {
-            List<ElementAnimationData> elementAnimationDatas = animationChain.animationChain;
-
-            for (int i = 0; i < elementAnimationDatas.Count; i++)
-            {
+             for (int i = 0; i < elementAnimationDatas.Count; i++)
+             {
                 yield return elementAnimationDatas[i].Animate();
-            }
+             }
 
-            yield return null;
+             yield return null;
         }
 
-
+        #endregion
     }
 
     private void LogChain(List<ElementAnimationChain> animDataSortedByElement,string msg)
@@ -230,78 +224,6 @@ public class GridColoumnCollapser : MonoBehaviour
    }
 
 
-    void SortChainsByLength(List<ElementAnimationChain> animDatasSortedByElement)
-    {
-
-        for (int i = 0; i < animDatasSortedByElement.Count; i++)
-        {
-            for (int j = i; j < animDatasSortedByElement.Count; j++)
-            {
-                int v1 = GetMaxOf(animDatasSortedByElement[i].animationChain);
-                int v2 = GetMaxOf(animDatasSortedByElement[j].animationChain);
-
-                if (v1 > v2) 
-                {
-                    var temp = animDatasSortedByElement[i];
-                    animDatasSortedByElement[i] = animDatasSortedByElement[j];
-                    animDatasSortedByElement[j] = temp;
-                }
-            }
-        }
-
-
-
-        int GetMaxOf(List<ElementAnimationData> dt)
-        {
-            //int max = dt[0].ToCell.HIndex;
-            //for (int i = 1; i < dt.Count; i++)
-            //{
-            //    int tm = dt[i].ToCell.HIndex;
-
-            //    if (tm > max)
-            //        max = tm;
-            //}
-
-            return dt.Count;
-        }
-        
-       
-
-
-    }
-
-    void SortChainsByMaxH(List<ElementAnimationChain> animDatasSortedByElement)
-    {
-
-        for (int i = 0; i < animDatasSortedByElement.Count; i++)
-        {
-            for (int j = i; j < animDatasSortedByElement.Count; j++)
-            {
-                int v1 = GetMaxOf(animDatasSortedByElement[i].animationChain);
-                int v2 = GetMaxOf(animDatasSortedByElement[j].animationChain);
-
-                if (v1 > v2)
-                {
-                    var temp = animDatasSortedByElement[i];
-                    animDatasSortedByElement[i] = animDatasSortedByElement[j];
-                    animDatasSortedByElement[j] = temp;
-                }
-            }
-        }
-
-
-
-        int GetMaxOf(List<ElementAnimationData> dt)
-        {
-            return dt[dt.Count-1].ToCell.HIndex;
-        }
-
-
-
-
-    }
-
-    #endregion
 
 
 
@@ -317,9 +239,23 @@ public class ElementAnimationChain
         animationChain = chain;    
     }
 
+    public GridCell[] GetCells() 
+    {
+        HashSet<GridCell> cells = new HashSet<GridCell>();
 
+        for (int i = 0; i < animationChain.Count; i++)
+        {
+            cells.Add(animationChain[i].FromCell);
+            cells.Add(animationChain[i].ToCell);
+        }
+
+        return cells.ToArray();
+    }
 
 }
+
+
+
 
 public class ElementAnimationData
 {

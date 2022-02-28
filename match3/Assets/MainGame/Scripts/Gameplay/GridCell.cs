@@ -49,6 +49,7 @@ public bool lockedInAnimation;
         }
     }
 
+
     public RenderLayer RenderLayer{
         get{
             return renderLayer;
