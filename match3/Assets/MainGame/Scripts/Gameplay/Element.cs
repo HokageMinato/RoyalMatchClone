@@ -48,7 +48,7 @@ public class Element : MonoBehaviour
         if (executionData == null)
             Debug.Log($"null at cell {newHolder.gameObject.name}");
 
-        executionData.movingElements.Add(this);
+        executionData?.movingElements.Add(this);
         
     
         float rate = 1 / ElementConfig.SWIPE_ANIM_TIME;
@@ -65,7 +65,7 @@ public class Element : MonoBehaviour
             yield return null;
         }
 
-        executionData.movingElements.Remove(this);
+        executionData?.movingElements.Remove(this);
         
 
         animateRoutine = null;
