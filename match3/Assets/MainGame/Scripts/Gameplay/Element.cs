@@ -10,7 +10,6 @@ public class Element : MonoBehaviour
     bool destoryPostAnimation;
     bool canMove;
 
-    public GridCell initial;
 
     
     public RenderLayer RenderLayer

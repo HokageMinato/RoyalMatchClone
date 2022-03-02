@@ -61,7 +61,6 @@ public class GridColoumnCollapser : MonoBehaviour
 
         Element element = ElementFactory.instance.GenerateRandomElement();
         cell.SetElement(element);
-        element.initial = cell;
         return element;
     }
 
@@ -76,6 +75,7 @@ public class GridColoumnCollapser : MonoBehaviour
         Grid grid = Grid.instance;
         Dictionary<int, List<ElementAnimationData>> elementFromToPairForAnimation = new Dictionary<int, List<ElementAnimationData>>();
         ShiftCells();
+
         AnimateMovement();
         #endregion
 
@@ -155,13 +155,13 @@ public class GridColoumnCollapser : MonoBehaviour
                     return nextCell;
                 }
 
-                if (currentCell.bottomRightCell && currentCell.bottomRightCell.IsEmpty)
+                if (currentCell.bottomRightCell && currentCell.bottomRightCell.IsEmpty && currentCell.rightCell && (currentCell.rightCell.IsEmpty || currentCell.rightCell.IsBlocked))
                 {
                     nextCell = currentCell.bottomRightCell;
                     return nextCell;
                 }
 
-                if (currentCell.bottomLeftCell && currentCell.bottomLeftCell.IsEmpty)
+                if (currentCell.bottomLeftCell && currentCell.bottomLeftCell.IsEmpty && currentCell.leftCell && (currentCell.leftCell.IsEmpty || currentCell.leftCell.IsBlocked))
                 {
                     nextCell = currentCell.bottomLeftCell;
                     return nextCell;
@@ -233,8 +233,6 @@ public class GridColoumnCollapser : MonoBehaviour
         }
     
 }
-
-
 
 
 
