@@ -180,7 +180,7 @@ public class GridColoumnCollapser : MonoBehaviour
                 int c = 0;
                 while (presentCell.topCell != null) 
                 {
-                    presentCell = initialCell.topCell;
+                    presentCell = presentCell.topCell;
 
                     if (!presentCell.IsEmpty)
                         return true;
