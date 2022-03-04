@@ -119,9 +119,10 @@ public class Grid : Singleton<Grid>
     {
         CreateBottomReferences();
         CreateBottomLeftReferences();
-        CreateLeftReferences();
-        CreateRightReferences();
         CreateBottomRightReferences();
+        CreateTopReferences();
+        //CreateLeftReferences();
+        //CreateRightReferences();
 
         void CreateBottomReferences()
         {
@@ -135,6 +136,22 @@ public class Grid : Singleton<Grid>
                         continue;
 
                     _grid[i][j].bottomCell = _grid[i + 1][j];
+                }
+            }
+        }
+        
+        void CreateTopReferences()
+        {
+            for (int j = 0; j < GridWidth; j++)
+            {
+                for (int i = 0; i < GridHeight - 1; i++)
+                {
+
+                    if (_grid[i][j] == null || _grid[i][j].IsBlocked ||
+                        _grid[i + 1][j] == null || _grid[i + 1][j].IsBlocked)
+                        continue;
+
+                    _grid[i+1][j].topCell = _grid[i][j];
                 }
             }
         }
@@ -179,56 +196,56 @@ public class Grid : Singleton<Grid>
 
         }
 
-        void CreateLeftReferences() 
-        {
-            for (int j = 1; j < GridWidth; j++)
-            {
-                for (int i = 0; i < GridHeight - 1; i++)
-                {
+        //void CreateLeftReferences() 
+        //{
+        //    for (int j = 1; j < GridWidth; j++)
+        //    {
+        //        for (int i = 0; i < GridHeight - 1; i++)
+        //        {
 
-                    GridCell currentCell = _grid[i][j];
-                    GridCell leftCell = _grid[i][j - 1];
+        //            GridCell currentCell = _grid[i][j];
+        //            GridCell leftCell = _grid[i][j - 1];
 
-                    if (currentCell == null ||
-                         leftCell == null)
-                        continue;
+        //            if (currentCell == null ||
+        //                 leftCell == null)
+        //                continue;
 
-                    if(leftCell.IsBlocked)
-                        currentCell.leftCell = leftCell;
+        //            if(leftCell.IsBlocked)
+        //                currentCell.leftCell = leftCell;
 
-                    if (IsColoumnBlockedFromHere(leftCell))
-                        currentCell.leftCell = leftCell;
-                }
-            }
+        //            if (IsColoumnBlockedFromHere(leftCell))
+        //                currentCell.leftCell = leftCell;
+        //        }
+        //    }
 
-        }
+        //}
        
-        void CreateRightReferences() 
-        {
-            for (int j = 0; j < GridWidth-1; j++)
-            {
-                for (int i = 0; i < GridHeight - 1; i++)
-                {
+        //void CreateRightReferences() 
+        //{
+        //    for (int j = 0; j < GridWidth-1; j++)
+        //    {
+        //        for (int i = 0; i < GridHeight - 1; i++)
+        //        {
 
-                    GridCell currentCell = _grid[i][j];
-                    GridCell rightCell = _grid[i][j + 1];
+        //            GridCell currentCell = _grid[i][j];
+        //            GridCell rightCell = _grid[i][j + 1];
 
-                    if (currentCell == null ||
-                         rightCell == null)
-                        continue;
+        //            if (currentCell == null ||
+        //                 rightCell == null)
+        //                continue;
 
-                    if (rightCell.IsBlocked)
-                    {
-                        currentCell.rightCell = rightCell;
-                        continue;
-                    }
+        //            if (rightCell.IsBlocked)
+        //            {
+        //                currentCell.rightCell = rightCell;
+        //                continue;
+        //            }
 
-                    if (IsColoumnBlockedFromHere(rightCell))
-                        currentCell.rightCell = rightCell;
-                }
-            }
+        //            if (IsColoumnBlockedFromHere(rightCell))
+        //                currentCell.rightCell = rightCell;
+        //        }
+        //    }
 
-        }
+        //}
 
         bool IsColoumnBlockedFromHere(GridCell cell) 
         {

@@ -131,6 +131,7 @@ public class GridColoumnCollapser : MonoBehaviour
 
                         currentCell = nextCell;
                         nextCell = GetNextCell(currentCell);
+                       
 
 
                         #region INF_SAFE_CHECK
@@ -142,6 +143,7 @@ public class GridColoumnCollapser : MonoBehaviour
                         }
                         #endregion
                     }
+
 
                 }
             }
@@ -155,13 +157,13 @@ public class GridColoumnCollapser : MonoBehaviour
                     return nextCell;
                 }
 
-                if (currentCell.bottomRightCell && currentCell.bottomRightCell.IsEmpty && currentCell.rightCell && (currentCell.rightCell.IsEmpty || currentCell.rightCell.IsBlocked))
+                if (currentCell.bottomRightCell && currentCell.bottomRightCell.IsEmpty && !HasPendingElements(currentCell.bottomRightCell))
                 {
                     nextCell = currentCell.bottomRightCell;
                     return nextCell;
                 }
 
-                if (currentCell.bottomLeftCell && currentCell.bottomLeftCell.IsEmpty && currentCell.leftCell && (currentCell.leftCell.IsEmpty || currentCell.leftCell.IsBlocked))
+                if (currentCell.bottomLeftCell && currentCell.bottomLeftCell.IsEmpty && !HasPendingElements(currentCell.bottomLeftCell))
                 {
                     nextCell = currentCell.bottomLeftCell;
                     return nextCell;
@@ -170,6 +172,33 @@ public class GridColoumnCollapser : MonoBehaviour
                 return nextCell;
                 
             }
+
+            bool HasPendingElements(GridCell initialCell) 
+            {
+                GridCell presentCell = initialCell;
+
+                int c = 0;
+                while (presentCell.topCell != null) 
+                {
+                    presentCell = initialCell.topCell;
+
+                    if (!presentCell.IsEmpty)
+                        return true;
+
+                    
+                    #region INF_SAFE_CHECK
+                    c++;
+                    if (c > 900)
+                    {
+                        Debug.Log("INFI LOOP");
+                        break;
+                    }
+                    #endregion
+                }
+
+                return false;
+            }
+
         }
 
 

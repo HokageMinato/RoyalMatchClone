@@ -115,8 +115,8 @@ public class Matcher : Singleton<Matcher>
         else
         {
             Grid grid = Grid.instance;
-            //while(executionData.HasMatches)
-            if (executionData.HasMatches)
+            while(executionData.HasMatches)
+            //if (executionData.HasMatches)
             {
                 System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
                 st.Start();
@@ -128,7 +128,7 @@ public class Matcher : Singleton<Matcher>
                 st.Stop();
                 
                 yield return WaitForGridAnimationRoutine(executionData);
-               // FindMatches(executionData);
+                FindMatches(executionData);
             }
 
 

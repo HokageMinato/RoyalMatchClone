@@ -58,8 +58,8 @@ public bool lockedInAnimation;
 
     public MatchExecutionData executionData { get; private set; }
 
-    public GridCell bottomCell, bottomLeftCell, bottomRightCell , rightCell, leftCell;
-   #endregion
+    public GridCell bottomCell, bottomLeftCell, bottomRightCell,topCell;//, rightCell, leftCell;
+    #endregion
 
     
     #region PUBLIC_METHODS
