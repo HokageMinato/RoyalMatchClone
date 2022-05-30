@@ -45,7 +45,7 @@ public class InputManager : Singleton<InputManager>
     {
         if (IsFirstCellAssigned())
         {
-            if (Grid.instance.AreNeighbours(_firstCell,_secondCell))
+            if (AreNeighbours(_firstCell,_secondCell))
             {
                 OnValidMove();
             }
@@ -82,5 +82,29 @@ public class InputManager : Singleton<InputManager>
         return _firstCell != null;
     }
 
-  
+    private bool AreNeighbours(GridCell firstCell, GridCell secondCell)
+    {
+
+        bool isVerticalPositionSame = firstCell.HIndex == secondCell.HIndex;
+        bool isHorizontalPositionSame = firstCell.WIndex == secondCell.WIndex;
+        int cellDistance;
+
+        if (isHorizontalPositionSame)
+        {
+            cellDistance = Mathf.Abs(firstCell.HIndex - secondCell.HIndex);
+        }
+        else if (isVerticalPositionSame)
+        {
+            cellDistance = Mathf.Abs(firstCell.WIndex - secondCell.WIndex);
+        }
+        else
+        {
+            return false;
+        }
+
+        bool areNeighbours = cellDistance <= 1 && (isVerticalPositionSame || isHorizontalPositionSame);
+
+        return areNeighbours;
+    }
+
 }

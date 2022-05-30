@@ -46,7 +46,7 @@ public class GridColoumnCollapser : MonoBehaviour
             for (int j = 0; j < grid.GridWidth; j++) {
 
                 GridCell gridCell = grid[i, j];
-                if (!gridCell || gridCell.IsBlocked)
+                if (!gridCell || IsCellBlocked(gridCell))
                     continue;
 
 
@@ -66,16 +66,11 @@ public class GridColoumnCollapser : MonoBehaviour
 
     public void CollapseColomuns(MatchExecutionData executionData)
     {
-        if (executionData == null)
-            throw new Exception("Null recievedd");
-
-        HashSet<GridCell> occupiedCells = new HashSet<GridCell>();
-
         #region FUNCTION_EXECUTION_ORDER
         Grid grid = Grid.instance;
         Dictionary<int, List<ElementAnimationData>> elementFromToPairForAnimation = new Dictionary<int, List<ElementAnimationData>>();
         ShiftCells();
-
+        GenerateElements();
         AnimateMovement();
         #endregion
 
@@ -89,7 +84,6 @@ public class GridColoumnCollapser : MonoBehaviour
                 elementFromToPairForAnimation.Add(goInstanceId, new List<ElementAnimationData>());
 
             elementFromToPairForAnimation[goInstanceId].Add(animationData);
-
         }
 
         List<ElementAnimationChain> ConvertLookupToList()
@@ -113,14 +107,14 @@ public class GridColoumnCollapser : MonoBehaviour
                 for (int bJ = grid.GridWidth - 1; bJ >= 0; bJ--)
                 {
                     int c = 0;
-
                     o++;
+
                     GridCell currentCell = grid[bI, bJ];
-                    if (currentCell == null || currentCell.IsBlocked || currentCell.IsEmpty)
+                    if (currentCell == null || IsGridCellBlocked(currentCell) || currentCell.IsEmpty)
                         continue;
 
-                    GridCell nextCell = GetNextCell(currentCell);
-
+                    GridCell nextCell = GetNextCellForShifting(currentCell);
+                    
                     while (nextCell != null)
                     {
                         Element element = currentCell.GetElement();
@@ -130,10 +124,8 @@ public class GridColoumnCollapser : MonoBehaviour
                         AddToLookup(o, new ElementAnimationData(element, currentCell, nextCell, executionData));
 
                         currentCell = nextCell;
-                        nextCell = GetNextCell(currentCell);
+                        nextCell = GetNextCellForShifting(currentCell);
                        
-
-
                         #region INF_SAFE_CHECK
                         c++;
                         if (c > 900)
@@ -142,15 +134,19 @@ public class GridColoumnCollapser : MonoBehaviour
                             break;
                         }
                         #endregion
+                        
                     }
 
 
                 }
+                
             }
 
-            GridCell GetNextCell(GridCell currentCell)
+
+
+            GridCell GetNextCellForShifting(GridCell currentCell)
             {
-                GridCell nextCell=null;
+                GridCell nextCell = null;
                 if (currentCell.bottomCell && currentCell.bottomCell.IsEmpty)
                 {
                     nextCell = currentCell.bottomCell;
@@ -170,7 +166,7 @@ public class GridColoumnCollapser : MonoBehaviour
                 }
 
                 return nextCell;
-                
+
             }
 
             bool HasPendingElements(GridCell initialCell) 
@@ -199,11 +195,25 @@ public class GridColoumnCollapser : MonoBehaviour
                 return false;
             }
 
+         
+
+        }
+
+        void GenerateElements() 
+        {
+            Grid grid = Grid.instance;
+
+            Debug.Log(GetEmptyCount());
+
+            
+            int GetEmptyCount()
+            {
+                return grid.CellCount - GameplayObstacleHandler.instance.GetBlockedCount();
+            }
+
         }
 
 
-
-    
 
         void AnimateMovement() {
             StartCoroutine(AnimateMovementRoutine());
@@ -227,8 +237,6 @@ public class GridColoumnCollapser : MonoBehaviour
             yield return null;
         }
 
-
-
         IEnumerator AnimateElementChain(ElementAnimationChain animationChain)
         {
             List<ElementAnimationData> elementAnimationDatas = animationChain.animationChain;
@@ -240,9 +248,14 @@ public class GridColoumnCollapser : MonoBehaviour
 
             yield return null;
         }
+
     }
     #endregion
 
+    private bool IsGridCellBlocked(GridCell gridCell) 
+    {
+        return GameplayObstacleHandler.instance.IsCellBlocked(gridCell);
+    }
 
     private void LogChain(List<ElementAnimationChain> animDataSortedByElement, string msg)
         {
@@ -260,7 +273,12 @@ public class GridColoumnCollapser : MonoBehaviour
             }
 
         }
-    
+
+    private bool IsCellBlocked(GridCell gridCell)
+    {
+        return GameplayObstacleHandler.instance.IsCellBlocked(gridCell);
+    }
+
 }
 
 

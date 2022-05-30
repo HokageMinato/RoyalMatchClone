@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CellGroup : CellBlocker
+public class CellGroup : BaseCellBlocker
 {
     public GridCell[] targetCells;
     public SpriteRenderer spriteRenderer;

@@ -7,10 +7,7 @@ public class Element : MonoBehaviour
 
     [SerializeField] ElementConfig elementConfig;
     IEnumerator animateRoutine;
-    bool destoryPostAnimation;
-    bool canMove;
-
-
+    
     
     public RenderLayer RenderLayer
     {
@@ -69,10 +66,6 @@ public class Element : MonoBehaviour
 
         animateRoutine = null;
         
-        if (destoryPostAnimation) 
-        {
-            DestroyElement();
-        }
     }
 
 

@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
 {
-    public List<CellBlocker> activeBlockers;
+
+    private List<BaseCellBlocker> activeBlockers=new List<BaseCellBlocker>();
     private Dictionary<int, int> colIdxTopObsIdxLookup= new Dictionary<int, int>();
 
     public void Init(GridDesignTemp levelData)
@@ -16,9 +17,6 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
     {
         ObstacleFactory obstacleGenerator = ObstacleFactory.instance;
         int[,] gridDesign = levelData.gridDesignTemp;
-        Grid grid = Grid.instance;
-
-
 
         for (int i = 0; i < levelData.gridHeight; i++)
         {
@@ -28,8 +26,9 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
 
                 if (obstacleGenerator.IsBlockerType(cellType))
                 {
-                    CellBlocker blocker = obstacleGenerator.GenerateBlocker(cellType);
-                    blocker.Init(grid, i, j);
+                    BaseCellBlocker blocker = obstacleGenerator.GenerateBlocker(cellType);
+                    GridCell cell = Grid.instance[i, j];
+                    blocker.Init(cell,i, j);
                     activeBlockers.Add(blocker);
                 }
 
@@ -37,17 +36,16 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
         }
     }
 
-    public void CheckForNeighbourHit(MatchExecutionData executionData) {
-
-        List<GridCell> matchedCell = executionData.patternCells;
+    public void CheckForNeighbourHit(MatchExecutionData executionData) 
+    {
         for (int i = 0; i < activeBlockers.Count; i++)
         {
-              activeBlockers[i].Hit(matchedCell);
+            activeBlockers[i].Hit(executionData);
         }
-
+       
     }
 
-    public void DiscardObstacle(CellBlocker blocker) {
+    public void DiscardObstacle(BaseCellBlocker blocker,GridCell targetCell) {
 
         activeBlockers.Remove(blocker);
         colIdxTopObsIdxLookup.Remove(blocker.initial_w);
@@ -61,7 +59,7 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
         for (int i = 0; i < activeBlockers.Count; i++)
         {
 
-            CellBlocker blocker = activeBlockers[i];
+            BaseCellBlocker blocker = activeBlockers[i];
             if (!colIdxTopObsIdxLookup.ContainsKey(blocker.initial_w))
             {
                 colIdxTopObsIdxLookup.Add(blocker.initial_w, blocker.initial_h);
@@ -84,6 +82,30 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
         }
 
         return colIdxTopObsIdxLookup[j_WIndex] < i_HIndex;
+    }
+
+
+    public bool IsCellBlocked(GridCell cell) 
+    {
+        for (int i = 0; i < activeBlockers.Count; i++)
+        {
+            if (activeBlockers[i].DoesBlockCell() && activeBlockers[i].TargetCell == cell) 
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int GetBlockedCount() 
+    {
+        int count = 0;  
+        for (int i = 0; i < activeBlockers.Count; i++)
+        {
+            if (activeBlockers[i].DoesBlockCell())
+                count++;
+        }
+        return count;
     }
 
     

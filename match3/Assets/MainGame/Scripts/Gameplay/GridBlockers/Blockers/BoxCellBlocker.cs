@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class BoxCellBlocker : CellBlocker
+public class BoxCellBlocker : BaseCellBlocker
 {
     #region PUBLIC_VARIABLES
     public int RequiredHitCount {
@@ -13,6 +13,7 @@ public class BoxCellBlocker : CellBlocker
     public Sprite[] spriteLayers;
     public int hitCount=0;
     public bool immune;
+    public MatchPattern boxBlockerPattern;
     #endregion
 
     #region PUBLIC_REFERENCES
@@ -22,28 +23,35 @@ public class BoxCellBlocker : CellBlocker
 
 
     #region PUBLIC_METHODS
-    
+    public override void Init(GridCell gridCell, int hIndex, int wIndex)
+    {
+        targetCell = gridCell;
+        base.Init(gridCell, hIndex, wIndex);
+    }
+
     public override void OnBlockCells()
     {
-        targetCell = grid[initial_h, initial_w];
         transform.position = targetCell.transform.position;
-        targetCell.SetBlocker(this);
         UpdateView();
     }
 
-    
-    public override void Hit(List<GridCell> matchedCells)
+
+    public override void Hit(MatchExecutionData executionData)
     {
         if (immune)
             return;
 
-        for (int i = 0; i < matchedCells.Count; i++)
+        List<GridCell> toBeDestoryedCells = executionData.patternCells;
+        List<GridCell> edgeCells = new List<GridCell>();
+        PatternComparer.instance.GetAllPatternCellsNonAlloc(edgeCells, boxBlockerPattern, initial_h, initial_w);
+
+
+        for (int i = 0; i < edgeCells.Count; i++)
         {
-            GridCell matchedCell = matchedCells[i];
-
-            if (grid.AreNeighbours(matchedCell, targetCell))
+            if (toBeDestoryedCells.Contains(edgeCells[i])) 
+            {
                 hitCount++;
-
+                Debug.Log(hitCount);
                 if (hitCount < RequiredHitCount)
                 {
                     UpdateView();
@@ -54,12 +62,15 @@ public class BoxCellBlocker : CellBlocker
                     break;
                 }
             }
-        }
+        } 
+        
+    }
+        
 
     public override void OnUnblocked()
     {
-        targetCell.SetBlocker(null);
-        GameplayObstacleHandler.instance.DiscardObstacle(this);
+        //targetCell.SetBlocker(null);
+        GameplayObstacleHandler.instance.DiscardObstacle(this,targetCell);
     }
 
     #endregion

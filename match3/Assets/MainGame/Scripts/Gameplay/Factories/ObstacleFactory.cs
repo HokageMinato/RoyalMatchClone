@@ -6,7 +6,7 @@ public class ObstacleFactory : Singleton<ObstacleFactory>
 {
     #region PRIVATE_VARIABLES
     [SerializeField] private ObstacleData[] obstacleData;
-    private Dictionary<int, CellBlocker> prefabLookUp = new Dictionary<int, CellBlocker>();
+    private Dictionary<int, BaseCellBlocker> prefabLookUp = new Dictionary<int, BaseCellBlocker>();
     #endregion
 
 
@@ -25,9 +25,9 @@ public class ObstacleFactory : Singleton<ObstacleFactory>
         return prefabLookUp.ContainsKey(cellType);
     }
 
-    public CellBlocker GenerateBlocker(int blockerType)
+    public BaseCellBlocker GenerateBlocker(int blockerType)
     {
-        CellBlocker blocker = Instantiate(prefabLookUp[blockerType]);
+        BaseCellBlocker blocker = Instantiate(prefabLookUp[blockerType]);
         blocker.UpdateRenderLayer();
         return blocker;
     }
@@ -50,7 +50,7 @@ public class ObstacleFactory : Singleton<ObstacleFactory>
     public class ObstacleData
     {
         public int obstacleId;
-        public CellBlocker prefab;
+        public BaseCellBlocker prefab;
     }
     #endregion  
 

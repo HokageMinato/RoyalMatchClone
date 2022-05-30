@@ -31,8 +31,8 @@ public class Grid : Singleton<Grid>
     public int GridWidth
     { get { return GameplayManager.instance.levelData.gridWidth; } }
 
-    
-    
+
+    public int CellCount=0;
     #endregion
    
     #region PRIVATE_VARIABLES
@@ -44,45 +44,24 @@ public class Grid : Singleton<Grid>
     public void GenerateGrid()
     {
         CreateGrid();
-        coloumnCollapser.Init();
+        
     }
 
     public void UpdateInterreferences() 
     {
         InterreferenceGrid();
+        coloumnCollapser.Init();
     }
 
     #endregion
 
     #region PUBLIC_METHODS
 
-    public bool AreNeighbours(GridCell firstCell, GridCell secondCell){
-
-        bool isVerticalPositionSame = firstCell.HIndex == secondCell.HIndex;
-        bool isHorizontalPositionSame = firstCell.WIndex == secondCell.WIndex;
-        int cellDistance;
-
-        if (isHorizontalPositionSame)
-        {
-            cellDistance = Mathf.Abs(firstCell.HIndex - secondCell.HIndex);
-        }
-        else if (isVerticalPositionSame)
-        {
-            cellDistance = Mathf.Abs(firstCell.WIndex - secondCell.WIndex);
-        }
-        else 
-        {
-            return false;
-        }
-
-        bool areNeighbours = cellDistance <=1  && (isVerticalPositionSame || isHorizontalPositionSame);
-
-        return areNeighbours;
-    }
 
     public Transform GetLayerTransformParent(RenderLayer renderLayer) {
         return layerTransforms[(int)renderLayer];
     }
+
     #endregion
 
     #region PRIVATE_METHODS
@@ -113,6 +92,8 @@ public class Grid : Singleton<Grid>
             
         }
 
+        CellCount = c;
+
     }
 
     private void InterreferenceGrid()
@@ -121,8 +102,6 @@ public class Grid : Singleton<Grid>
         CreateBottomLeftReferences();
         CreateBottomRightReferences();
         CreateTopReferences();
-        //CreateLeftReferences();
-        //CreateRightReferences();
 
         void CreateBottomReferences()
         {
@@ -132,7 +111,7 @@ public class Grid : Singleton<Grid>
                 {
 
                     if (_grid[i][j] == null ||
-                        _grid[i + 1][j] == null || _grid[i + 1][j].IsBlocked)
+                        _grid[i + 1][j] == null || IsCellBlocked(_grid[i + 1][j]))
                         continue;
 
                     _grid[i][j].bottomCell = _grid[i + 1][j];
@@ -147,8 +126,8 @@ public class Grid : Singleton<Grid>
                 for (int i = 0; i < GridHeight - 1; i++)
                 {
 
-                    if (_grid[i][j] == null || _grid[i][j].IsBlocked ||
-                        _grid[i + 1][j] == null || _grid[i + 1][j].IsBlocked)
+                    if (_grid[i][j] == null || IsCellBlocked(_grid[i][j]) ||
+                        _grid[i + 1][j] == null || IsCellBlocked(_grid[i + 1][j]))
                         continue;
 
                     _grid[i+1][j].topCell = _grid[i][j];
@@ -166,7 +145,7 @@ public class Grid : Singleton<Grid>
                     GridCell bottomLeftCell = _grid[i + 1][j - 1];
 
                     if (currentCell == null ||
-                         bottomLeftCell == null || bottomLeftCell.IsBlocked)
+                         bottomLeftCell == null || IsCellBlocked(bottomLeftCell))
                         continue;
 
                     if(IsColoumnBlockedFromHere(bottomLeftCell))
@@ -186,7 +165,7 @@ public class Grid : Singleton<Grid>
                     GridCell bottomRightCell = _grid[i + 1][j + 1];
 
                     if (currentCell == null ||
-                         bottomRightCell == null || bottomRightCell.IsBlocked)
+                         bottomRightCell == null || IsCellBlocked(bottomRightCell))
                         continue;
 
                     if (IsColoumnBlockedFromHere(bottomRightCell))
@@ -196,56 +175,7 @@ public class Grid : Singleton<Grid>
 
         }
 
-        //void CreateLeftReferences() 
-        //{
-        //    for (int j = 1; j < GridWidth; j++)
-        //    {
-        //        for (int i = 0; i < GridHeight - 1; i++)
-        //        {
-
-        //            GridCell currentCell = _grid[i][j];
-        //            GridCell leftCell = _grid[i][j - 1];
-
-        //            if (currentCell == null ||
-        //                 leftCell == null)
-        //                continue;
-
-        //            if(leftCell.IsBlocked)
-        //                currentCell.leftCell = leftCell;
-
-        //            if (IsColoumnBlockedFromHere(leftCell))
-        //                currentCell.leftCell = leftCell;
-        //        }
-        //    }
-
-        //}
        
-        //void CreateRightReferences() 
-        //{
-        //    for (int j = 0; j < GridWidth-1; j++)
-        //    {
-        //        for (int i = 0; i < GridHeight - 1; i++)
-        //        {
-
-        //            GridCell currentCell = _grid[i][j];
-        //            GridCell rightCell = _grid[i][j + 1];
-
-        //            if (currentCell == null ||
-        //                 rightCell == null)
-        //                continue;
-
-        //            if (rightCell.IsBlocked)
-        //            {
-        //                currentCell.rightCell = rightCell;
-        //                continue;
-        //            }
-
-        //            if (IsColoumnBlockedFromHere(rightCell))
-        //                currentCell.rightCell = rightCell;
-        //        }
-        //    }
-
-        //}
 
         bool IsColoumnBlockedFromHere(GridCell cell) 
         {
@@ -258,7 +188,7 @@ public class Grid : Singleton<Grid>
                 if (!ccell)
                     continue;
 
-                if (ccell.IsBlocked)
+                if (IsCellBlocked(ccell))
                     return true;
             }
 
@@ -282,6 +212,11 @@ public class Grid : Singleton<Grid>
         cell.Init(i,j);
         cell.gameObject.name = $"({i},{j})";
         _grid[i][j] = cell;
+    }
+
+    private bool IsCellBlocked(GridCell gridCell) 
+    { 
+        return GameplayObstacleHandler.instance.IsCellBlocked(gridCell);
     }
     #endregion
 

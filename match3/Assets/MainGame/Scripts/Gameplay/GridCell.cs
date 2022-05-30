@@ -13,10 +13,9 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     [SerializeField] private RenderLayer renderLayer;
 
 
-public bool lockedInAnimation;
+    public bool lockedInAnimation;
     public new SpriteRenderer renderer;
     [SerializeField]private Element _element;
-    private CellBlocker _blocker;
     #endregion
 
     #region PUBLIC_VARIABLES
@@ -37,18 +36,6 @@ public bool lockedInAnimation;
             return _element == null;
         }
     }
-
-    public bool IsBlocked
-    {
-        get
-        {
-            if (_blocker == null)
-                return false;
-
-            return _blocker.DoesBlockCell();
-        }
-    }
-
 
     public RenderLayer RenderLayer{
         get{
@@ -109,8 +96,6 @@ public bool lockedInAnimation;
         {
             throw new Exception($"Write before read at cell {gameObject.name}");
         }
-
-
         _element = newElement;
     }
 
@@ -128,12 +113,6 @@ public bool lockedInAnimation;
         renderer.color = Color.gray;
     }
 
-
-    public void SetBlocker(CellBlocker blocker) {
-
-        _blocker = blocker;
-        inputCollider.enabled = (blocker==null);
-    }
 
     public void SetExecutionData(MatchExecutionData executionData) {
         this.executionData = executionData;

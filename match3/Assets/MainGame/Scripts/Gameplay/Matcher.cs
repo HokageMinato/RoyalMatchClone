@@ -115,8 +115,8 @@ public class Matcher : Singleton<Matcher>
         else
         {
             Grid grid = Grid.instance;
-            while(executionData.HasMatches)
-            //if (executionData.HasMatches)
+            //while(executionData.HasMatches)
+            if (executionData.HasMatches)
             {
                 System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
                 st.Start();
@@ -157,7 +157,7 @@ public class Matcher : Singleton<Matcher>
     {
         List<List<Element>> matchedElements = executionData.matchedElements;
 
-        for (int i = 0; i < matchedElements.Count;)
+        for (int i = 0; i < matchedElements.Count;i++)
         {
             List<Element> sameElementsList = matchedElements[i];
             for (int j = 0; j < sameElementsList.Count; j++)
@@ -165,8 +165,8 @@ public class Matcher : Singleton<Matcher>
                 sameElementsList[j].DestroyElement();
             }
 
-            matchedElements.RemoveAt(i);
         }
+        executionData.matchedElements.Clear();
     }
 
     private void FindMatches(MatchExecutionData executionData)
@@ -186,7 +186,9 @@ public class Matcher : Singleton<Matcher>
                         MatchPattern matchPattern = patterns[p];
 
                         //We extract the cells according to pattern specified offsets
-                        ExtractPatternCells(startingCell, matchPattern, i, j, executionData);
+                        //ExtractPatternCells(startingCell, matchPattern, i, j, executionData);
+                        PatternComparer.instance.GetMatchedPatternCellsNonAlloc(executionData.patternCells,matchPattern, i, j);
+                        
 
                         if (!IsExtractionValid(executionData))
                         {
@@ -214,9 +216,9 @@ public class Matcher : Singleton<Matcher>
     }
 
     private void HitPotentialObstacles(MatchExecutionData executionData) {
-        
-        GameplayObstacleHandler.instance.CheckForNeighbourHit(executionData);
+        //TBD if safe
 
+        GameplayObstacleHandler.instance.CheckForNeighbourHit(executionData);
     }
 
     private void ExtractElementsToDestroyList(MatchExecutionData matchExecutionData)
@@ -259,40 +261,39 @@ public class Matcher : Singleton<Matcher>
         return true;
     }
 
-    private void ExtractPatternCells(GridCell startingCell, MatchPattern matchPattern, int i, int j,
-        MatchExecutionData matchExecutionData)
-    {
-        List<GridCell> patternCells = matchExecutionData.patternCells;
-        Grid grid = Grid.instance;
+    //private void ExtractPatternCells(GridCell startingCell, MatchPattern matchPattern, int i, int j,MatchExecutionData matchExecutionData)
+    //{
+    //    List<GridCell> patternCells = matchExecutionData.patternCells;
+    //    Grid grid = Grid.instance;
 
-        //  Debug.Log($"<Matcher> Checking {matchPattern.patternName} at cell {startingCell.gameObject.name}");
+    //    //  Debug.Log($"<Matcher> Checking {matchPattern.patternName} at cell {startingCell.gameObject.name}");
 
-        for (int k = 0; k < matchPattern.Length; k++) //Generate a list of cell from patterm
-        {
-            IndexPair offsetIndexPair = matchPattern[k];
-            int iPaired = i + offsetIndexPair.I_Offset;
-            int jPaired = j + offsetIndexPair.J_Offset;
+    //    for (int k = 0; k < matchPattern.Length; k++) //Generate a list of cell from patterm
+    //    {
+    //        IndexPair offsetIndexPair = matchPattern[k];
+    //        int iPaired = i + offsetIndexPair.I_Offset;
+    //        int jPaired = j + offsetIndexPair.J_Offset;
 
 
-            if (iPaired >= grid.GridHeight || jPaired >= grid.GridWidth ||
-                grid[iPaired, jPaired] == null || grid[iPaired, jPaired].IsEmpty)
-            {
-                // Either grid geometry doesn't allow further check or previous pattern locked and extracted the cell thus current pattern will fail,
-                // so we terminate execution instantly and clear the extractList;
-                patternCells.Clear();
+    //        if (iPaired >= grid.GridHeight || jPaired >= grid.GridWidth ||
+    //            grid[iPaired, jPaired] == null || grid[iPaired, jPaired].IsEmpty)
+    //        {
+    //            // Either grid geometry doesn't allow further check or previous pattern locked and extracted the cell thus current pattern will fail,
+    //            // so we terminate execution instantly and clear the extractList;
+    //            patternCells.Clear();
 
-                //editor logging
-                //   Debug.Log($"<Matcher> Terminating check due i{iPaired} j{jPaired} >= {grid.GridHeight} {grid.GridWidth}");
-                //  Debug.Log($"<Matcher> OR");
-                // Debug.Log($"<Matcher> Terminating check due to no cell present at or is Empty {i}{j}");
-                //end logging
+    //            //editor logging
+    //            //   Debug.Log($"<Matcher> Terminating check due i{iPaired} j{jPaired} >= {grid.GridHeight} {grid.GridWidth}");
+    //            //  Debug.Log($"<Matcher> OR");
+    //            // Debug.Log($"<Matcher> Terminating check due to no cell present at or is Empty {i}{j}");
+    //            //end logging
 
-                return;
-            }
+    //            return;
+    //        }
 
-            GridCell cellOfPattern = grid[iPaired, jPaired];
-            patternCells.Add(cellOfPattern);
-        }
-    }
+    //        GridCell cellOfPattern = grid[iPaired, jPaired];
+    //        patternCells.Add(cellOfPattern);
+    //    }
+    //}
     #endregion
 }

@@ -16,7 +16,6 @@ public class ElementFactory : Singleton<ElementFactory>
         Transform elementTransformParent = Grid.instance.GetLayerTransformParent(element.RenderLayer);
         element.transform.SetParent(elementTransformParent);
         
-        
         return element;
 
     }
