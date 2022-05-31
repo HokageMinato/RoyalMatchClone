@@ -58,9 +58,9 @@
   <ItemGroup>
     <Compile Include="Assets\MainGame\Scripts\Scriptable\MatchPattern.cs" />
     <Compile Include="Assets\MainGame\Scripts\Scriptable\ElementConfig.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Gameplay\PatternMatcher\PatternComparer.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Gameplay\PatternMatcher\PatternCompareUtility.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\GridBlockers\Blockers\BoxCellBlocker.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Gameplay\GridColoumnCollapser.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Gameplay\GridMovementHandler.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\Managers\GameplayManager.cs" />
     <Compile Include="Assets\NativePooler.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\Matcher.cs" />

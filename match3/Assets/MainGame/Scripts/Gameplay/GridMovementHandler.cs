@@ -5,12 +5,12 @@ using System.Linq;
 using UnityEngine;
 
 
-public class GridColoumnCollapser : MonoBehaviour
+public class GridMovementHandler : MonoBehaviour
 {
     public Transform transformActivePrefab;
-
     private Transform[] elementSpawnPositions;
-
+    private List<Element> newElements = new List<Element>();
+    
     public void Init()
     {
         SetElementFactoryTransforms();
@@ -28,8 +28,7 @@ public class GridColoumnCollapser : MonoBehaviour
         {
             int cellType = gridLevel[0, i];
 
-            if (cellType == GridConstants.NO_CELL ||
-               ObstacleFactory.instance.IsBlockerType(cellType))
+            if (cellType == GridConstants.NO_CELL || ObstacleFactory.instance.IsBlockerType(cellType))
                 continue;
 
             Transform parentTransform = grid.GetLayerTransformParent(RenderLayer.ElementLayer);
@@ -49,31 +48,28 @@ public class GridColoumnCollapser : MonoBehaviour
                 if (!gridCell || IsCellBlocked(gridCell))
                     continue;
 
-
-                Element newElement = GenerateElementAt(gridCell);
+                ElementFactory elementFactory = ElementFactory.instance;
+                Element newElement = elementFactory.GenerateRandomElement();
+                gridCell.SetElement(newElement);
+                elementFactory.OnElementSetToCell(newElement);
                 newElement.transform.position = gridCell.transform.position;
             }
         }
 
     }
 
-    private Element GenerateElementAt(GridCell cell) {
-
-        Element element = ElementFactory.instance.GenerateRandomElement();
-        cell.SetElement(element);
-        return element;
-    }
-
     public void CollapseColomuns(MatchExecutionData executionData)
     {
+        int uAnimId = 0;
+
         #region FUNCTION_EXECUTION_ORDER
         Grid grid = Grid.instance;
         Dictionary<int, List<ElementAnimationData>> elementFromToPairForAnimation = new Dictionary<int, List<ElementAnimationData>>();
         ShiftCells();
-        GenerateElements();
+        ShiftNewCells();
         AnimateMovement();
         #endregion
-
+        
 
         #region LOCAL_FUNCTION_DECLARATIONS
 
@@ -101,13 +97,12 @@ public class GridColoumnCollapser : MonoBehaviour
 
         void ShiftCells()
         {
-            int o = 0;
+           
             for (int bI = grid.GridHeight - 1; bI >= 0; bI--)
             {
                 for (int bJ = grid.GridWidth - 1; bJ >= 0; bJ--)
                 {
-                    int c = 0;
-                    o++;
+                    uAnimId++;
 
                     GridCell currentCell = grid[bI, bJ];
                     if (currentCell == null || IsGridCellBlocked(currentCell) || currentCell.IsEmpty)
@@ -115,17 +110,19 @@ public class GridColoumnCollapser : MonoBehaviour
 
                     GridCell nextCell = GetNextCellForShifting(currentCell);
                     
+                    int c = 0;
                     while (nextCell != null)
                     {
                         Element element = currentCell.GetElement();
                         nextCell.SetElement(element);
 
 
-                        AddToLookup(o, new ElementAnimationData(element, currentCell, nextCell, executionData));
+                        AddToLookup(uAnimId, new ElementAnimationData(element, currentCell, nextCell, executionData));
 
                         currentCell = nextCell;
                         nextCell = GetNextCellForShifting(currentCell);
-                       
+
+                        
                         #region INF_SAFE_CHECK
                         c++;
                         if (c > 900)
@@ -137,85 +134,147 @@ public class GridColoumnCollapser : MonoBehaviour
                         
                     }
 
-
                 }
                 
             }
 
 
-
-            GridCell GetNextCellForShifting(GridCell currentCell)
-            {
-                GridCell nextCell = null;
-                if (currentCell.bottomCell && currentCell.bottomCell.IsEmpty)
-                {
-                    nextCell = currentCell.bottomCell;
-                    return nextCell;
-                }
-
-                if (currentCell.bottomRightCell && currentCell.bottomRightCell.IsEmpty && !HasPendingElements(currentCell.bottomRightCell))
-                {
-                    nextCell = currentCell.bottomRightCell;
-                    return nextCell;
-                }
-
-                if (currentCell.bottomLeftCell && currentCell.bottomLeftCell.IsEmpty && !HasPendingElements(currentCell.bottomLeftCell))
-                {
-                    nextCell = currentCell.bottomLeftCell;
-                    return nextCell;
-                }
-
-                return nextCell;
-
-            }
-
-            bool HasPendingElements(GridCell initialCell) 
-            {
-                GridCell presentCell = initialCell;
-
-                int c = 0;
-                while (presentCell.topCell != null) 
-                {
-                    presentCell = presentCell.topCell;
-
-                    if (!presentCell.IsEmpty)
-                        return true;
-
-                    
-                    #region INF_SAFE_CHECK
-                    c++;
-                    if (c > 900)
-                    {
-                        Debug.Log("INFI LOOP");
-                        break;
-                    }
-                    #endregion
-                }
-
-                return false;
-            }
-
-         
-
         }
 
-        void GenerateElements() 
+
+
+        void ShiftNewCells()
         {
-            Grid grid = Grid.instance;
+            int oc = 0;
+            GenerateRequiredElements();
+            Debug.Log($"Empty cell count {GetEmptyCellCount()}");
+            //while (newElements.Count > 0)
+            //{
+            //    int last = newElements.Count - 1;
+            //    Debug.Log($"{last} {newElements.Count}");
+            //    Element newElement = newElements[last];
+            //    newElements.RemoveAt(last);
 
-            Debug.Log(GetEmptyCount());
 
-            
-            int GetEmptyCount()
-            {
-                return grid.CellCount - GameplayObstacleHandler.instance.GetBlockedCount();
-            }
+                for (int bI = grid.GridHeight - 1; bI >= 0; bI--)
+                {
+                    for (int bJ = grid.GridWidth - 1; bJ >= 0; bJ--)
+                    {
+                        uAnimId++;
+
+                    if (newElements.Count == 0)
+                        return;
+
+                        GridCell currentCell = grid[bI, bJ];
+                        if (currentCell == null || IsGridCellBlocked(currentCell) || currentCell.IsEmpty)
+                            continue;
+
+                        GridCell nextCell = GetNextCellForShifting(currentCell);
+
+
+                    if (nextCell!=null && nextCell.HIndex == 0)
+                    {
+                        Element newElement = newElements[newElements.Count - 1];
+                        nextCell.SetElement(newElement);
+                        newElements.RemoveAt(newElements.Count - 1);
+                    }
+
+                        int c = 0;
+                        while (nextCell != null)
+                        {
+                            Element element = currentCell.GetElement();
+                            nextCell.SetElement(element);
+
+                            AddToLookup(uAnimId, new ElementAnimationData(element, currentCell, nextCell, executionData));
+
+                            currentCell = nextCell;
+                            nextCell = GetNextCellForShifting(currentCell);
+
+
+                            #region INF_SAFE_CHECK
+                            c++;
+                            if (c > 900)
+                            {
+                                Debug.Log("INFI LOOP");
+                                break;
+                            }
+                            #endregion
+
+                        }
+
+                    }
+
+                }
+
+
+
+                //#region INF_SAFE_CHECK
+                //oc++;
+                //if (oc > 900)
+                //{
+                //    Debug.Log("OUTER INFI LOOP");
+                //    break;
+                //}
+                //#endregion
+            //}
+
 
         }
 
+        GridCell GetNextCellForShifting(GridCell currentCell)
+        {
+            GridCell nextCell = null;
+            if (currentCell.bottomCell && currentCell.bottomCell.IsEmpty)
+            {
+                nextCell = currentCell.bottomCell;
+                return nextCell;
+            }
+
+            if (currentCell.bottomRightCell && currentCell.bottomRightCell.IsEmpty && !HasPendingElements(currentCell.bottomRightCell))
+            {
+                nextCell = currentCell.bottomRightCell;
+                return nextCell;
+            }
+
+            if (currentCell.bottomLeftCell && currentCell.bottomLeftCell.IsEmpty && !HasPendingElements(currentCell.bottomLeftCell))
+            {
+                nextCell = currentCell.bottomLeftCell;
+                return nextCell;
+            }
+
+            return nextCell;
+
+        }
+
+        bool HasPendingElements(GridCell initialCell)
+        {
+            GridCell presentCell = initialCell;
+
+            int c = 0;
+            while (presentCell.topCell != null)
+            {
+                presentCell = presentCell.topCell;
+
+                if (!presentCell.IsEmpty)
+                    return true;
 
 
-        void AnimateMovement() {
+                #region INF_SAFE_CHECK
+                c++;
+                if (c > 900)
+                {
+                    Debug.Log("INFI LOOP");
+                    break;
+                }
+                #endregion
+            }
+
+            return false;
+        }
+
+
+        void AnimateMovement() 
+        {
             StartCoroutine(AnimateMovementRoutine());
         }
 
@@ -224,16 +283,11 @@ public class GridColoumnCollapser : MonoBehaviour
             WaitForSeconds interAnimationChainDispatchDelay = new WaitForSeconds(.01f);
             List<ElementAnimationChain> animationChains = ConvertLookupToList();
 
-           // LogChain(animationChains, "New");
-
             for (int i = 0; i < animationChains.Count; i++)
             {
-                    StartCoroutine(AnimateElementChain(animationChains[i]));
-                    yield return interAnimationChainDispatchDelay;
-                
-
+               StartCoroutine(AnimateElementChain(animationChains[i]));
+               yield return interAnimationChainDispatchDelay;
             }
-
             yield return null;
         }
 
@@ -247,6 +301,24 @@ public class GridColoumnCollapser : MonoBehaviour
             }
 
             yield return null;
+        }
+
+        void GenerateRequiredElements() 
+        {
+            newElements.Clear();
+            
+            int requiredElements = GetEmptyCellCount();
+            for (int i = 0; i < requiredElements; i++)
+            {
+                newElements.Add(ElementFactory.instance.GenerateRandomElement());
+                newElements[i].gameObject.name += "ne";
+            }
+        }
+
+        int GetEmptyCellCount()
+        {
+            int totalAvailableCells = grid.CellCount - GameplayObstacleHandler.instance.GetBlockedCount();
+            return totalAvailableCells - ElementFactory.instance.ActiveElementCount;
         }
 
     }

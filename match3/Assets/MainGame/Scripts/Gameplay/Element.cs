@@ -1,23 +1,41 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class Element : MonoBehaviour
 {
 
-    [SerializeField] ElementConfig elementConfig;
-    IEnumerator animateRoutine;
+   [SerializeField] ElementConfig elementConfig;
+   IEnumerator animateRoutine;
+   private Action<Element> _onElementDestory;
+   private Action<Element> _onElementSet;
     
     
-    public RenderLayer RenderLayer
+    
+   public RenderLayer RenderLayer
     {
         get {
             return ElementConfig.renderLayer;
         }
     }
 
+    public void RegisterOnDestory(Action<Element> OnElementDestory) 
+    {
+       _onElementDestory = OnElementDestory;
+    }
+    
+    public void RegisterOnSet(Action<Element> OnElementSet) 
+    {
+        _onElementSet = OnElementSet;
+    }
 
-    public bool Equals(Element other)
+    public void OnSet() 
+    {
+        _onElementSet(this);
+    }
+
+   public bool Equals(Element other)
    {
       if (other == null)
          return false;
@@ -33,6 +51,7 @@ public class Element : MonoBehaviour
 
     public void DestroyElement() 
     {
+        _onElementDestory(this);
         DestroyImmediate(gameObject);
     }
    

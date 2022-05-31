@@ -13,26 +13,26 @@ public class Grid : Singleton<Grid>
 
     #region PRIVATE_VARIABLES
     [SerializeField] private GridCell gridCellPrefab;
-    [SerializeField] private GridColoumnCollapser coloumnCollapser;
+    [SerializeField] private GridMovementHandler coloumnCollapser;
     [SerializeField] private Transform[] layerTransforms;
     #endregion
-    
+
     #region PUBLIC_VARIABLES
-    public GridCell this[int i,int j]
+    public GridCell this[int i, int j]
     {
         get { return _grid[i][j]; }
         set { _grid[i][j] = value; }
     }
 
-   
+
     public int GridHeight
     { get { return GameplayManager.instance.levelData.gridHeight; } }
-    
+
     public int GridWidth
     { get { return GameplayManager.instance.levelData.gridWidth; } }
 
 
-    public int CellCount=0;
+    public int CellCount {get; private set;}
     #endregion
    
     #region PRIVATE_VARIABLES
@@ -56,8 +56,6 @@ public class Grid : Singleton<Grid>
     #endregion
 
     #region PUBLIC_METHODS
-
-
     public Transform GetLayerTransformParent(RenderLayer renderLayer) {
         return layerTransforms[(int)renderLayer];
     }
@@ -66,12 +64,9 @@ public class Grid : Singleton<Grid>
 
     #region PRIVATE_METHODS
 
-
-
     
     private void CreateGrid()
     {
-        int c = 0;
         GridDesignTemp levelData = GameplayManager.instance.levelData;
         
         _grid = new GridCell[levelData.gridHeight][];
@@ -87,12 +82,11 @@ public class Grid : Singleton<Grid>
                     continue;
                  
                 CreateCellAt(j, i);
-                c++;
+                  
             }
             
         }
 
-        CellCount = c;
 
     }
 
@@ -212,6 +206,7 @@ public class Grid : Singleton<Grid>
         cell.Init(i,j);
         cell.gameObject.name = $"({i},{j})";
         _grid[i][j] = cell;
+        CellCount++;
     }
 
     private bool IsCellBlocked(GridCell gridCell) 

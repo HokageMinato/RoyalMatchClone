@@ -162,7 +162,8 @@ public class Matcher : Singleton<Matcher>
             List<Element> sameElementsList = matchedElements[i];
             for (int j = 0; j < sameElementsList.Count; j++)
             {
-                sameElementsList[j].DestroyElement();
+                Element elementToBeDestroyed = sameElementsList[j];
+                elementToBeDestroyed.DestroyElement();
             }
 
         }
@@ -187,7 +188,7 @@ public class Matcher : Singleton<Matcher>
 
                         //We extract the cells according to pattern specified offsets
                         //ExtractPatternCells(startingCell, matchPattern, i, j, executionData);
-                        PatternComparer.instance.GetMatchedPatternCellsNonAlloc(executionData.patternCells,matchPattern, i, j);
+                        PatternCompareUtility.GetMatchedPatternCellsNonAlloc(executionData.patternCells,matchPattern, i, j);
                         
 
                         if (!IsExtractionValid(executionData))

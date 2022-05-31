@@ -43,7 +43,7 @@ public class BoxCellBlocker : BaseCellBlocker
 
         List<GridCell> toBeDestoryedCells = executionData.patternCells;
         List<GridCell> edgeCells = new List<GridCell>();
-        PatternComparer.instance.GetAllPatternCellsNonAlloc(edgeCells, boxBlockerPattern, initial_h, initial_w);
+        PatternCompareUtility.GetAllPatternCellsNonAlloc(edgeCells, boxBlockerPattern, initial_h, initial_w);
 
 
         for (int i = 0; i < edgeCells.Count; i++)
