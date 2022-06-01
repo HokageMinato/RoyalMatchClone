@@ -10,7 +10,7 @@ public class BaseCellBlocker : MonoBehaviour
     public RenderLayer renderLayer;
     public int initial_h;
     public int initial_w;
-    public GridCell TargetCell { get; private set; }
+    [SerializeField]private GridCell _targetCell;
     #endregion
 
     #region PUBLIC_REFERENCES
@@ -21,7 +21,7 @@ public class BaseCellBlocker : MonoBehaviour
     {
         initial_h = hIndex;
         initial_w = wIndex;
-        TargetCell = gridCell;
+        _targetCell = gridCell;
         OnBlockCells();
     }
 
@@ -29,7 +29,12 @@ public class BaseCellBlocker : MonoBehaviour
     public virtual void OnUnblocked() {}
     public virtual void OnBlockCells(){}
 
-    public virtual bool DoesBlockCell() {
+    public virtual bool DoesBlockThisCell(GridCell cell) {
+        return DoesBlockCell() && _targetCell == cell;
+    }
+
+    public virtual bool DoesBlockCell() 
+    {
         return renderLayer == RenderLayer.ElementBlockerLayer;
     }
 

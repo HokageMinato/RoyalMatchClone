@@ -105,7 +105,7 @@ public class GridMovementHandler : MonoBehaviour
                     uAnimId++;
 
                     GridCell currentCell = grid[bI, bJ];
-                    if (currentCell == null || IsGridCellBlocked(currentCell) || currentCell.IsEmpty)
+                    if (currentCell == null || IsCellBlocked(currentCell) || currentCell.IsEmpty)
                         continue;
 
                     GridCell nextCell = GetNextCellForShifting(currentCell);
@@ -141,84 +141,59 @@ public class GridMovementHandler : MonoBehaviour
 
         }
 
-
-
         void ShiftNewCells()
-        {
-            int oc = 0;
-            GenerateRequiredElements();
+        {       
+           //ih jw
+           GenerateRequiredElements();
+           
             Debug.Log($"Empty cell count {GetEmptyCellCount()}");
-            //while (newElements.Count > 0)
-            //{
-            //    int last = newElements.Count - 1;
-            //    Debug.Log($"{last} {newElements.Count}");
-            //    Element newElement = newElements[last];
-            //    newElements.RemoveAt(last);
 
 
-                for (int bI = grid.GridHeight - 1; bI >= 0; bI--)
+
+            for (int Oj = 0; Oj < grid.GridWidth; Oj++) //runs at top row
+            {
+                int oc = 0;
+                if (IsColoumnEmpty(Oj))
                 {
-                    for (int bJ = grid.GridWidth - 1; bJ >= 0; bJ--)
+                    Debug.Log($"Scannig col {Oj}");
+                    GridCell cell = grid[0, Oj];
+                    if (!cell.IsEmpty || IsCellBlocked(cell))
                     {
-                        uAnimId++;
+                        Debug.Log($"Skipping {cell.gameObject.name} ie:{cell.IsEmpty} icb{IsCellBlocked(cell)}");
+                        continue;
+                    }
+                    
+                    Element newElement = GetNewElement();
+                    cell.SetElement(newElement);
+                    Debug.Log($"Setting initial element at cell {cell.gameObject.name}");
+                    newElement.transform.position = cell.transform.position;
 
-                    if (newElements.Count == 0)
-                        return;
-
-                        GridCell currentCell = grid[bI, bJ];
-                        if (currentCell == null || IsGridCellBlocked(currentCell) || currentCell.IsEmpty)
-                            continue;
-
-                        GridCell nextCell = GetNextCellForShifting(currentCell);
-
-
-                    if (nextCell!=null && nextCell.HIndex == 0)
-                    {
-                        Element newElement = newElements[newElements.Count - 1];
-                        nextCell.SetElement(newElement);
-                        newElements.RemoveAt(newElements.Count - 1);
+                    for (int i = 1; i < grid.GridHeight-1 && grid[i,Oj] != null && grid[i,Oj].IsEmpty && !IsCellBlocked(grid[i,Oj]); i++) 
+                    { 
+                       GridCell upperCell = grid[i-1,Oj];
+                       GridCell currentCell = grid[i,Oj];
+                            
+                       currentCell.SetElement(upperCell.GetElement());
+                       currentCell.ReadElement().transform.localPosition = currentCell.transform.localPosition;    
                     }
 
-                        int c = 0;
-                        while (nextCell != null)
-                        {
-                            Element element = currentCell.GetElement();
-                            nextCell.SetElement(element);
-
-                            AddToLookup(uAnimId, new ElementAnimationData(element, currentCell, nextCell, executionData));
-
-                            currentCell = nextCell;
-                            nextCell = GetNextCellForShifting(currentCell);
-
-
-                            #region INF_SAFE_CHECK
-                            c++;
-                            if (c > 900)
-                            {
-                                Debug.Log("INFI LOOP");
-                                break;
-                            }
-                            #endregion
-
-                        }
-
+                    #region INF_SAFE_CHECK
+                    oc++;
+                    if (oc > 900)
+                    {
+                        Debug.Log("OUTER INFI LOOP 202");
+                        break;
                     }
-
+                    #endregion
                 }
-
-
-
-                //#region INF_SAFE_CHECK
-                //oc++;
-                //if (oc > 900)
-                //{
-                //    Debug.Log("OUTER INFI LOOP");
-                //    break;
-                //}
-                //#endregion
-            //}
-
-
+            }
+            Element GetNewElement() 
+            {
+                int elemCount = newElements.Count-1;
+                Element element = newElements[elemCount];
+                newElements.RemoveAt(elemCount);
+                return element;
+            }
         }
 
         GridCell GetNextCellForShifting(GridCell currentCell)
@@ -230,13 +205,13 @@ public class GridMovementHandler : MonoBehaviour
                 return nextCell;
             }
 
-            if (currentCell.bottomRightCell && currentCell.bottomRightCell.IsEmpty && !HasPendingElements(currentCell.bottomRightCell))
+            if (currentCell.bottomRightCell && currentCell.bottomRightCell.IsEmpty && !PendingElementsCheckFromBottomRecursive(currentCell.bottomRightCell))
             {
                 nextCell = currentCell.bottomRightCell;
                 return nextCell;
             }
 
-            if (currentCell.bottomLeftCell && currentCell.bottomLeftCell.IsEmpty && !HasPendingElements(currentCell.bottomLeftCell))
+            if (currentCell.bottomLeftCell && currentCell.bottomLeftCell.IsEmpty && !PendingElementsCheckFromBottomRecursive(currentCell.bottomLeftCell))
             {
                 nextCell = currentCell.bottomLeftCell;
                 return nextCell;
@@ -246,7 +221,7 @@ public class GridMovementHandler : MonoBehaviour
 
         }
 
-        bool HasPendingElements(GridCell initialCell)
+        bool PendingElementsCheckFromBottomRecursive(GridCell initialCell)
         {
             GridCell presentCell = initialCell;
 
@@ -272,6 +247,23 @@ public class GridMovementHandler : MonoBehaviour
             return false;
         }
 
+        bool IsColoumnEmpty(int Oj)
+        {
+            for (int i = 0; i < grid.GridHeight; i++)
+            {
+                GridCell cell = grid[i, Oj];
+                if (cell == null )
+                    continue;
+
+                if (IsCellBlocked(cell))
+                    continue;
+
+                if (cell.IsEmpty)
+                    return true;
+            }
+
+            return false;
+        }
 
         void AnimateMovement() 
         {
@@ -305,9 +297,7 @@ public class GridMovementHandler : MonoBehaviour
 
         void GenerateRequiredElements() 
         {
-            newElements.Clear();
-            
-            int requiredElements = GetEmptyCellCount();
+            int requiredElements = GetEmptyCellCount() - newElements.Count;
             for (int i = 0; i < requiredElements; i++)
             {
                 newElements.Add(ElementFactory.instance.GenerateRandomElement());
@@ -319,15 +309,13 @@ public class GridMovementHandler : MonoBehaviour
         {
             int totalAvailableCells = grid.CellCount - GameplayObstacleHandler.instance.GetBlockedCount();
             return totalAvailableCells - ElementFactory.instance.ActiveElementCount;
+            
         }
 
     }
     #endregion
 
-    private bool IsGridCellBlocked(GridCell gridCell) 
-    {
-        return GameplayObstacleHandler.instance.IsCellBlocked(gridCell);
-    }
+
 
     private void LogChain(List<ElementAnimationChain> animDataSortedByElement, string msg)
         {
@@ -366,32 +354,6 @@ public class ElementAnimationChain
         animationChain = chain;    
     }
 
-    public bool HasSideWaysAnimation 
-    {
-        get {
-
-            foreach (var item in animationChain)
-            {
-                if (item.FromCell.HIndex != item.FromCell.WIndex)
-                    return true;
-            }
-            return false;
-        }
-    }
-
-    public GridCell[] GetCells() 
-    {
-        HashSet<GridCell> cells = new HashSet<GridCell>();
-
-        for (int i = 0; i < animationChain.Count; i++)
-        {
-            cells.Add(animationChain[i].FromCell);
-            cells.Add(animationChain[i].ToCell);
-        }
-
-        return cells.ToArray();
-    }
-
 }
 
 
@@ -420,7 +382,7 @@ public class ElementAnimationData
 
         toCell.SetExecutionData(currentExecutionData);
         fromCell.SetExecutionData(currentExecutionData);
-        
+
     }
 
     public IEnumerator Animate() 
@@ -428,10 +390,5 @@ public class ElementAnimationData
          yield return Element.AnimateToCellRoutine(ToCell);
     }
 
-    public bool Equals(ElementAnimationData obj)
-    {
-        return Element.GetInstanceID() == obj.Element.GetInstanceID() &&
-               FromCell.HIndex == obj.FromCell.HIndex
-               && ToCell.HIndex == obj.ToCell.HIndex;
-    }
+   
 }

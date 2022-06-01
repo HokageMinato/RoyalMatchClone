@@ -142,7 +142,7 @@ public class Grid : Singleton<Grid>
                          bottomLeftCell == null || IsCellBlocked(bottomLeftCell))
                         continue;
 
-                    if(IsColoumnBlockedFromHere(bottomLeftCell))
+                   // if(IsColoumnBlockedFromHere(bottomLeftCell))
                         currentCell.bottomLeftCell = bottomLeftCell;
                 }
             }
@@ -162,7 +162,7 @@ public class Grid : Singleton<Grid>
                          bottomRightCell == null || IsCellBlocked(bottomRightCell))
                         continue;
 
-                    if (IsColoumnBlockedFromHere(bottomRightCell))
+                   // if (IsColoumnBlockedFromHere(bottomRightCell))
                         currentCell.bottomRightCell = bottomRightCell;
                 }
             }

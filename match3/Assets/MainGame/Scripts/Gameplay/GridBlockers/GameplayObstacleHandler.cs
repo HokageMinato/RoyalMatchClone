@@ -89,7 +89,7 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
     {
         for (int i = 0; i < activeBlockers.Count; i++)
         {
-            if (activeBlockers[i].DoesBlockCell() && activeBlockers[i].TargetCell == cell) 
+            if (activeBlockers[i].DoesBlockThisCell(cell)) 
             {
                 return true;
             }
