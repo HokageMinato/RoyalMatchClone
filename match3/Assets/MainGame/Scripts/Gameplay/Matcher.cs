@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchExecutionData
+public class MatchExecutionData : IEquatable<MatchExecutionData>
 {
     #region CONSTANTS
 
@@ -82,7 +82,7 @@ public class Matcher : Singleton<Matcher>
 {
     #region PRIVATE_VARIABLES
     [SerializeField] private MatchPattern[] patterns;
-    private HashSet<MatchExecutionData> activeThreads = new HashSet<MatchExecutionData>();
+    private HashSet<MatchExecutionData> activeSwipes = new HashSet<MatchExecutionData>();
     private const float FOUR_FRAME_WAITTIME = 0.64f;
     #endregion
     
@@ -99,48 +99,82 @@ public class Matcher : Singleton<Matcher>
     #region PRIVATE_VARIABLES
 
    
+    //private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData)
+    //{
+    //    Debug.LogError($"ITR {executionData.swipeId} MAIN START");
+    //    activeThreads.Add(executionData);
+    //    FindMatches(executionData);
+    //    yield return WaitForGridAnimationRoutine(executionData);
+    //    //Debug.Log("VSI");
+    //    if (!executionData.HasMatches)
+    //    {
+    //        //reswap cells and end execution;
+    //        InputManager.instance.SwapCells(executionData);
+    //        activeThreads.Remove(executionData);
+    //    }
+    //    else
+    //    {
+    //        Grid grid = Grid.instance;
+    //        //while(executionData.HasMatches)
+    //        if (executionData.HasMatches)
+    //        {
+    //            System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+    //            st.Start();
+    //            DestroyMatchedItems(executionData);
+    //            grid.CollapseColoumns(executionData);
+               
+    //            float time = st.ElapsedMilliseconds;
+    //            BasicLogger.Log($"{time} ms");
+    //            st.Stop();
+                
+    //            yield return WaitForGridAnimationRoutine(executionData);
+    //            FindMatches(executionData);
+    //        }
+
+
+    //        activeThreads.Remove(executionData);
+
+    //        Debug.LogError($"ITR {executionData.swipeId} MAIN END");
+
+    //        while (activeThreads.Count > 0)
+    //            yield return null;
+
+    //        grid.UnlockCells(executionData);
+    //    }
+    //}
+    
     private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData)
     {
         Debug.LogError($"ITR {executionData.swipeId} MAIN START");
-        activeThreads.Add(executionData);
+        activeSwipes.Add(executionData);
+
         FindMatches(executionData);
         yield return WaitForGridAnimationRoutine(executionData);
-        //Debug.Log("VSI");
-        if (!executionData.HasMatches)
+        int c = 0;
+        
+        while (executionData.HasMatches)
+        {
+            c++;
+            DestroyMatchedItems(executionData);
+            Grid.instance.CollapseColoumns(executionData);
+            yield return WaitForGridAnimationRoutine(executionData);
+            FindMatches(executionData);
+        }
+
+        if (c <= 0)
         {
             //reswap cells and end execution;
             InputManager.instance.SwapCells(executionData);
-            activeThreads.Remove(executionData);
         }
-        else
-        {
-            Grid grid = Grid.instance;
-            //while(executionData.HasMatches)
-            if (executionData.HasMatches)
-            {
-                System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-                st.Start();
-                DestroyMatchedItems(executionData);
-                grid.CollapseColoumns(executionData);
-               
-                float time = st.ElapsedMilliseconds;
-                BasicLogger.Log($"{time} ms");
-                st.Stop();
-                
-                yield return WaitForGridAnimationRoutine(executionData);
-                FindMatches(executionData);
-            }
 
+        Debug.LogError($"ITR {executionData.swipeId} MAIN END");
+        activeSwipes.Remove(executionData);
 
-            activeThreads.Remove(executionData);
+        while (activeSwipes.Count > 0) 
+            yield return null;
+        
 
-            Debug.LogError($"ITR {executionData.swipeId} MAIN END");
-
-            while (activeThreads.Count > 0)
-                yield return null;
-
-            grid.UnlockCells(executionData);
-        }
+        Grid.instance.UnlockCells(executionData);
     }
 
 
@@ -167,6 +201,7 @@ public class Matcher : Singleton<Matcher>
             }
 
         }
+
         executionData.matchedElements.Clear();
     }
 

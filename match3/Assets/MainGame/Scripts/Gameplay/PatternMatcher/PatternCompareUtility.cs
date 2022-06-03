@@ -47,7 +47,7 @@ public static class PatternCompareUtility
         Grid grid = Grid.instance;
 
         //  Debug.Log($"<Matcher> Checking {matchPattern.patternName} at cell {startingCell.gameObject.name}");
-
+        List<GridCell> potentialList = new List<GridCell>();
         for (int k = 0; k < matchPattern.Length; k++) //Generate a list of cell from patterm
         {
             IndexPair offsetIndexPair = matchPattern[k];
@@ -56,11 +56,13 @@ public static class PatternCompareUtility
 
 
             if (IsOutOfBounds(iPaired,jPaired) ||
-                grid[iPaired, jPaired] == null || grid[iPaired, jPaired].IsEmpty)
+                grid[iPaired, jPaired] == null || 
+                grid[iPaired, jPaired].IsEmpty 
+                )
             {
                 // Either grid geometry doesn't allow further check or previous pattern locked and extracted the cell thus current pattern will fail,
                 // so we terminate execution instantly and clear the extractList;
-                outputList.Clear();
+                
 
                 //editor logging
                 //   Debug.Log($"<Matcher> Terminating check due i{iPaired} j{jPaired} >= {grid.GridHeight} {grid.GridWidth}");
@@ -71,8 +73,10 @@ public static class PatternCompareUtility
             }
 
             GridCell cellOfPattern = grid[iPaired, jPaired];
-            outputList.Add(cellOfPattern);
+            potentialList.Add(cellOfPattern);
         }
+
+        outputList.AddRange(potentialList);
 
     }
 

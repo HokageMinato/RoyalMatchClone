@@ -66,7 +66,7 @@ public class GridMovementHandler : MonoBehaviour
         Grid grid = Grid.instance;
         Dictionary<int, List<ElementAnimationData>> elementFromToPairForAnimation = new Dictionary<int, List<ElementAnimationData>>();
         ShiftCells();
-        ShiftNewCells();
+        //ShiftNewCells();
         AnimateMovement();
         #endregion
         
