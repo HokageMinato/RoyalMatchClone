@@ -55,9 +55,10 @@ public static class PatternCompareUtility
             int jPaired = wJ + offsetIndexPair.J_Offset;
 
 
-            if (IsOutOfBounds(iPaired,jPaired) ||
-                grid[iPaired, jPaired] == null || 
-                grid[iPaired, jPaired].IsEmpty 
+            if (IsOutOfBounds(iPaired, jPaired) ||
+                grid[iPaired, jPaired] == null ||
+                grid[iPaired, jPaired].IsEmpty ||
+                GameplayObstacleHandler.instance.IsCellBlocked(grid[iPaired, jPaired])
                 )
             {
                 // Either grid geometry doesn't allow further check or previous pattern locked and extracted the cell thus current pattern will fail,

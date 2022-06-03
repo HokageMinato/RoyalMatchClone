@@ -282,13 +282,11 @@ public class Matcher : Singleton<Matcher>
     {
         List<GridCell> patternCells = matchExecutionData.patternCells;
 
-        Element startingElement = patternCells[0].ReadElement();
-        for (int k = 1; k < patternCells.Count; k++)
+        GridCell initialCell = patternCells[0];
+        for (int i = 1; i < patternCells.Count; i++)
         {
-            Element patternCellElement = patternCells[k].ReadElement();
-            if (!patternCellElement.Equals(startingElement))
+            if (!initialCell.ReadElement().Equals(patternCells[i].ReadElement())) 
             {
-                //      Debug.Log($"<Matcher> Terminating check due to different elements present at {_patternCells[k].gameObject.name} or is empty");
                 patternCells.Clear();
                 return false;
             }
@@ -296,40 +294,5 @@ public class Matcher : Singleton<Matcher>
 
         return true;
     }
-
-    //private void ExtractPatternCells(GridCell startingCell, MatchPattern matchPattern, int i, int j,MatchExecutionData matchExecutionData)
-    //{
-    //    List<GridCell> patternCells = matchExecutionData.patternCells;
-    //    Grid grid = Grid.instance;
-
-    //    //  Debug.Log($"<Matcher> Checking {matchPattern.patternName} at cell {startingCell.gameObject.name}");
-
-    //    for (int k = 0; k < matchPattern.Length; k++) //Generate a list of cell from patterm
-    //    {
-    //        IndexPair offsetIndexPair = matchPattern[k];
-    //        int iPaired = i + offsetIndexPair.I_Offset;
-    //        int jPaired = j + offsetIndexPair.J_Offset;
-
-
-    //        if (iPaired >= grid.GridHeight || jPaired >= grid.GridWidth ||
-    //            grid[iPaired, jPaired] == null || grid[iPaired, jPaired].IsEmpty)
-    //        {
-    //            // Either grid geometry doesn't allow further check or previous pattern locked and extracted the cell thus current pattern will fail,
-    //            // so we terminate execution instantly and clear the extractList;
-    //            patternCells.Clear();
-
-    //            //editor logging
-    //            //   Debug.Log($"<Matcher> Terminating check due i{iPaired} j{jPaired} >= {grid.GridHeight} {grid.GridWidth}");
-    //            //  Debug.Log($"<Matcher> OR");
-    //            // Debug.Log($"<Matcher> Terminating check due to no cell present at or is Empty {i}{j}");
-    //            //end logging
-
-    //            return;
-    //        }
-
-    //        GridCell cellOfPattern = grid[iPaired, jPaired];
-    //        patternCells.Add(cellOfPattern);
-    //    }
-    //}
     #endregion
 }

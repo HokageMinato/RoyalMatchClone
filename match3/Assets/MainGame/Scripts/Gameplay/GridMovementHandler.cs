@@ -66,7 +66,7 @@ public class GridMovementHandler : MonoBehaviour
         Grid grid = Grid.instance;
         Dictionary<int, List<ElementAnimationData>> elementFromToPairForAnimation = new Dictionary<int, List<ElementAnimationData>>();
         ShiftCells();
-        //ShiftNewCells();
+        ShiftNewCells();
         AnimateMovement();
         #endregion
         
@@ -144,18 +144,15 @@ public class GridMovementHandler : MonoBehaviour
         void ShiftNewCells()
         {       
            //ih jw
-           GenerateRequiredElements();
+           //GenerateRequiredElements();
            
             Debug.Log($"Empty cell count {GetEmptyCellCount()}");
-
-
 
             for (int Oj = 0; Oj < grid.GridWidth; Oj++) //runs at top row
             {
                 int oc = 0;
                 if (IsColoumnEmpty(Oj))
                 {
-                    Debug.Log($"Scannig col {Oj}");
                     GridCell cell = grid[0, Oj];
                     if (!cell.IsEmpty || IsCellBlocked(cell))
                     {
@@ -165,8 +162,11 @@ public class GridMovementHandler : MonoBehaviour
                     
                     Element newElement = GetNewElement();
                     cell.SetElement(newElement);
-                    Debug.Log($"Setting initial element at cell {cell.gameObject.name}");
+                    ElementFactory.instance.OnElementSetToCell(newElement);
                     newElement.transform.position = cell.transform.position;
+
+                    uAnimId++;
+                    AddToLookup(uAnimId, new ElementAnimationData(newElement, cell, cell, executionData));
 
                     for (int i = 1; i < grid.GridHeight-1 && grid[i,Oj] != null && grid[i,Oj].IsEmpty && !IsCellBlocked(grid[i,Oj]); i++) 
                     { 
@@ -174,7 +174,10 @@ public class GridMovementHandler : MonoBehaviour
                        GridCell currentCell = grid[i,Oj];
                             
                        currentCell.SetElement(upperCell.GetElement());
-                       currentCell.ReadElement().transform.localPosition = currentCell.transform.localPosition;    
+                       
+                       uAnimId++;
+                       AddToLookup(uAnimId, new ElementAnimationData(newElement, upperCell, currentCell, executionData));
+                       //currentCell.ReadElement().transform.localPosition = currentCell.transform.localPosition;    
                     }
 
                     #region INF_SAFE_CHECK
@@ -189,10 +192,10 @@ public class GridMovementHandler : MonoBehaviour
             }
             Element GetNewElement() 
             {
-                int elemCount = newElements.Count-1;
-                Element element = newElements[elemCount];
-                newElements.RemoveAt(elemCount);
-                return element;
+                //int elemCount = newElements.Count-1;
+                //Element element = newElements[elemCount];
+                //newElements.RemoveAt(elemCount);
+                return ElementFactory.instance.GenerateRandomElement();
             }
         }
 
@@ -295,15 +298,15 @@ public class GridMovementHandler : MonoBehaviour
             yield return null;
         }
 
-        void GenerateRequiredElements() 
-        {
-            int requiredElements = GetEmptyCellCount() - newElements.Count;
-            for (int i = 0; i < requiredElements; i++)
-            {
-                newElements.Add(ElementFactory.instance.GenerateRandomElement());
-                newElements[i].gameObject.name += "ne";
-            }
-        }
+        //void GenerateRequiredElements() 
+        //{
+        //    int requiredElements = GetEmptyCellCount() - newElements.Count;
+        //    for (int i = 0; i < requiredElements; i++)
+        //    {
+        //        newElements.Add(ElementFactory.instance.GenerateRandomElement());
+        //        newElements[i].gameObject.name += "ne";
+        //    }
+        //}
 
         int GetEmptyCellCount()
         {
