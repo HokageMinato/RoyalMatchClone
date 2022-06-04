@@ -832,6 +832,7 @@ GameObject:
   - component: {fileID: 1338448302}
   - component: {fileID: 1338448301}
   - component: {fileID: 1338448303}
+  - component: {fileID: 1338448304}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -853,7 +854,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridCellPrefab: {fileID: 3306471474140310277, guid: cee3002c27461a64da0cd0b1211e2200,
     type: 3}
-  coloumnCollapser: {fileID: 1338448303}
+  gridMovementProcessor: {fileID: 1338448303}
+  gridMovementAnimator: {fileID: 1338448304}
   layerTransforms:
   - {fileID: 707883082}
   - {fileID: 1950928035}
@@ -893,6 +895,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transformActivePrefab: {fileID: 1762753522}
+--- !u!114 &1338448304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338448300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2adfcc3b0eefe4dbfeae003a5419e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1709242970
 GameObject:
   m_ObjectHideFlags: 0

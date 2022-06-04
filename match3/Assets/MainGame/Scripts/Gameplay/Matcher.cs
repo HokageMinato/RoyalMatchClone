@@ -19,7 +19,7 @@ public class MatchExecutionData : IEquatable<MatchExecutionData>
     public List<GridCell> patternCells;
     public int swipeId;
     public HashSet<int> dirtyColoumns;
-    public HashSet<Element> movingElements;
+    //public HashSet<Element> movingElements;
     #endregion
 
     #region PUBLIC_PROPERTIES
@@ -71,7 +71,7 @@ public class MatchExecutionData : IEquatable<MatchExecutionData>
         swipeId = swipeNumber;
         firstCell = fCell;
         secondCell = sCell;
-        movingElements = new HashSet<Element>();
+        //movingElements = new HashSet<Element>();
         dirtyColoumns = new HashSet<int>();
     }
 
@@ -98,72 +98,25 @@ public class Matcher : Singleton<Matcher>
 
     #region PRIVATE_VARIABLES
 
-   
-    //private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData)
-    //{
-    //    Debug.LogError($"ITR {executionData.swipeId} MAIN START");
-    //    activeThreads.Add(executionData);
-    //    FindMatches(executionData);
-    //    yield return WaitForGridAnimationRoutine(executionData);
-    //    //Debug.Log("VSI");
-    //    if (!executionData.HasMatches)
-    //    {
-    //        //reswap cells and end execution;
-    //        InputManager.instance.SwapCells(executionData);
-    //        activeThreads.Remove(executionData);
-    //    }
-    //    else
-    //    {
-    //        Grid grid = Grid.instance;
-    //        //while(executionData.HasMatches)
-    //        if (executionData.HasMatches)
-    //        {
-    //            System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-    //            st.Start();
-    //            DestroyMatchedItems(executionData);
-    //            grid.CollapseColoumns(executionData);
-               
-    //            float time = st.ElapsedMilliseconds;
-    //            BasicLogger.Log($"{time} ms");
-    //            st.Stop();
-                
-    //            yield return WaitForGridAnimationRoutine(executionData);
-    //            FindMatches(executionData);
-    //        }
-
-
-    //        activeThreads.Remove(executionData);
-
-    //        Debug.LogError($"ITR {executionData.swipeId} MAIN END");
-
-    //        while (activeThreads.Count > 0)
-    //            yield return null;
-
-    //        grid.UnlockCells(executionData);
-    //    }
-    //}
-    
     private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData)
     {
         Debug.LogError($"ITR {executionData.swipeId} MAIN START");
         activeSwipes.Add(executionData);
 
         FindMatches(executionData);
-        yield return WaitForGridAnimationRoutine(executionData);
+        yield return new WaitForSeconds(ElementConfig.SWIPE_ANIM_TIME);
+       
         int c = 0;
-        
         while (executionData.HasMatches)
         {
             c++;
             DestroyMatchedItems(executionData);
-            Grid.instance.CollapseColoumns(executionData);
-            yield return WaitForGridAnimationRoutine(executionData);
+            yield return Grid.instance.Animate(executionData);
             FindMatches(executionData);
         }
 
         if (c <= 0)
         {
-            //reswap cells and end execution;
             InputManager.instance.SwapCells(executionData);
         }
 
@@ -173,17 +126,7 @@ public class Matcher : Singleton<Matcher>
         while (activeSwipes.Count > 0) 
             yield return null;
         
-
         Grid.instance.UnlockCells(executionData);
-    }
-
-
-    private IEnumerator WaitForGridAnimationRoutine(MatchExecutionData executionData, Action action = null)
-    {
-           while (executionData.movingElements.Count > 0)
-            yield return FOUR_FRAME_WAITTIME;
-       
-        action?.Invoke();
     }
 
 

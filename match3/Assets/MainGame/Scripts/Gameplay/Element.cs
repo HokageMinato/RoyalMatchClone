@@ -8,9 +8,6 @@ public class Element : MonoBehaviour
 
    [SerializeField] ElementConfig elementConfig;
    IEnumerator animateRoutine;
-   private Action<Element> _onElementDestory;
-   private Action<Element> _onElementSet;
-    
     
     
    public RenderLayer RenderLayer
@@ -20,21 +17,7 @@ public class Element : MonoBehaviour
         }
     }
 
-    public void RegisterOnDestory(Action<Element> OnElementDestory) 
-    {
-       _onElementDestory = OnElementDestory;
-    }
-    
-    public void RegisterOnSet(Action<Element> OnElementSet) 
-    {
-        _onElementSet = OnElementSet;
-    }
-
-    public void OnSet() 
-    {
-        _onElementSet(this);
-    }
-
+   
    public bool Equals(Element other)
    {
       if (other == null)
@@ -51,24 +34,13 @@ public class Element : MonoBehaviour
 
     public void DestroyElement() 
     {
-        _onElementDestory(this);
         DestroyImmediate(gameObject);
     }
    
     public IEnumerator AnimateToCellRoutine(GridCell newHolder)
     {
-
-        MatchExecutionData executionData = newHolder.executionData;
-
-        if (executionData == null)
-            Debug.Log($"null at cell {newHolder.gameObject.name}");
-
-        executionData?.movingElements.Add(this);
-        
-    
         float rate = 1 / ElementConfig.SWIPE_ANIM_TIME;
         float i = 0;
-
 
         Vector3 sourcePosition = transform.position;
         Vector3 destinationPosition = newHolder.transform.position;
@@ -79,9 +51,6 @@ public class Element : MonoBehaviour
             transform.localPosition = Vector3.Lerp(sourcePosition, destinationPosition, i);
             yield return null;
         }
-
-        executionData?.movingElements.Remove(this);
-        
 
         animateRoutine = null;
         

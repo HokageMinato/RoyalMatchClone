@@ -13,7 +13,8 @@ public class Grid : Singleton<Grid>
 
     #region PRIVATE_VARIABLES
     [SerializeField] private GridCell gridCellPrefab;
-    [SerializeField] private GridMovementHandler coloumnCollapser;
+    [SerializeField] private GridMovementProcessor gridMovementProcessor;
+    [SerializeField] private GridMovementAnimator gridMovementAnimator;
     [SerializeField] private Transform[] layerTransforms;
     #endregion
 
@@ -50,7 +51,7 @@ public class Grid : Singleton<Grid>
     public void UpdateInterreferences() 
     {
         InterreferenceGrid();
-        coloumnCollapser.Init();
+        gridMovementProcessor.Init();
     }
 
     #endregion
@@ -142,7 +143,7 @@ public class Grid : Singleton<Grid>
                          bottomLeftCell == null || IsCellBlocked(bottomLeftCell))
                         continue;
 
-                   // if(IsColoumnBlockedFromHere(bottomLeftCell))
+                    if(IsColoumnBlockedFromHere(bottomLeftCell))
                         currentCell.bottomLeftCell = bottomLeftCell;
                 }
             }
@@ -162,7 +163,7 @@ public class Grid : Singleton<Grid>
                          bottomRightCell == null || IsCellBlocked(bottomRightCell))
                         continue;
 
-                   // if (IsColoumnBlockedFromHere(bottomRightCell))
+                    if (IsColoumnBlockedFromHere(bottomRightCell))
                         currentCell.bottomRightCell = bottomRightCell;
                 }
             }
@@ -217,9 +218,10 @@ public class Grid : Singleton<Grid>
 
     #region PUBLIC_METHODS
 
-    public void CollapseColoumns(MatchExecutionData executionData)
+    public IEnumerator Animate(MatchExecutionData executionData)
     {
-        coloumnCollapser.CollapseColomuns(executionData);
+       Dictionary<int,List<ElementAnimationData>> animationData= gridMovementProcessor.CollapseColomuns(executionData);
+       yield return gridMovementAnimator.AnimateMovementRoutine(animationData);
     }
 
     public void LockDirtyColoumns(MatchExecutionData executionData) {

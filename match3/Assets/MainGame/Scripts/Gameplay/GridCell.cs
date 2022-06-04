@@ -97,7 +97,6 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
             throw new Exception($"Write before read at cell {gameObject.name}");
         }
         _element = newElement;
-        _element.OnSet();
     }
 
 
