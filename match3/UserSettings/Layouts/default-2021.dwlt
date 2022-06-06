@@ -75,7 +75,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 58
+  controlID: 52
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -250,7 +250,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 59
+  controlID: 60
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -275,7 +275,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 60
+  controlID: 61
 --- !u!114 &12
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -374,22 +374,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/MainGame/Scriptables/Gameplay/MatchPatterns/IPatterns
+    - Assets/MainGame/Scripts/Gameplay/Grid
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/MainGame/Scriptables/Gameplay/MatchPatterns/IPatterns
+  - Assets/MainGame/Scripts/Gameplay/Grid
   m_LastFoldersGridSize: 16
   m_LastProjectPath: D:\Minato\Documents\match-3\match3
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: c6520000
-    m_LastClickedID: 21190
-    m_ExpandedIDs: 000000009c5200009e520000a0520000a2520000a4520000ba520000bc520000c252000000ca9a3b
+    m_SelectedIDs: 4e6b0000
+    m_LastClickedID: 27470
+    m_ExpandedIDs: 000000009c5200009e520000a0520000a2520000a4520000b45b0000b25d0000e26100008e65000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -547,23 +547,23 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 48edfeff
+      m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 6ea2fffff46c00001a6d0000226d0000
+      m_ExpandedIDs: 28fbffff605100007a510000a4510000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: GridElement (4)(Clone)nene
-        m_OriginalName: GridElement (4)(Clone)nene
+        m_Name: 
+        m_OriginalName: 
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: -57704
+        m_UserData: 0
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 0
+        m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 5}
       m_SearchString: 

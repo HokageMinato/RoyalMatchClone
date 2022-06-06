@@ -28,7 +28,7 @@ public class Element : MonoBehaviour
 
    public void AnimateToCell(GridCell newHolder)
    {
-        animateRoutine =  (AnimateToCellRoutine(newHolder));
+        animateRoutine =  AnimateToCellRoutine(newHolder);
         StartCoroutine(animateRoutine);
    }
 

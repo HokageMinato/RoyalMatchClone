@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\MainGame\Scripts\Scriptable\MatchPattern.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Gameplay\Grid\GridMovementAnimator.cs" />
     <Compile Include="Assets\MainGame\Scripts\Scriptable\ElementConfig.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\PatternMatcher\PatternCompareUtility.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\GridBlockers\Blockers\BoxCellBlocker.cs" />
@@ -75,7 +76,6 @@
     <Compile Include="Assets\MainGame\Scripts\Gameplay\GridBlockers\BaseCellBlocker.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\GridBlockers\GameplayObstacleHandler.cs" />
     <Compile Include="Assets\MainGame\Scripts\Gameplay\GridCell.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Gameplay\Grid\GridMovementAnimator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

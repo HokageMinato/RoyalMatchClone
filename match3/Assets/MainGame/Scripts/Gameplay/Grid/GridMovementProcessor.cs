@@ -39,16 +39,14 @@ public class GridMovementProcessor : MonoBehaviour
 
         for (int i = 0; i < grid.GridHeight; i++)
         {
-            for (int j = 0; j < grid.GridWidth; j++) {
+            for (int j = 0; j < grid.GridWidth; j++)
+            {
 
                 GridCell gridCell = grid[i, j];
                 if (!gridCell || IsCellBlocked(gridCell))
                     continue;
 
-                ElementFactory elementFactory = ElementFactory.instance;
-                Element newElement = elementFactory.GenerateRandomElement();
-                gridCell.SetElement(newElement);
-                newElement.transform.position = gridCell.transform.position;
+                GenerateElementAt(gridCell);
             }
         }
 
@@ -150,43 +148,57 @@ public class GridMovementProcessor : MonoBehaviour
 
         void ShiftNewCells() 
         {
-            for (int bI = 0; bI < grid.GridHeight; bI++)
-            {
-                for (int bJ = 0; bJ < grid.GridWidth; bJ++)
-                {
+            
+            int oc=0;
+            for (int bJ = 0; bJ < grid.GridWidth;)
+             {
                     uAnimId++;
 
-                    GridCell currentCell = grid[bI, bJ];
-                    if (currentCell == null || IsCellBlocked(currentCell))
-                        continue;
-
-
-
-
-                    GridCell nextCell = GetNextCellForShifting(currentCell);
-                    int c = 0;
-                    while (nextCell != null)
-                    {
-                        Element element = currentCell.GetElement();
-                        nextCell.SetElement(element);
-
-                        AddToLookup(uAnimId, new ElementAnimationData(element, currentCell, nextCell, executionData));
-                        currentCell = nextCell;
-                        nextCell = GetNextCellForShifting(currentCell);
-
-
-                        #region INF_SAFE_CHECK
-                        c++;
-                        if (c > 900)
-                        {
-                            Debug.Log("INFI LOOP");
-                            break;
-                        }
-                        #endregion
-                    }
-
+                GridCell currentCell = grid[0, bJ];
+                if (currentCell == null || !currentCell.IsEmpty || IsCellBlocked(currentCell))
+                {
+                    bJ++;
+                    continue;
                 }
 
+                   
+                GenerateElementAt(currentCell);
+                GridCell nextCell = GetNextCellForShifting(currentCell);
+                int c = 0;
+                while (nextCell != null)
+                {
+                    Element element = currentCell.GetElement();
+                    nextCell.SetElement(element);
+
+                    AddToLookup(uAnimId, new ElementAnimationData(element, currentCell, nextCell, executionData));
+                    currentCell = nextCell;
+                    nextCell = GetNextCellForShifting(currentCell);
+
+
+                    #region INF_SAFE_CHECK
+                    c++;
+                    if (c > 900)
+                    {
+                        Debug.Log("INFI LOOP 180");
+                        break;
+                    }
+                    #endregion
+                }
+
+                if (!IsColoumnEmpty(bJ))
+                    bJ++;
+
+
+                #region INF_SAFE_CHECK
+
+                oc++;
+                if (oc > 900)
+                {
+                    Debug.Log("INFI LOOP at 192");
+                    break;
+                }
+                #endregion
+                
             }
 
         }
@@ -219,11 +231,25 @@ public class GridMovementProcessor : MonoBehaviour
         #endregion
     }
 
+    bool IsColoumnEmpty(int colIdx) 
+    { 
+        return Grid.instance.IsColoumnEmpty(colIdx);
+    }
    
     private bool IsCellBlocked(GridCell gridCell)
     {
         return GameplayObstacleHandler.instance.IsCellBlocked(gridCell);
     }
+
+    private void GenerateElementAt(GridCell gridCell)
+    {
+        ElementFactory elementFactory = ElementFactory.instance;
+        Element newElement = elementFactory.GenerateRandomElement();
+        gridCell.SetElement(newElement);
+        newElement.transform.position = gridCell.transform.position;
+    }
+
+
 
 }
 

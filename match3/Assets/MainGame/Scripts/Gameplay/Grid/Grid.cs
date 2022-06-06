@@ -214,6 +214,21 @@ public class Grid : Singleton<Grid>
     { 
         return GameplayObstacleHandler.instance.IsCellBlocked(gridCell);
     }
+
+    public bool IsColoumnEmpty(int colIdx) 
+    {
+        for (int i = 0; i < GridHeight; i++)
+        {
+            GridCell cell = this[i, colIdx];
+
+            if (cell == null)
+                return false;
+
+            if (cell.IsEmpty && !IsCellBlocked(cell))
+                return true;
+        }
+        return false;
+    }
     #endregion
 
     #region PUBLIC_METHODS
