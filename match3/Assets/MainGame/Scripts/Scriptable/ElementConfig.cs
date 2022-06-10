@@ -8,10 +8,11 @@ public class ElementConfig : ScriptableObject
 {
     //Universal Settings
     public static RenderLayer renderLayer = RenderLayer.ElementLayer;
-    public static float SWIPE_ANIM_TIME = 0.5f;
+    public static float SWIPE_ANIM_TIME = 2f;
     
     //Instance Specific Settings
     public ElementId elementId;
+    public AnimationCurve curve;
 
 
     public bool Equals(ElementConfig other)

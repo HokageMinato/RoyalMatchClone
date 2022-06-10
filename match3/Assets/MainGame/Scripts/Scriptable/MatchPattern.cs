@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 [CreateAssetMenu(fileName = "MatcherPattern", menuName = "ScriptableObjects/Gameplay/MatcherPattern")]
-public class MatchPattern : ScriptableObject
+public class MatchPattern : ScriptableObject , IEquatable<MatchPattern>
 {
     [SerializeField] private IndexPair[] indexes;
      public int Length
@@ -16,6 +17,10 @@ public class MatchPattern : ScriptableObject
     public IndexPair this[int index]
     {
         get { return indexes[index]; }
+    }
+    public bool Equals(MatchPattern other)
+    {
+        return GetHashCode() == other.GetHashCode();
     }
 }
 
