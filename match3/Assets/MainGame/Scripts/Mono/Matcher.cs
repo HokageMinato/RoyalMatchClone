@@ -5,17 +5,57 @@ using UnityEngine;
 
 public class MatchData 
 {
-    public List<List<Element>> matchedElements;
-    public Element boosterElement;
+    private List<Element> _matchedElements;
+    private ElementConfig _boosterReward;
+    private GridCell _spawningCell;
 
-    public bool HasMatches => matchedElements.Count > 0;
-    public bool HasBoosterReward => boosterElement != null;
+    public bool HasMatches
+    {
+        get
+        {
+            return _matchedElements.Count > 0;
+        }
+    }
 
+    public bool HasBoosterReward
+    {
+        get
+        {
+            return BoosterReward != null;
+        }
+    }
+
+    public ElementConfig BoosterReward { get { return _boosterReward; } }
+
+    public GridCell TargetSpawningCell { get { return _spawningCell; } }
 
     public MatchData() 
-    { 
-        matchedElements = new List<List<Element>>();
+    {
+        _matchedElements = new List <Element>();
     }
+
+    public void AddElement(Element element) 
+    { 
+        _matchedElements.Add(element);
+    }
+
+    public void SetReward(ElementConfig boosterReward, GridCell spawnCell) 
+    { 
+        _boosterReward = boosterReward;
+        _spawningCell = spawnCell; 
+    }
+
+    
+
+    internal void DestroyElements()
+    {
+        for (int i = 0; i < _matchedElements.Count; i++)
+        {
+            _matchedElements[i].DestroyElement();
+        }
+    }
+
+    
 }
 
 public class MatchExecutionData : IEquatable<MatchExecutionData>
@@ -30,7 +70,7 @@ public class MatchExecutionData : IEquatable<MatchExecutionData>
 
     public GridCell firstCell;
     public GridCell secondCell;
-    public MatchData matchData;
+    public List<MatchData> matchData;
     public List<GridCell> patternCells;
     public int swipeId;
     public HashSet<int> dirtyColoumns;
@@ -40,7 +80,7 @@ public class MatchExecutionData : IEquatable<MatchExecutionData>
 
     public bool HasMatches
     {
-        get { return matchData.HasMatches; }
+        get { return matchData.Count > 0; }
     }
 
     #endregion
@@ -69,14 +109,14 @@ public class MatchExecutionData : IEquatable<MatchExecutionData>
 
     public static MatchExecutionData GetDefaultExecutionData()
     {
-        return new MatchExecutionData(new MatchData(), new List<GridCell>(), DefaultSwipeId, null, null);
+        return new MatchExecutionData(new List<MatchData>(), new List<GridCell>(), DefaultSwipeId, null, null);
     }
 
     #endregion
 
     #region CONSTRUCTOR
 
-    public MatchExecutionData(MatchData matchdata, List<GridCell> patternCellList, int swipeNumber,
+    public MatchExecutionData(List<MatchData> matchdata, List<GridCell> patternCellList, int swipeNumber,
         GridCell fCell, GridCell sCell)
     {
         matchData = matchdata; 
@@ -114,14 +154,16 @@ public class Matcher : Singleton<Matcher>
     {
         Debug.LogError($"ITR {executionData.swipeId} MAIN START");
         activeSwipes.Add(executionData);
-
+        
         FindMatches(executionData);
         yield return new WaitForSeconds(ElementConfig.SWIPE_ANIM_TIME);
        
         int c = 0;
         while (executionData.HasMatches)
+        //if (executionData.HasMatches)
         {
             c++;
+            GenerateBoosterElements(executionData);
             DestroyMatchedItems(executionData);
             yield return Grid.instance.Animate(executionData);
             FindMatches(executionData);
@@ -141,27 +183,38 @@ public class Matcher : Singleton<Matcher>
         Grid.instance.UnlockCells(executionData);
     }
 
-    private void SpawnBoosters(MatchExecutionData executionData)
+
+    private void GenerateBoosterElements(MatchExecutionData executionData) 
     {
-        
+        List<MatchData> matchDatas = executionData.matchData;
+        for (int i = 0; i < matchDatas.Count; i++)
+        {
+            MatchData matchData = matchDatas[i];
+            if (matchData.HasBoosterReward)
+            {
+                GenerateBoosterElement(matchData);
+            }
+        }
+    }
+
+    private static void GenerateBoosterElement(MatchData matchData)
+    {
+        ElementConfig config = matchData.BoosterReward;
+        GridCell targetCell = matchData.TargetSpawningCell;
+        Element rewardElement = ElementFactory.instance.GenerateElementByConfig(config);
+        targetCell.SetElement(rewardElement);
+        rewardElement.transform.localPosition = targetCell.transform.localPosition;
     }
 
     private void DestroyMatchedItems(MatchExecutionData executionData)
     {
-        List<List<Element>> matchedElements = executionData.matchData.matchedElements;
+        List<MatchData> matchedElements = executionData.matchData;
 
         for (int i = 0; i < matchedElements.Count;i++)
         {
-            List<Element> sameElementsList = matchedElements[i];
-            for (int j = 0; j < sameElementsList.Count; j++)
-            {
-                Element elementToBeDestroyed = sameElementsList[j];
-                elementToBeDestroyed.DestroyElement();
-            }
-
+            matchedElements[i].DestroyElements();
         }
-
-        executionData.matchData.matchedElements.Clear();
+        executionData.matchData.Clear();
     }
 
     private void FindMatches(MatchExecutionData executionData)
@@ -197,9 +250,11 @@ public class Matcher : Singleton<Matcher>
                         //all the listed elements are same or not.
                         if (DoesSelectedCellsHaveSameElements(executionData))
                         {
+                            MatchData matchData = GenerateMatchData(executionData);
                             HitPotentialObstacles(executionData);
-                            ExtractElementsToDestroyList(executionData);
-
+                            ExtractElementsToMatchData(executionData, matchData);
+                            SetReward(executionData,matchData, matchPattern);
+                            LockColoumns(executionData);
                         }
 
                         //Pattern 'p' checked successfully here
@@ -213,26 +268,64 @@ public class Matcher : Singleton<Matcher>
         
     }
 
+    private void SetReward(MatchExecutionData data,MatchData matchData, MatchPattern matchPattern)
+    {
+        ElementConfig boosterRewardConfig = GetInGameBoosterConfig(matchPattern);
+        matchData.SetReward(boosterRewardConfig, GetRewardSpawnCell(data));
+    }
+
+    GridCell GetRewardSpawnCell(MatchExecutionData executionData) 
+    { 
+        List<GridCell> patternCells = executionData.patternCells;
+        
+        GridCell maxHeightCell = patternCells[0];
+        for (int i = 0; i < patternCells.Count; i++)
+        {
+            GridCell targetCell = patternCells[i];
+            if(targetCell == executionData.firstCell || targetCell == executionData.secondCell)
+                return targetCell;
+
+            if(targetCell.HIndex > maxHeightCell.HIndex)
+                maxHeightCell = targetCell;
+
+        }
+        return maxHeightCell;
+    }
+
+    private MatchData GenerateMatchData(MatchExecutionData executionData)
+    {
+        MatchData matchData = new MatchData();
+        executionData.matchData.Add(matchData);
+        return matchData;
+    }
+
+    private static void LockColoumns(MatchExecutionData executionData)
+    {
+        Grid grid = Grid.instance;
+        grid.LockDirtyColoumns(executionData);
+        executionData.patternCells.Clear();
+    }
+
     private void HitPotentialObstacles(MatchExecutionData executionData) {
         //TBD if safe
 
         GameplayObstacleHandler.instance.CheckForNeighbourHit(executionData);
     }
 
-    private void ExtractElementsToDestroyList(MatchExecutionData matchExecutionData)
+    private ElementConfig GetInGameBoosterConfig(MatchPattern matchPattern) 
+    { 
+        return MatchRewardHandler.instance.FetchRewardConfig(matchPattern);
+    }
+
+    private MatchData ExtractElementsToMatchData(MatchExecutionData matchExecutionData,MatchData matchData)
     {
-        Grid grid = Grid.instance;
         List<GridCell> patternCells = matchExecutionData.patternCells;
-        List<Element> sameElementList = new List<Element>();
         for (int k = 0; k < patternCells.Count; k++)
         {
-            Element element = patternCells[k].GetElement();
-            sameElementList.Add(element);
+            matchData.AddElement(patternCells[k].GetElement());
         }
-
-        matchExecutionData.matchData.matchedElements.Add(sameElementList);
-        grid.LockDirtyColoumns(matchExecutionData);
-        patternCells.Clear();
+        
+        return matchData;
     }
 
     private bool IsExtractionValid(MatchExecutionData executionData)

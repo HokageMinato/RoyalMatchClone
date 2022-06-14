@@ -59,6 +59,7 @@
     <Compile Include="Assets\MainGame\Scripts\Scriptable\MatchPattern.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\Grid\GridMovementAnimator.cs" />
     <Compile Include="Assets\MainGame\Scripts\Scriptable\ElementConfig.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\BoosterTrigger.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\PatternMatcher\PatternCompareUtility.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\GridBlockers\Blockers\BoxCellBlocker.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\Grid\GridMovementProcessor.cs" />
@@ -78,7 +79,6 @@
     <Compile Include="Assets\MainGame\Scripts\Mono\GridBlockers\BaseCellBlocker.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\GridBlockers\GameplayObstacleHandler.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\GridCell.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\BoosterTrigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

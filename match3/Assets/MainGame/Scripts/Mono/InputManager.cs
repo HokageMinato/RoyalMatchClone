@@ -54,7 +54,7 @@ public class InputManager : Singleton<InputManager>
 
     private void OnValidMove()
     {
-        MatchExecutionData matchExecutionData = new MatchExecutionData(new MatchData(),new List<GridCell>(),swipeNumber,_firstCell,_secondCell);
+        MatchExecutionData matchExecutionData = new MatchExecutionData(new List<MatchData>(),new List<GridCell>(),swipeNumber,_firstCell,_secondCell);
         matchExecutionData.firstCell.SetExecutionData(matchExecutionData);
         matchExecutionData.secondCell.SetExecutionData(matchExecutionData);
         _firstCell = _secondCell = null;

@@ -10,12 +10,24 @@ public class MatchRewardHandler : Singleton<MatchRewardHandler>
     public void Init() 
     {
         for (int i = 0; i < rewardsData.Length; i++)
-            rewardLookup.Add(rewardsData[i].matchPattern,rewardsData[i].boosterReward);
+        {
+            MatchPatternBoosterRewardSO rewardSO = rewardsData[i];
+            ElementConfig boosterRewardConfig = rewardSO.boosterReward;
+            MatchPattern[] patterns = rewardSO.matchPatterns;
+
+            for (int j = 0; j < patterns.Length; j++)
+            {
+                rewardLookup.Add(patterns[j], boosterRewardConfig);
+            }
+        }
     }
 
     public ElementConfig FetchRewardConfig(MatchPattern pattern) 
     {
-        return rewardLookup[pattern];
+        if(rewardLookup.ContainsKey(pattern))   
+            return rewardLookup[pattern];
+
+        return null;
     }
 
 }

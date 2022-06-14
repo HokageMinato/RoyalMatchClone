@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   matchPattern: {fileID: 11400000, guid: 349b100dd0d1190468fea9bfaf770a2e, type: 2}
   boosterReward: {fileID: 11400000, guid: 5274e1f857cb01f43838765d62b24805, type: 2}
+  matchPatterns:
+  - {fileID: 11400000, guid: 349b100dd0d1190468fea9bfaf770a2e, type: 2}

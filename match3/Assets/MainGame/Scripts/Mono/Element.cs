@@ -5,15 +5,11 @@ using System;
 
 public class Element : MonoBehaviour
 {
-
    [SerializeField] private ElementConfig elementConfig;
    private IEnumerator animateRoutine;
-   private Action _onSwipe;
-    
 
    public ElementConfig ElementConfig { get { return elementConfig; } }   
-    
-
+   
    public RenderLayer RenderLayer
    {
         get 
@@ -31,15 +27,7 @@ public class Element : MonoBehaviour
       return elementConfig.Equals(other.elementConfig);
    }
 
-   public void RegisterOnSwipe(Action onSwipe) 
-   {
-      _onSwipe = onSwipe;
-   }
-
-    public void OnSwipe()
-    {
-        _onSwipe();
-    }
+   
 
    public void AnimateToCell(Transform newHolder)
    {
@@ -54,11 +42,11 @@ public class Element : MonoBehaviour
    
     public IEnumerator AnimateToCellRoutine(Transform newHolder)
     {
-        float rate = 1f;
+        float rate = 2f;
         float i = 0;
 
         Vector3 sourcePosition = transform.position;
-        Vector3 destinationPosition = transform.position;
+        Vector3 destinationPosition = newHolder.position;
 
         while (i < 1f)
         {

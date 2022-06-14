@@ -242,8 +242,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 349b100dd0d1190468fea9bfaf770a2e, type: 2}
   - {fileID: 11400000, guid: 96fee0f247e44854db100291394f2ada, type: 2}
   - {fileID: 11400000, guid: 3e5fba3d6d0db0c4ca1133490d628345, type: 2}
-  - {fileID: 11400000, guid: 223e6726b33e7cd4e9c5d6491d663522, type: 2}
+  - {fileID: 11400000, guid: 007bc30f69a5e4b46b750862826fe4fa, type: 2}
+  - {fileID: 11400000, guid: 8278436b02f9c7c45afc74cd3ac1bb60, type: 2}
+  - {fileID: 11400000, guid: 55ab64082208fa4478654c30741ad3e0, type: 2}
   - {fileID: 11400000, guid: e6d82c8380fdbac4c87d2016467fc8cf, type: 2}
+  - {fileID: 11400000, guid: 223e6726b33e7cd4e9c5d6491d663522, type: 2}
 --- !u!4 &322992770
 Transform:
   m_ObjectHideFlags: 0
@@ -531,7 +534,7 @@ MonoBehaviour:
   - {fileID: 797911112563619829, guid: b0f07240d56967547ab7a8ed5f2710c8, type: 3}
   - {fileID: 5712332276764928209, guid: 27b7c80f160f2c64daf78faa4618b9b4, type: 3}
   - {fileID: 7271803780314175212, guid: f60cc07fb7bfae14e96868c966bcc22c, type: 3}
-  inGameBoosterElements:
+  inGameBoosterElementPrefabs:
   - {fileID: 7271803780314175212, guid: 89148094d94b97d4c94c096aa4eeaa53, type: 3}
   - {fileID: 7271803780314175212, guid: e5eed9d04d92e6c4aae4a19c8601b803, type: 3}
   - {fileID: 7271803780314175212, guid: f6ca87d4852c20b46b44e5b5f153276e, type: 3}
