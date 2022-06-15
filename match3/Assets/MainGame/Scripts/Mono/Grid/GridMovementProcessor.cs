@@ -51,7 +51,7 @@ public class GridMovementProcessor : MonoBehaviour
 
     }
 
-    public Dictionary<int,List<ElementAnimationData>> CollapseColomuns(MatchExecutionData executionData)
+    public Dictionary<int,List<ElementAnimationData>> GenerateCollapseMovementData(MatchExecutionData executionData)
     {
         int uAnimId = 0;
 

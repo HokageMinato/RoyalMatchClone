@@ -6,7 +6,6 @@ using System;
 public class Element : MonoBehaviour
 {
    [SerializeField] private ElementConfig elementConfig;
-   private IEnumerator animateRoutine;
 
    public ElementConfig ElementConfig { get { return elementConfig; } }   
    
@@ -27,13 +26,6 @@ public class Element : MonoBehaviour
       return elementConfig.Equals(other.elementConfig);
    }
 
-   
-
-   public void AnimateToCell(Transform newHolder)
-   {
-        animateRoutine =  AnimateToCellRoutine(newHolder);
-        StartCoroutine(animateRoutine);
-   }
 
     public void DestroyElement() 
     {
@@ -54,13 +46,7 @@ public class Element : MonoBehaviour
             transform.localPosition = Vector3.Lerp(sourcePosition,destinationPosition,i);
             yield return null;
         }
-
-        animateRoutine = null;
-        yield return null;
+        
     }
-
-
-    
-
 
 }

@@ -211,6 +211,8 @@ GameObject:
   m_Component:
   - component: {fileID: 322992770}
   - component: {fileID: 322992769}
+  - component: {fileID: 322992772}
+  - component: {fileID: 322992771}
   m_Layer: 0
   m_Name: Matcher
   m_TagString: Untagged
@@ -242,11 +244,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 349b100dd0d1190468fea9bfaf770a2e, type: 2}
   - {fileID: 11400000, guid: 96fee0f247e44854db100291394f2ada, type: 2}
   - {fileID: 11400000, guid: 3e5fba3d6d0db0c4ca1133490d628345, type: 2}
-  - {fileID: 11400000, guid: 007bc30f69a5e4b46b750862826fe4fa, type: 2}
-  - {fileID: 11400000, guid: 8278436b02f9c7c45afc74cd3ac1bb60, type: 2}
-  - {fileID: 11400000, guid: 55ab64082208fa4478654c30741ad3e0, type: 2}
   - {fileID: 11400000, guid: e6d82c8380fdbac4c87d2016467fc8cf, type: 2}
   - {fileID: 11400000, guid: 223e6726b33e7cd4e9c5d6491d663522, type: 2}
+  grid: {fileID: 1338448301}
+  gridMovementAnimator: {fileID: 322992771}
+  gridMovementProcessor: {fileID: 322992772}
+  gameplayObstacleHandler: {fileID: 1864868103}
+  matchRewardHandler: {fileID: 1090027443}
+  inputManager: {fileID: 544809429}
+  elementFactory: {fileID: 764472499}
 --- !u!4 &322992770
 Transform:
   m_ObjectHideFlags: 0
@@ -262,6 +268,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &322992771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322992768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2adfcc3b0eefe4dbfeae003a5419e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &322992772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322992768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0c2b8a26946d154bbb8e23c6f0b908e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transformActivePrefab: {fileID: 1762753522}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -899,8 +930,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1338448302}
   - component: {fileID: 1338448301}
-  - component: {fileID: 1338448303}
-  - component: {fileID: 1338448304}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -922,8 +951,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridCellPrefab: {fileID: 3306471474140310277, guid: cee3002c27461a64da0cd0b1211e2200,
     type: 3}
-  gridMovementProcessor: {fileID: 1338448303}
-  gridMovementAnimator: {fileID: 1338448304}
   layerTransforms:
   - {fileID: 707883082}
   - {fileID: 1950928035}
@@ -950,31 +977,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1338448303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1338448300}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0c2b8a26946d154bbb8e23c6f0b908e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  transformActivePrefab: {fileID: 1762753522}
---- !u!114 &1338448304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1338448300}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c2adfcc3b0eefe4dbfeae003a5419e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1709242970
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ public class MatchData
     private ElementConfig _boosterReward;
     private GridCell _spawningCell;
 
+
     public bool HasMatches
     {
         get
@@ -61,13 +62,11 @@ public class MatchData
 public class MatchExecutionData : IEquatable<MatchExecutionData>
 {
     #region CONSTANTS
-
     private const int DefaultSwipeId = -99;
-
+    
     #endregion
 
     #region PUBLIC_VARIABLES
-
     public GridCell firstCell;
     public GridCell secondCell;
     public List<MatchData> matchData;
@@ -133,16 +132,29 @@ public class MatchExecutionData : IEquatable<MatchExecutionData>
 public class Matcher : Singleton<Matcher>
 {
     #region PRIVATE_VARIABLES
+
     [SerializeField] private MatchPattern[] patterns;
+    [SerializeField] private Grid grid;
+    [SerializeField] private GridMovementAnimator gridMovementAnimator;
+    [SerializeField] private GridMovementProcessor gridMovementProcessor;
+    [SerializeField] private GameplayObstacleHandler gameplayObstacleHandler;
+    [SerializeField] private MatchRewardHandler matchRewardHandler;
+    [SerializeField] private InputManager inputManager;
+
     private HashSet<MatchExecutionData> activeSwipes = new HashSet<MatchExecutionData>();
-    private const float FOUR_FRAME_WAITTIME = 0.64f;
+
     #endregion
-    
+
     #region PUBLIC_METHODS
 
-    public void StartChecking(MatchExecutionData executionData)
+    public void Init() 
     {
-        StartCoroutine(IterativeCheckRoutine(executionData));
+        gridMovementProcessor.Init();
+    }
+
+    public void StartChecking(MatchExecutionData executionData,Dictionary<int,List<ElementAnimationData>> initialSwipeAnimationData)
+    {
+        StartCoroutine(IterativeCheckRoutine(executionData,initialSwipeAnimationData));
     }
 
     #endregion
@@ -150,13 +162,13 @@ public class Matcher : Singleton<Matcher>
 
     #region PRIVATE_VARIABLES
 
-    private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData)
+    private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData, Dictionary<int, List<ElementAnimationData>> initialSwipeAnimationData)
     {
         Debug.LogError($"ITR {executionData.swipeId} MAIN START");
         activeSwipes.Add(executionData);
         
         FindMatches(executionData);
-        yield return new WaitForSeconds(ElementConfig.SWIPE_ANIM_TIME);
+        yield return gridMovementAnimator.AnimateMovementRoutine(initialSwipeAnimationData);
        
         int c = 0;
         while (executionData.HasMatches)
@@ -165,13 +177,13 @@ public class Matcher : Singleton<Matcher>
             c++;
             GenerateBoosterElements(executionData);
             DestroyMatchedItems(executionData);
-            yield return Grid.instance.Animate(executionData);
+            yield return gridMovementAnimator.AnimateMovementRoutine(gridMovementProcessor.GenerateCollapseMovementData(executionData));
             FindMatches(executionData);
         }
 
         if (c <= 0)
         {
-            InputManager.instance.SwapCells(executionData);
+            yield return gridMovementAnimator.AnimateMovementRoutine(inputManager.SwapCells(executionData));
         }
 
         Debug.LogError($"ITR {executionData.swipeId} MAIN END");
@@ -180,7 +192,7 @@ public class Matcher : Singleton<Matcher>
         while (activeSwipes.Count > 0) 
             yield return null;
         
-        Grid.instance.UnlockCells(executionData);
+        grid.UnlockCells(executionData);
     }
 
 
@@ -197,13 +209,12 @@ public class Matcher : Singleton<Matcher>
         }
     }
 
-    private static void GenerateBoosterElement(MatchData matchData)
+    
+
+
+    private void GenerateBoosterElement(MatchData matchData)
     {
-        ElementConfig config = matchData.BoosterReward;
-        GridCell targetCell = matchData.TargetSpawningCell;
-        Element rewardElement = ElementFactory.instance.GenerateElementByConfig(config);
-        targetCell.SetElement(rewardElement);
-        rewardElement.transform.localPosition = targetCell.transform.localPosition;
+        matchRewardHandler.GenerateBoosterElements(matchData);
     }
 
     private void DestroyMatchedItems(MatchExecutionData executionData)
@@ -219,17 +230,16 @@ public class Matcher : Singleton<Matcher>
 
     private void FindMatches(MatchExecutionData executionData)
     {
-        Grid grid = Grid.instance;
+        
 
-        for (int i = 0; i < grid.GridHeight; i++)
+        for (int p = 0; p < patterns.Length; p++)
         {
-            for (int j = 0; j < grid.GridWidth; j++)
+            for (int i = 0; i < grid.GridHeight; i++)
             {
-                GridCell startingCell = grid[i, j];
-                if (startingCell != null)
+                for (int j = 0; j < grid.GridWidth; j++)
                 {
-
-                    for (int p = 0; p < patterns.Length; p++)
+                    GridCell startingCell = grid[i, j];
+                    if (startingCell != null)
                     {
                         //Matching started for a single pattern 'p'
                         MatchPattern matchPattern = patterns[p];
@@ -260,7 +270,6 @@ public class Matcher : Singleton<Matcher>
                         //Pattern 'p' checked successfully here
                     }
                 }
-
 
             }
         }
@@ -299,9 +308,8 @@ public class Matcher : Singleton<Matcher>
         return matchData;
     }
 
-    private static void LockColoumns(MatchExecutionData executionData)
+    private void LockColoumns(MatchExecutionData executionData)
     {
-        Grid grid = Grid.instance;
         grid.LockDirtyColoumns(executionData);
         executionData.patternCells.Clear();
     }
@@ -309,12 +317,12 @@ public class Matcher : Singleton<Matcher>
     private void HitPotentialObstacles(MatchExecutionData executionData) {
         //TBD if safe
 
-        GameplayObstacleHandler.instance.CheckForNeighbourHit(executionData);
+        gameplayObstacleHandler.CheckForNeighbourHit(executionData);
     }
 
     private ElementConfig GetInGameBoosterConfig(MatchPattern matchPattern) 
     { 
-        return MatchRewardHandler.instance.FetchRewardConfig(matchPattern);
+        return matchRewardHandler.FetchRewardConfig(matchPattern);
     }
 
     private MatchData ExtractElementsToMatchData(MatchExecutionData matchExecutionData,MatchData matchData)

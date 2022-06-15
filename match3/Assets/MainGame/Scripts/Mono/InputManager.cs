@@ -55,24 +55,36 @@ public class InputManager : Singleton<InputManager>
     private void OnValidMove()
     {
         MatchExecutionData matchExecutionData = new MatchExecutionData(new List<MatchData>(),new List<GridCell>(),swipeNumber,_firstCell,_secondCell);
+        swipeNumber++;
+
         matchExecutionData.firstCell.SetExecutionData(matchExecutionData);
         matchExecutionData.secondCell.SetExecutionData(matchExecutionData);
         _firstCell = _secondCell = null;
-        SwapCells(matchExecutionData);
-        swipeNumber++;
-        Matcher.instance.StartChecking(matchExecutionData);
+        Matcher.instance.StartChecking(matchExecutionData, SwapCells(matchExecutionData));
     }
 
-    public void SwapCells(MatchExecutionData matchExecutionData)
+    public Dictionary<int, List<ElementAnimationData>> SwapCells(MatchExecutionData matchExecutionData)
     {
-        Element firstElement = matchExecutionData.firstCell.GetElement();
-        Element secondElement = matchExecutionData.secondCell.GetElement();
+        GridCell firstCell = matchExecutionData.firstCell;
+        GridCell secondCell = matchExecutionData.secondCell;
 
-        matchExecutionData.firstCell.SetElement(secondElement);
-        matchExecutionData.secondCell.SetElement(firstElement);
+        Element secondElement = secondCell.GetElement();
+        Element firstElement = firstCell.GetElement();
+        
+        Dictionary<int,List<ElementAnimationData>> initialSwipeAnimationData = new Dictionary<int, List<ElementAnimationData>>() 
+        {
+            {0,GenerateMoveAnimationData(firstElement,secondElement,firstCell,secondCell,matchExecutionData)},
+            {1,GenerateMoveAnimationData(secondElement,firstElement,secondCell,firstCell,matchExecutionData)}
+        };
+        return initialSwipeAnimationData;
+    }
 
-        secondElement.AnimateToCell(matchExecutionData.firstCell.transform);
-        firstElement.AnimateToCell(matchExecutionData.secondCell.transform);
+    private List<ElementAnimationData> GenerateMoveAnimationData(Element currentElement,Element otherElement, GridCell currentCell,GridCell otherCell,MatchExecutionData data) 
+    {
+        List<ElementAnimationData> elemAnimation = new List<ElementAnimationData>();
+        currentCell.SetElement(otherElement);
+        elemAnimation.Add(new ElementAnimationData(currentElement, currentCell, otherCell, data, currentCell.HIndex));
+        return elemAnimation;
     }
 
    

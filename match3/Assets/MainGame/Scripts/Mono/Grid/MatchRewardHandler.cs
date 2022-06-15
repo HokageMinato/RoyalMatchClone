@@ -5,7 +5,9 @@ using UnityEngine;
 public class MatchRewardHandler : Singleton<MatchRewardHandler>
 {
     [SerializeField] private MatchPatternBoosterRewardSO[] rewardsData;
+
     private Dictionary<MatchPattern, ElementConfig> rewardLookup = new Dictionary<MatchPattern, ElementConfig>();
+    
 
     public void Init() 
     {
@@ -20,6 +22,16 @@ public class MatchRewardHandler : Singleton<MatchRewardHandler>
                 rewardLookup.Add(patterns[j], boosterRewardConfig);
             }
         }
+    }
+
+    public Element GenerateBoosterElements(MatchData matchData) 
+    {
+        ElementConfig config = matchData.BoosterReward;
+        GridCell targetCell = matchData.TargetSpawningCell;
+        Element rewardElement = ElementFactory.instance.GenerateElementByConfig(config);
+        targetCell.SetElement(rewardElement);
+        rewardElement.transform.localPosition = targetCell.transform.localPosition;
+        return rewardElement;
     }
 
     public ElementConfig FetchRewardConfig(MatchPattern pattern) 

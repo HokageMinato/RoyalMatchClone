@@ -13,9 +13,9 @@ public class Grid : Singleton<Grid>
 
     #region PRIVATE_VARIABLES
     [SerializeField] private GridCell gridCellPrefab;
-    [SerializeField] private GridMovementProcessor gridMovementProcessor;
-    [SerializeField] private GridMovementAnimator gridMovementAnimator;
     [SerializeField] private Transform[] layerTransforms;
+
+    private GridDesignTemp LevelData { get{ return GameplayManager.instance.levelData; } }
     #endregion
 
     #region PUBLIC_VARIABLES
@@ -27,10 +27,10 @@ public class Grid : Singleton<Grid>
 
 
     public int GridHeight
-    { get { return GameplayManager.instance.levelData.gridHeight; } }
+    { get { return LevelData.gridHeight; } }
 
     public int GridWidth
-    { get { return GameplayManager.instance.levelData.gridWidth; } }
+    { get { return LevelData.gridWidth; } }
 
 
     public int CellCount {get; private set;}
@@ -45,27 +45,18 @@ public class Grid : Singleton<Grid>
     public void GenerateGrid()
     {
         CreateGrid();
-        
-    }
-
-    public void UpdateInterreferences() 
-    {
+        GenerateObstacles();
         InterreferenceGrid();
-        gridMovementProcessor.Init();
     }
+
+    
 
     #endregion
 
-    #region PUBLIC_METHODS
-    public Transform GetLayerTransformParent(RenderLayer renderLayer) {
-        return layerTransforms[(int)renderLayer];
-    }
-
-    #endregion
 
     #region PRIVATE_METHODS
 
-    
+
     private void CreateGrid()
     {
         GridDesignTemp levelData = GameplayManager.instance.levelData;
@@ -87,8 +78,11 @@ public class Grid : Singleton<Grid>
             }
             
         }
+    }
 
-
+    private void GenerateObstacles()
+    {
+        GameplayObstacleHandler.instance.Init(LevelData);
     }
 
     private void InterreferenceGrid()
@@ -235,11 +229,9 @@ public class Grid : Singleton<Grid>
 
     #region PUBLIC_METHODS
 
-    public IEnumerator Animate(MatchExecutionData executionData)
+    public Transform GetLayerTransformParent(RenderLayer renderLayer)
     {
-       Dictionary<int,List<ElementAnimationData>> animationData= gridMovementProcessor.CollapseColomuns(executionData);
-       yield return gridMovementAnimator.AnimateMovementRoutine(animationData);
-        
+        return layerTransforms[(int)renderLayer];
     }
 
     public void LockDirtyColoumns(MatchExecutionData executionData) {

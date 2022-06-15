@@ -5,10 +5,7 @@ using UnityEngine;
 
 public class GameplayManager: Singleton<GameplayManager>
 {
-    
     public GridDesignTemp levelData;
-
-    
 
     private void Start()
     {
@@ -21,11 +18,8 @@ public class GameplayManager: Singleton<GameplayManager>
         ElementFactory.instance.Init();
         MatchRewardHandler.instance.Init();
         Grid.instance.GenerateGrid();
-        GameplayObstacleHandler.instance.Init(levelData);
-        Grid.instance.UpdateInterreferences();
+        Matcher.instance.Init();
     }
-
-
 
 }
 
