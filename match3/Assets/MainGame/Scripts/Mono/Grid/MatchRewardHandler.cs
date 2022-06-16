@@ -5,9 +5,10 @@ using UnityEngine;
 public class MatchRewardHandler : Singleton<MatchRewardHandler>
 {
     [SerializeField] private MatchPatternBoosterRewardSO[] rewardsData;
-
-    private Dictionary<MatchPattern, ElementConfig> rewardLookup = new Dictionary<MatchPattern, ElementConfig>();
+    //[SerializeField] private SerizTuple<MatchPattern,>
     
+    private Dictionary<MatchPattern, ElementConfig> _rewardLookup = new Dictionary<MatchPattern, ElementConfig>();
+    private Dictionary<ElementConfig,BaseMatchBooster> _matchBoosterLookup = new Dictionary<ElementConfig, BaseMatchBooster>();
 
     public void Init() 
     {
@@ -19,27 +20,24 @@ public class MatchRewardHandler : Singleton<MatchRewardHandler>
 
             for (int j = 0; j < patterns.Length; j++)
             {
-                rewardLookup.Add(patterns[j], boosterRewardConfig);
+                _rewardLookup.Add(patterns[j], boosterRewardConfig);
             }
         }
     }
 
-    public Element GenerateBoosterElements(MatchData matchData) 
-    {
-        ElementConfig config = matchData.BoosterReward;
-        GridCell targetCell = matchData.TargetSpawningCell;
-        Element rewardElement = ElementFactory.instance.GenerateElementByConfig(config);
-        targetCell.SetElement(rewardElement);
-        rewardElement.transform.localPosition = targetCell.transform.localPosition;
-        return rewardElement;
-    }
+    
 
-    public ElementConfig FetchRewardConfig(MatchPattern pattern) 
+    public Element TryGeneratePatternReward(MatchPattern pattern) 
     {
-        if(rewardLookup.ContainsKey(pattern))   
-            return rewardLookup[pattern];
+        if(_rewardLookup.ContainsKey(pattern))   
+            return ElementFactory.instance.GenerateElementByConfig(_rewardLookup[pattern]);
 
         return null;
+    }
+
+    public void OnElementBoosterTriggered(Element element) 
+    { 
+        
     }
 
 }

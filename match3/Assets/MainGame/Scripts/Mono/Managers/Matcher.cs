@@ -6,7 +6,7 @@ using UnityEngine;
 public class MatchData 
 {
     private List<Element> _matchedElements;
-    private ElementConfig _boosterReward;
+    private Element _boosterRewardElement;
     private GridCell _spawningCell;
 
 
@@ -26,7 +26,7 @@ public class MatchData
         }
     }
 
-    public ElementConfig BoosterReward { get { return _boosterReward; } }
+    public Element BoosterReward { get { return _boosterRewardElement; } }
 
     public GridCell TargetSpawningCell { get { return _spawningCell; } }
 
@@ -40,9 +40,9 @@ public class MatchData
         _matchedElements.Add(element);
     }
 
-    public void SetReward(ElementConfig boosterReward, GridCell spawnCell) 
+    public void SetReward(Element boosterReward, GridCell spawnCell) 
     { 
-        _boosterReward = boosterReward;
+        _boosterRewardElement = boosterReward;
         _spawningCell = spawnCell; 
     }
 
@@ -129,40 +129,53 @@ public class MatchExecutionData : IEquatable<MatchExecutionData>
     #endregion
 }
 
+[RequireComponent(typeof(GridMovementAnimator))]
+[RequireComponent(typeof(GridMovementProcessor))]
 public class Matcher : Singleton<Matcher>
 {
     #region PRIVATE_VARIABLES
-
     [SerializeField] private MatchPattern[] patterns;
-    [SerializeField] private Grid grid;
     [SerializeField] private GridMovementAnimator gridMovementAnimator;
     [SerializeField] private GridMovementProcessor gridMovementProcessor;
-    [SerializeField] private GameplayObstacleHandler gameplayObstacleHandler;
-    [SerializeField] private MatchRewardHandler matchRewardHandler;
-    [SerializeField] private InputManager inputManager;
 
     private HashSet<MatchExecutionData> activeSwipes = new HashSet<MatchExecutionData>();
 
+    private MatchRewardHandler matchRewardHandler;
+    private InputManager inputManager;
+    private Grid grid;
+    private GameplayObstacleHandler gameplayObstacleHandler;
     #endregion
 
     #region PUBLIC_METHODS
 
     public void Init() 
     {
+        matchRewardHandler = MatchRewardHandler.instance;
+        inputManager = InputManager.instance;
+        grid = Grid.instance;
+        gameplayObstacleHandler = GameplayObstacleHandler.instance;
         gridMovementProcessor.Init();
     }
 
     public void StartChecking(MatchExecutionData executionData,Dictionary<int,List<ElementAnimationData>> initialSwipeAnimationData)
     {
-        StartCoroutine(IterativeCheckRoutine(executionData,initialSwipeAnimationData));
+
+
+        StartMatching(executionData, initialSwipeAnimationData);
     }
+
+
 
     #endregion
 
 
     #region PRIVATE_VARIABLES
+    private void StartMatching(MatchExecutionData executionData, Dictionary<int, List<ElementAnimationData>> initialSwipeAnimationData)
+    {
+        StartCoroutine(MatchRoutine(executionData, initialSwipeAnimationData));
+    }
 
-    private IEnumerator IterativeCheckRoutine(MatchExecutionData executionData, Dictionary<int, List<ElementAnimationData>> initialSwipeAnimationData)
+    private IEnumerator MatchRoutine(MatchExecutionData executionData, Dictionary<int, List<ElementAnimationData>> initialSwipeAnimationData)
     {
         Debug.LogError($"ITR {executionData.swipeId} MAIN START");
         activeSwipes.Add(executionData);
@@ -175,7 +188,7 @@ public class Matcher : Singleton<Matcher>
         //if (executionData.HasMatches)
         {
             c++;
-            GenerateBoosterElements(executionData);
+            SetBoosterElements(executionData);
             DestroyMatchedItems(executionData);
             yield return gridMovementAnimator.AnimateMovementRoutine(gridMovementProcessor.GenerateCollapseMovementData(executionData));
             FindMatches(executionData);
@@ -196,7 +209,7 @@ public class Matcher : Singleton<Matcher>
     }
 
 
-    private void GenerateBoosterElements(MatchExecutionData executionData) 
+    private void SetBoosterElements(MatchExecutionData executionData) 
     {
         List<MatchData> matchDatas = executionData.matchData;
         for (int i = 0; i < matchDatas.Count; i++)
@@ -204,7 +217,7 @@ public class Matcher : Singleton<Matcher>
             MatchData matchData = matchDatas[i];
             if (matchData.HasBoosterReward)
             {
-                GenerateBoosterElement(matchData);
+                SetBoosterElement(matchData);
             }
         }
     }
@@ -212,9 +225,12 @@ public class Matcher : Singleton<Matcher>
     
 
 
-    private void GenerateBoosterElement(MatchData matchData)
+    private void SetBoosterElement(MatchData matchData)
     {
-        matchRewardHandler.GenerateBoosterElements(matchData);
+        GridCell targetCell = matchData.TargetSpawningCell;
+        Element rewardElement = matchData.BoosterReward;
+        targetCell.SetElement(rewardElement);
+        rewardElement.transform.localPosition = targetCell.transform.localPosition;
     }
 
     private void DestroyMatchedItems(MatchExecutionData executionData)
@@ -270,17 +286,16 @@ public class Matcher : Singleton<Matcher>
                         //Pattern 'p' checked successfully here
                     }
                 }
-
             }
         }
 
-        
+
     }
 
     private void SetReward(MatchExecutionData data,MatchData matchData, MatchPattern matchPattern)
     {
-        ElementConfig boosterRewardConfig = GetInGameBoosterConfig(matchPattern);
-        matchData.SetReward(boosterRewardConfig, GetRewardSpawnCell(data));
+        Element boosterReward = matchRewardHandler.TryGeneratePatternReward(matchPattern); 
+        matchData.SetReward(boosterReward, GetRewardSpawnCell(data));
     }
 
     GridCell GetRewardSpawnCell(MatchExecutionData executionData) 
@@ -316,14 +331,10 @@ public class Matcher : Singleton<Matcher>
 
     private void HitPotentialObstacles(MatchExecutionData executionData) {
         //TBD if safe
-
         gameplayObstacleHandler.CheckForNeighbourHit(executionData);
     }
 
-    private ElementConfig GetInGameBoosterConfig(MatchPattern matchPattern) 
-    { 
-        return matchRewardHandler.FetchRewardConfig(matchPattern);
-    }
+    
 
     private MatchData ExtractElementsToMatchData(MatchExecutionData matchExecutionData,MatchData matchData)
     {

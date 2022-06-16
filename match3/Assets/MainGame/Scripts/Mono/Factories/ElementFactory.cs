@@ -35,7 +35,11 @@ public class ElementFactory : Singleton<ElementFactory>
         element.transform.SetParent(elementTransformParent);
         return element;
     }
-  
+
+    public bool IsBoosterElement(Element element) 
+    {
+        return keyValuePairs.ContainsKey(element.ElementConfig);
+    }
     #endregion
     
 }

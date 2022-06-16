@@ -15,6 +15,3 @@ MonoBehaviour:
   boosterReward: {fileID: 11400000, guid: ee9f24831798cb84f8ec8d33fc956a93, type: 2}
   matchPatterns:
   - {fileID: 11400000, guid: 3e5fba3d6d0db0c4ca1133490d628345, type: 2}
-  - {fileID: 11400000, guid: 007bc30f69a5e4b46b750862826fe4fa, type: 2}
-  - {fileID: 11400000, guid: 8278436b02f9c7c45afc74cd3ac1bb60, type: 2}
-  - {fileID: 11400000, guid: 55ab64082208fa4478654c30741ad3e0, type: 2}
