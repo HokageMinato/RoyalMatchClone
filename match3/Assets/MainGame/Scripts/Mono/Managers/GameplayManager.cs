@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
+﻿
 public class GameplayManager: Singleton<GameplayManager>
 {
     public GridDesignTemp levelData;
@@ -16,6 +12,7 @@ public class GameplayManager: Singleton<GameplayManager>
     public void Init()
     {
         ElementFactory.instance.Init();
+        MatchRewardBoosterFactory.instance.Init();
         MatchRewardHandler.instance.Init();
         Grid.instance.GenerateGrid();
         Matcher.instance.Init();

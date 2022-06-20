@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7271803780314175213}
   - component: {fileID: 7271803780314175212}
-  - component: {fileID: 4078970536620506890}
   - component: {fileID: 7271803780314175210}
   - component: {fileID: 6618921915568030125}
   m_Layer: 0
@@ -48,18 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   elementConfig: {fileID: 11400000, guid: 5274e1f857cb01f43838765d62b24805, type: 2}
---- !u!114 &4078970536620506890
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7271803780314175211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e51f113f45efa849b77cc886559aa9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &7271803780314175210
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -100,7 +87,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 86a2a1d0112fcff439b28c5c5f385dbb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

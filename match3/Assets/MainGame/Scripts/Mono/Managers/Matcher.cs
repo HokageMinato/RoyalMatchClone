@@ -41,9 +41,13 @@ public class MatchData
     }
 
     public void SetReward(Element boosterReward, GridCell spawnCell) 
-    { 
+    {
+        if (boosterReward == null)
+            return;
+
         _boosterRewardElement = boosterReward;
         _spawningCell = spawnCell; 
+        _boosterRewardElement.gameObject.SetActive(false);
     }
 
     
@@ -157,11 +161,9 @@ public class Matcher : Singleton<Matcher>
         gridMovementProcessor.Init();
     }
 
-    public void StartChecking(MatchExecutionData executionData,Dictionary<int,List<ElementAnimationData>> initialSwipeAnimationData)
+    public void StartMatching(MatchExecutionData executionData,Dictionary<int,List<ElementAnimationData>> initialSwipeAnimationData)
     {
-
-
-        StartMatching(executionData, initialSwipeAnimationData);
+        StartCoroutine(MatchRoutine(executionData, initialSwipeAnimationData));
     }
 
 
@@ -170,11 +172,7 @@ public class Matcher : Singleton<Matcher>
 
 
     #region PRIVATE_VARIABLES
-    private void StartMatching(MatchExecutionData executionData, Dictionary<int, List<ElementAnimationData>> initialSwipeAnimationData)
-    {
-        StartCoroutine(MatchRoutine(executionData, initialSwipeAnimationData));
-    }
-
+    
     private IEnumerator MatchRoutine(MatchExecutionData executionData, Dictionary<int, List<ElementAnimationData>> initialSwipeAnimationData)
     {
         Debug.LogError($"ITR {executionData.swipeId} MAIN START");
@@ -185,10 +183,9 @@ public class Matcher : Singleton<Matcher>
        
         int c = 0;
         while (executionData.HasMatches)
-        //if (executionData.HasMatches)
         {
             c++;
-            SetBoosterElements(executionData);
+            SetMatchRewardBoosterElements(executionData);
             DestroyMatchedItems(executionData);
             yield return gridMovementAnimator.AnimateMovementRoutine(gridMovementProcessor.GenerateCollapseMovementData(executionData));
             FindMatches(executionData);
@@ -209,7 +206,7 @@ public class Matcher : Singleton<Matcher>
     }
 
 
-    private void SetBoosterElements(MatchExecutionData executionData) 
+    private void SetMatchRewardBoosterElements(MatchExecutionData executionData) 
     {
         List<MatchData> matchDatas = executionData.matchData;
         for (int i = 0; i < matchDatas.Count; i++)
@@ -217,18 +214,17 @@ public class Matcher : Singleton<Matcher>
             MatchData matchData = matchDatas[i];
             if (matchData.HasBoosterReward)
             {
-                SetBoosterElement(matchData);
+                SetMatchRewardBoosterElement(matchData);
             }
         }
     }
 
-    
 
-
-    private void SetBoosterElement(MatchData matchData)
+    private void SetMatchRewardBoosterElement(MatchData matchData)
     {
         GridCell targetCell = matchData.TargetSpawningCell;
         Element rewardElement = matchData.BoosterReward;
+        rewardElement.gameObject.SetActive(true);
         targetCell.SetElement(rewardElement);
         rewardElement.transform.localPosition = targetCell.transform.localPosition;
     }
@@ -276,10 +272,9 @@ public class Matcher : Singleton<Matcher>
                         //all the listed elements are same or not.
                         if (DoesSelectedCellsHaveSameElements(executionData))
                         {
-                            MatchData matchData = GenerateMatchData(executionData);
+                            MatchData matchData = GenerateMatchData(executionData,matchPattern);
                             HitPotentialObstacles(executionData);
                             ExtractElementsToMatchData(executionData, matchData);
-                            SetReward(executionData,matchData, matchPattern);
                             LockColoumns(executionData);
                         }
 
@@ -292,11 +287,18 @@ public class Matcher : Singleton<Matcher>
 
     }
 
-    private void SetReward(MatchExecutionData data,MatchData matchData, MatchPattern matchPattern)
+    private MatchData GenerateMatchData(MatchExecutionData executionData, MatchPattern matchPattern)
     {
-        Element boosterReward = matchRewardHandler.TryGeneratePatternReward(matchPattern); 
-        matchData.SetReward(boosterReward, GetRewardSpawnCell(data));
+        MatchData matchData = new MatchData();
+        executionData.matchData.Add(matchData);
+        
+        Element boosterReward = matchRewardHandler.IntantiateRewardElement(matchPattern);
+        matchData.SetReward(boosterReward, GetRewardSpawnCell(executionData));
+
+        return matchData;
     }
+
+
 
     GridCell GetRewardSpawnCell(MatchExecutionData executionData) 
     { 
@@ -316,12 +318,7 @@ public class Matcher : Singleton<Matcher>
         return maxHeightCell;
     }
 
-    private MatchData GenerateMatchData(MatchExecutionData executionData)
-    {
-        MatchData matchData = new MatchData();
-        executionData.matchData.Add(matchData);
-        return matchData;
-    }
+    
 
     private void LockColoumns(MatchExecutionData executionData)
     {

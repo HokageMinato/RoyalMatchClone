@@ -60,7 +60,7 @@ public class InputManager : Singleton<InputManager>
         matchExecutionData.firstCell.SetExecutionData(matchExecutionData);
         matchExecutionData.secondCell.SetExecutionData(matchExecutionData);
         _firstCell = _secondCell = null;
-        Matcher.instance.StartChecking(matchExecutionData, SwapCells(matchExecutionData));
+        Matcher.instance.StartMatching(matchExecutionData, SwapCells(matchExecutionData));
     }
 
     public Dictionary<int, List<ElementAnimationData>> SwapCells(MatchExecutionData matchExecutionData)

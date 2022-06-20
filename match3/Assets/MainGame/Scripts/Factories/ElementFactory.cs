@@ -36,10 +36,7 @@ public class ElementFactory : Singleton<ElementFactory>
         return element;
     }
 
-    public bool IsBoosterElement(Element element) 
-    {
-        return keyValuePairs.ContainsKey(element.ElementConfig);
-    }
+    
     #endregion
     
 }

@@ -20,8 +20,10 @@ public abstract class Singleton<T> : MonoBehaviour where T: Singleton<T>
 }
 
 [System.Serializable]
-public class SerizTuple<T, K> where T : class where K : class 
+public class EntityTuple<T, K> 
 {
-    public T serializedKeyItem;
-    public K serializedValueItem;
+    public T Key;
+    public K Value;
+
+    
 }
