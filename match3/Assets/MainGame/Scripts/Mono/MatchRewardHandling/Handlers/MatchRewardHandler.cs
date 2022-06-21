@@ -19,7 +19,7 @@ public class MatchRewardHandler : Singleton<MatchRewardHandler>
         }
     }
 
-    public Element IntantiateRewardElement(MatchPattern pattern) 
+    public Element GetElementForPattern(MatchPattern pattern) 
     {
         if(_rewardLookup.ContainsKey(pattern))   
             return ElementFactory.instance.GenerateElementByConfig(_rewardLookup[pattern]);

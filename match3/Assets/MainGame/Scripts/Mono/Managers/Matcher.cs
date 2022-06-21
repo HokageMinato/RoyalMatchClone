@@ -292,7 +292,7 @@ public class Matcher : Singleton<Matcher>
         MatchData matchData = new MatchData();
         executionData.matchData.Add(matchData);
         
-        Element boosterReward = matchRewardHandler.IntantiateRewardElement(matchPattern);
+        Element boosterReward = matchRewardHandler.GetElementForPattern(matchPattern);
         matchData.SetReward(boosterReward, GetRewardSpawnCell(executionData));
 
         return matchData;
