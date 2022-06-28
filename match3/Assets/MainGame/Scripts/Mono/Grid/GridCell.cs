@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
+public class GridCell : MonoBehaviour
 {
     #region PRIVATE_VARIABLES
     [SerializeField] private int hIndex;
@@ -56,18 +56,6 @@ public class GridCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         this.hIndex = hIndex;
         this.wIndex = wIndex;
         executionData = MatchExecutionData.GetDefaultExecutionData();
-    }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        InputManager inputManager = InputManager.instance;
-        inputManager.SetFirstCell(this);
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        InputManager inputManager = InputManager.instance;
-        inputManager.SetSecondCell(this);
     }
     
 

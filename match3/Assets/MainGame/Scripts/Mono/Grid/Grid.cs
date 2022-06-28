@@ -237,8 +237,9 @@ public class Grid : Singleton<Grid>
     public void LockDirtyColoumns(MatchExecutionData executionData) {
 
         List<GridCell> cells = executionData.patternCells;
-        cells.Add(executionData.firstCell);
-        cells.Add(executionData.secondCell);
+
+        LockColoumn(executionData.firstCell.WIndex);
+        LockColoumn(executionData.secondCell.WIndex);
         
         for (int i = 0; i < cells.Count; i++)
         {

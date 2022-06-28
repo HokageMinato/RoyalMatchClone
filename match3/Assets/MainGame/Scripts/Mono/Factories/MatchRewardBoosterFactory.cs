@@ -5,7 +5,7 @@ public class MatchRewardBoosterFactory : Singleton<MatchRewardBoosterFactory>
 {
     public List<EntityTuple<ElementConfig, GameObject>> matchRewardBoosters;
     
-    private Dictionary<ElementConfig,IMatchRewardBooster> matchRewardBoostersDict = new Dictionary<ElementConfig, IMatchRewardBooster>();
+    private Dictionary<ElementConfig,IMatchRewardBoosterBehaviour> matchRewardBoostersDict = new Dictionary<ElementConfig, IMatchRewardBoosterBehaviour>();
 
 
     public void Init() 
@@ -18,11 +18,11 @@ public class MatchRewardBoosterFactory : Singleton<MatchRewardBoosterFactory>
         for (int i = 0; i < matchRewardBoosters.Count; i++)
         {
             EntityTuple<ElementConfig,GameObject> item = matchRewardBoosters[i];
-            matchRewardBoostersDict.Add(item.Key, item.Value.GetComponent<IMatchRewardBooster>());
+            matchRewardBoostersDict.Add(item.Key, item.Value.GetComponent<IMatchRewardBoosterBehaviour>());
         }
     }
 
-    public IMatchRewardBooster GetMatchRewardBooster(ElementConfig elementConfig) 
+    public IMatchRewardBoosterBehaviour GetMatchRewardBooster(ElementConfig elementConfig) 
     { 
         if(matchRewardBoostersDict.ContainsKey(elementConfig))
             return matchRewardBoostersDict[elementConfig];

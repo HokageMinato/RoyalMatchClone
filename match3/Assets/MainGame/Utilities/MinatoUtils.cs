@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
 public abstract class Singleton<T> : MonoBehaviour where T: Singleton<T>
@@ -20,10 +20,15 @@ public abstract class Singleton<T> : MonoBehaviour where T: Singleton<T>
 }
 
 [System.Serializable]
-public class EntityTuple<T, K> 
+public class EntityTuple<T, K> : IEquatable<EntityTuple<T, K>>
 {
     public T Key;
     public K Value;
 
-    
+    public bool Equals(EntityTuple<T, K> other)
+    {
+        return other.Key.Equals(Key) && other.Value.Equals(Value);
+    }
+
+
 }

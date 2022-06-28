@@ -86,6 +86,9 @@ public class MatchExecutionData : IEquatable<MatchExecutionData>
         get { return matchData.Count > 0; }
     }
 
+    public Element FirstElement => firstCell?.ReadElement();
+    public Element SecondElement => secondCell?.ReadElement();
+    
     #endregion
 
     #region PUBLIC_METHODS
@@ -135,7 +138,7 @@ public class MatchExecutionData : IEquatable<MatchExecutionData>
 
 [RequireComponent(typeof(GridMovementAnimator))]
 [RequireComponent(typeof(GridMovementProcessor))]
-public class Matcher : Singleton<Matcher>
+public class Matcher : MonoBehaviour, ISwipeHandler
 {
     #region PRIVATE_VARIABLES
     [SerializeField] private MatchPattern[] patterns;
@@ -145,28 +148,51 @@ public class Matcher : Singleton<Matcher>
     private HashSet<MatchExecutionData> activeSwipes = new HashSet<MatchExecutionData>();
 
     private MatchRewardHandler matchRewardHandler;
-    private InputManager inputManager;
     private Grid grid;
     private GameplayObstacleHandler gameplayObstacleHandler;
     #endregion
 
     #region PUBLIC_METHODS
 
+    
     public void Init() 
     {
         matchRewardHandler = MatchRewardHandler.instance;
-        inputManager = InputManager.instance;
         grid = Grid.instance;
         gameplayObstacleHandler = GameplayObstacleHandler.instance;
         gridMovementProcessor.Init();
     }
 
-    public void StartMatching(MatchExecutionData executionData,Dictionary<int,List<ElementAnimationData>> initialSwipeAnimationData)
+
+    public void OnSwipeRecieved(MatchExecutionData matchExecutionData)
     {
-        StartCoroutine(MatchRoutine(executionData, initialSwipeAnimationData));
+        StartCoroutine(MatchRoutine(matchExecutionData, SwapCells(matchExecutionData)));
     }
 
+    public Dictionary<int, List<ElementAnimationData>> SwapCells(MatchExecutionData matchExecutionData)
+    {
+        GridCell firstCell = matchExecutionData.firstCell;
+        GridCell secondCell = matchExecutionData.secondCell;
 
+        Element secondElement = secondCell.GetElement();
+        Element firstElement = firstCell.GetElement();
+
+
+        Dictionary<int, List<ElementAnimationData>> initialSwipeAnimationData = new Dictionary<int, List<ElementAnimationData>>()
+        {
+            {0,GenerateMoveAnimationData(firstElement,secondElement,firstCell,secondCell,matchExecutionData)},
+            {1,GenerateMoveAnimationData(secondElement,firstElement,secondCell,firstCell,matchExecutionData)}
+        };
+        return initialSwipeAnimationData;
+    }
+
+    private List<ElementAnimationData> GenerateMoveAnimationData(Element currentElement, Element otherElement, GridCell currentCell, GridCell otherCell, MatchExecutionData data)
+    {
+        List<ElementAnimationData> elemAnimation = new List<ElementAnimationData>();
+        currentCell.SetElement(otherElement);
+        elemAnimation.Add(new ElementAnimationData(currentElement, currentCell, otherCell, data, currentCell.HIndex));
+        return elemAnimation;
+    }
 
     #endregion
 
@@ -177,7 +203,9 @@ public class Matcher : Singleton<Matcher>
     {
         Debug.LogError($"ITR {executionData.swipeId} MAIN START");
         activeSwipes.Add(executionData);
-        
+        grid.LockDirtyColoumns(executionData);
+
+
         FindMatches(executionData);
         yield return gridMovementAnimator.AnimateMovementRoutine(initialSwipeAnimationData);
        
@@ -191,9 +219,9 @@ public class Matcher : Singleton<Matcher>
             FindMatches(executionData);
         }
 
-        if (c <= 0)
+        if (c <= 0) // No Matches
         {
-            yield return gridMovementAnimator.AnimateMovementRoutine(inputManager.SwapCells(executionData));
+            yield return gridMovementAnimator.AnimateMovementRoutine(SwapCells(executionData));
         }
 
         Debug.LogError($"ITR {executionData.swipeId} MAIN END");

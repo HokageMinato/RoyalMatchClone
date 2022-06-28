@@ -195,9 +195,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1885267939}
-  - {fileID: 544809430}
   - {fileID: 1864868104}
   - {fileID: 1090027442}
+  - {fileID: 544809430}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -299,9 +299,8 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
-  - component: {fileID: 519420030}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: GameplayCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -315,22 +314,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
---- !u!114 &519420030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56666c5a40171f54783dd416a44f42bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EventMask:
-    serializedVersion: 2
-    m_Bits: 256
-  m_MaxRayIntersections: 0
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -399,8 +382,9 @@ GameObject:
   m_Component:
   - component: {fileID: 544809430}
   - component: {fileID: 544809429}
+  - component: {fileID: 544809431}
   m_Layer: 0
-  m_Name: InputHandler
+  m_Name: InputManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -418,8 +402,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa93845ac5c14e945997669539019858, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameplayCamera: {fileID: 519420031}
   _firstCell: {fileID: 0}
   _secondCell: {fileID: 0}
+  _contactFilter:
+    useTriggers: 0
+    useLayerMask: 1
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 0
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 256
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 0
+    maxNormalAngle: 0
+  _serializedSwipeHandlerLookup:
+  - Key: {fileID: 11400000, guid: 5274e1f857cb01f43838765d62b24805, type: 2}
+    Value: {fileID: 0}
+  - Key: {fileID: 11400000, guid: ee9f24831798cb84f8ec8d33fc956a93, type: 2}
+    Value: {fileID: 0}
+  - Key: {fileID: 11400000, guid: b9dcd339532eaa14d88f73f78f4041e5, type: 2}
+    Value: {fileID: 0}
+  - Key: {fileID: 11400000, guid: 74f99be53f673c04fbc0441dcefd27e6, type: 2}
+    Value: {fileID: 0}
+  - Key: {fileID: 11400000, guid: d5ae2cb950197ba48ae771e427820cda, type: 2}
+    Value: {fileID: 0}
+  _defaultSwipeHandlerMono: {fileID: 322992769}
 --- !u!4 &544809430
 Transform:
   m_ObjectHideFlags: 0
@@ -433,8 +444,20 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 150515176}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &544809431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 544809428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7987a791e33bcac4d988dd0541fa7eb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &664393494
 GameObject:
   m_ObjectHideFlags: 0
@@ -777,7 +800,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 150515176}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1090027443
 MonoBehaviour:
@@ -794,7 +817,7 @@ MonoBehaviour:
   rewardData:
   - Key: {fileID: 11400000, guid: 3e5fba3d6d0db0c4ca1133490d628345, type: 2}
     Value: {fileID: 11400000, guid: ee9f24831798cb84f8ec8d33fc956a93, type: 2}
-  - Key: {fileID: 11400000, guid: 49e91f27093ccc342b5d83a12e18a670, type: 2}
+  - Key: {fileID: 11400000, guid: 6d763b51c71d4664693e57388a21cee5, type: 2}
     Value: {fileID: 11400000, guid: b9dcd339532eaa14d88f73f78f4041e5, type: 2}
   - Key: {fileID: 11400000, guid: 49e91f27093ccc342b5d83a12e18a670, type: 2}
     Value: {fileID: 11400000, guid: b9dcd339532eaa14d88f73f78f4041e5, type: 2}
@@ -1030,9 +1053,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dd0dc963d63a384aa960263349bbe55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  matchRewardBoosters:
-  - Key: {fileID: 11400000, guid: ee9f24831798cb84f8ec8d33fc956a93, type: 2}
-    Value: {fileID: 0}
+  matchRewardBoosters: []
 --- !u!1 &1709242970
 GameObject:
   m_ObjectHideFlags: 0
@@ -1193,7 +1214,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 150515176}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1885267937
 GameObject:
