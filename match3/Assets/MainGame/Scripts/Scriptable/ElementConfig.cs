@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
 [CreateAssetMenu(fileName = "ElementConfig", menuName = "ScriptableObjects/Gameplay/ElementConfig")]
-public class ElementConfig : ScriptableObject
+public class ElementConfig : ScriptableObject , IEquatable<ElementConfig>
 {
     //Universal Settings
     public static RenderLayer renderLayer = RenderLayer.ElementLayer;

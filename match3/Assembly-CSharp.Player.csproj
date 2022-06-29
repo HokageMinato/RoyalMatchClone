@@ -60,20 +60,15 @@
     <Compile Include="Assets\MainGame\Scripts\Mono\Grid\GridMovementAnimator.cs" />
     <Compile Include="Assets\MainGame\Scripts\Scriptable\ElementConfig.cs" />
     <Compile Include="Assets\MainScreen\swipe.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardHandling\MatchRewardBoosterInput.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\Factories\MatchRewardBoosterFactory.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\PatternMatcher\PatternCompareUtility.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\GridBlockers\Blockers\BoxCellBlocker.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\Grid\GridMovementProcessor.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\Managers\GameplayManager.cs" />
     <Compile Include="Assets\NativePooler.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\Managers\Matcher.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\MatchHandler\Matcher.cs" />
     <Compile Include="Assets\MainGame\Utilities\MinatoUtils.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\InputManagement\InputManager.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\Grid\Element.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardHandling\IMatchRewardBoosterBehaviour.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardHandling\Behaviours\TargetCellMatchRewardBoosterBehaviour.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardHandling\Handlers\MatchRewardHandler.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\Factories\ObstacleFactory.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\GridBlockers\CellGroup.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\BasicLogger.cs" />
@@ -81,10 +76,13 @@
     <Compile Include="Assets\MainGame\Scripts\Mono\Grid\Grid.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\GridBlockers\BaseCellBlocker.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\GridBlockers\GameplayObstacleHandler.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardHandling\Behaviours\PatternMatchRewardBoosterBehaviour.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\Grid\GridCell.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\InputManagement\ElementSwipeHandler.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\InputManagement\ISwipeHandler.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\MatchHandler\IMatchHandler.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardHandling\MatchPairs\SimpleHorizontalRocketBooster.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardHandling\MatchPairs\IRocketBooster.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardHandling\Handlers\MatchGameplayBoosterRewardHandler.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\MatchHandler\RocketSwipeHandler.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardHandling\MatchPairs\SimpleVerticalRocketBooster.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

@@ -13,8 +13,8 @@ public class InputManager : Singleton<InputManager>
     [SerializeField] private List<EntityTuple<ElementConfig,MonoBehaviour>> _serializedSwipeHandlerLookup;
     [SerializeField] private MonoBehaviour _defaultSwipeHandlerMono;
 
-    private Dictionary<ElementConfig,ISwipeHandler> _swipeHandlerLookup = new Dictionary<ElementConfig,ISwipeHandler>();
-    private ISwipeHandler _defaultSwipeHandler;
+    private Dictionary<ElementConfig,IMatchHandler> _swipeHandlerLookup = new Dictionary<ElementConfig,IMatchHandler>();
+    private IMatchHandler _defaultSwipeHandler;
     
     private int swipeNumber = 0;
     private bool _inputValid;
@@ -29,13 +29,13 @@ public class InputManager : Singleton<InputManager>
     {
         foreach (var item in _serializedSwipeHandlerLookup)
         {
-            ISwipeHandler handler = item.Value as ISwipeHandler;
+            IMatchHandler handler = item.Value as IMatchHandler;
             _swipeHandlerLookup.Add(item.Key,handler);
             handler?.Init();
             
         }
         
-        _defaultSwipeHandler = _defaultSwipeHandlerMono as ISwipeHandler;
+        _defaultSwipeHandler = _defaultSwipeHandlerMono as IMatchHandler;
         _defaultSwipeHandler.Init();
     }
 
@@ -124,7 +124,7 @@ public class InputManager : Singleton<InputManager>
         ElementConfig firstElement = matchExecutionData.FirstElement.ElementConfig;
         ElementConfig secondElement = matchExecutionData.SecondElement.ElementConfig;
 
-        ISwipeHandler swipeHandler=null;
+        IMatchHandler swipeHandler=null;
 
         if(_swipeHandlerLookup.ContainsKey(firstElement))
             swipeHandler = _swipeHandlerLookup[firstElement];
@@ -176,18 +176,18 @@ public class InputManager : Singleton<InputManager>
     {
         foreach (var item in _serializedSwipeHandlerLookup)
         {
-            if (item.Value != null && !(item.Value is ISwipeHandler)) {
+            if (item.Value != null && !(item.Value is IMatchHandler)) {
                 item.Value = null;
-                Debug.LogError($"Only implementations of {typeof(ISwipeHandler)} are allowed");
+                Debug.LogError($"Only implementations of {typeof(IMatchHandler)} are allowed");
             }
         }
 
         var item2 = _defaultSwipeHandler;
 
-        if (item2 != null && !(item2 is ISwipeHandler))
+        if (item2 != null && !(item2 is IMatchHandler))
         {
             item2 = null;
-            Debug.LogError($"Only implementations of {typeof(ISwipeHandler)} are allowed");
+            Debug.LogError($"Only implementations of {typeof(IMatchHandler)} are allowed");
         }
     }
     #endif

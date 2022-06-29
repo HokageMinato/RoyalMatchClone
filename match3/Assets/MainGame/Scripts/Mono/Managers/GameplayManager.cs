@@ -12,8 +12,7 @@ public class GameplayManager: Singleton<GameplayManager>
     public void Init()
     {
         ElementFactory.instance.Init();
-        MatchRewardBoosterFactory.instance.Init();
-        MatchRewardHandler.instance.Init();
+        MatchGameplayBoosterRewardHandler.instance.Init();
         Grid.instance.GenerateGrid();
         InputManager.instance.Init();
     }

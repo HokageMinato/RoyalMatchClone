@@ -138,7 +138,7 @@ public class MatchExecutionData : IEquatable<MatchExecutionData>
 
 [RequireComponent(typeof(GridMovementAnimator))]
 [RequireComponent(typeof(GridMovementProcessor))]
-public class Matcher : MonoBehaviour, ISwipeHandler
+public class Matcher : MonoBehaviour, IMatchHandler
 {
     #region PRIVATE_VARIABLES
     [SerializeField] private MatchPattern[] patterns;
@@ -147,7 +147,7 @@ public class Matcher : MonoBehaviour, ISwipeHandler
 
     private HashSet<MatchExecutionData> activeSwipes = new HashSet<MatchExecutionData>();
 
-    private MatchRewardHandler matchRewardHandler;
+    private MatchGameplayBoosterRewardHandler matchRewardHandler;
     private Grid grid;
     private GameplayObstacleHandler gameplayObstacleHandler;
     #endregion
@@ -157,7 +157,7 @@ public class Matcher : MonoBehaviour, ISwipeHandler
     
     public void Init() 
     {
-        matchRewardHandler = MatchRewardHandler.instance;
+        matchRewardHandler = MatchGameplayBoosterRewardHandler.instance;
         grid = Grid.instance;
         gameplayObstacleHandler = GameplayObstacleHandler.instance;
         gridMovementProcessor.Init();

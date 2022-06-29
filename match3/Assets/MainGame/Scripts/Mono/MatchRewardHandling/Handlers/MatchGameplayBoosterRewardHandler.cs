@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchRewardHandler : Singleton<MatchRewardHandler>
+public class MatchGameplayBoosterRewardHandler : Singleton<MatchGameplayBoosterRewardHandler>
 {
     [SerializeField] private EntityTuple<MatchPattern, ElementConfig>[] rewardData;
     private Dictionary<MatchPattern, ElementConfig> _rewardLookup = new Dictionary<MatchPattern, ElementConfig>();
