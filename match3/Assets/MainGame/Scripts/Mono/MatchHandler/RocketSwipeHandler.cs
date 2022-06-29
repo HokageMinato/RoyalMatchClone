@@ -25,20 +25,24 @@ public class RocketSwipeHandler : MonoBehaviour , IMatchHandler
             return;
 
         foreach (var item in BoosterMap)
-            _boosterMap .Add(item.Key, Instantiate(item.Value) as IRocketBooster);
+            _boosterMap .Add(item.Key, GenerateActivePrefab(item.Value));
 
 
         foreach (var item2 in DefaultBoosterMap)
         {
             Debug.Log($"{item2.Key} -- {_defaultBoosterMap.ContainsKey(item2.Key)}");
-            _defaultBoosterMap.Add(item2.Key, Instantiate(item2.Value) as IRocketBooster);
+            _defaultBoosterMap.Add(item2.Key, GenerateActivePrefab(item2.Value));
         }
-        
+
         _isInited = true;
         
     }
 
-    
+    private IRocketBooster GenerateActivePrefab(MonoBehaviour item)
+    {
+        return Instantiate(item,transform) as IRocketBooster;
+    }
+
     public void OnSwipeRecieved(MatchExecutionData matchExecutionData)
     {
         Debug.Log("Handling RocketSwipe");
