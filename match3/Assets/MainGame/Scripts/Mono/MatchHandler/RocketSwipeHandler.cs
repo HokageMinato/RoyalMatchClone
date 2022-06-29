@@ -14,10 +14,13 @@ public class RocketSwipeHandler : MonoBehaviour , IMatchHandler
     private Dictionary <ElementConfig,IRocketBooster> _boosterMap = new Dictionary<ElementConfig,IRocketBooster>();
     private Dictionary <ElementConfig,IRocketBooster> _defaultBoosterMap = new Dictionary<ElementConfig,IRocketBooster>();
     
-    private ElementConfig firstElementDetails;
-    private ElementConfig secondElementDetails;
+    private Element firstElement;
+    private Element secondElement;
+
+    private Element _activePlaceboElement;
 
     private bool _isInited = false;
+    private Grid _grid;
 
     public void Init()
     {
@@ -29,35 +32,32 @@ public class RocketSwipeHandler : MonoBehaviour , IMatchHandler
 
 
         foreach (var item2 in DefaultBoosterMap)
-        {
-            Debug.Log($"{item2.Key} -- {_defaultBoosterMap.ContainsKey(item2.Key)}");
             _defaultBoosterMap.Add(item2.Key, GenerateActivePrefab(item2.Value));
-        }
+        
 
         _isInited = true;
-        
+        _grid = Grid.instance;
     }
 
     private IRocketBooster GenerateActivePrefab(MonoBehaviour item)
     {
-        return Instantiate(item,transform) as IRocketBooster;
+        MonoBehaviour ob = Instantiate(item,transform);
+        ob.gameObject.SetActive(false);
+        return ob as IRocketBooster;
     }
 
     public void OnSwipeRecieved(MatchExecutionData matchExecutionData)
     {
         Debug.Log("Handling RocketSwipe");
-        
         PopulateElementsData(matchExecutionData);
-        IRocketBooster booster = GetRocketBooster();
-        booster = InstantiateBooster(booster);
-        booster.UseBooster(matchExecutionData,Grid.instance);
+        InstantiateBooster(GetRocketBooster()).UseBooster(matchExecutionData,_grid,_activePlaceboElement); 
     }
 
-    private IRocketBooster InstantiateBooster(IRocketBooster booster) 
+    private IRocketBooster InstantiateBooster(IRocketBooster booster)
     {
-        Object unityOb = (Object)booster;
-        Instantiate(unityOb);
-        return unityOb as IRocketBooster;
+        MonoBehaviour mono = Instantiate((MonoBehaviour)booster, _grid.GetLayerTransformParent(RenderLayer.ElementLayer));
+        mono.gameObject.SetActive(true);
+        return  mono as IRocketBooster; 
     }
 
     private IRocketBooster GetRocketBooster()
@@ -72,28 +72,38 @@ public class RocketSwipeHandler : MonoBehaviour , IMatchHandler
 
     private void PopulateElementsData(MatchExecutionData matchExecutionData)
     {
-        firstElementDetails = matchExecutionData.firstCell.ReadElement().ElementConfig;
-        secondElementDetails = matchExecutionData.secondCell.ReadElement().ElementConfig;
+        firstElement = matchExecutionData.firstCell.ReadElement();
+        secondElement = matchExecutionData.secondCell.ReadElement();
     }
 
     private IRocketBooster GetPairedBooster() 
     {
-        if (_boosterMap.ContainsKey(firstElementDetails))
-            return _boosterMap[firstElementDetails];
+        ElementConfig firstElementConfig = firstElement.ElementConfig;
+        ElementConfig secondElementConfig = secondElement.ElementConfig;
 
-        if(_boosterMap.ContainsKey(secondElementDetails))
-            return _boosterMap[secondElementDetails];
+        if (_boosterMap.ContainsKey(firstElementConfig))
+        {
+            _activePlaceboElement = firstElement;
+            return _boosterMap[firstElementConfig];
+        }
+
+        if (_boosterMap.ContainsKey(secondElementConfig))
+        {
+            _activePlaceboElement = secondElement;
+            return _boosterMap[secondElementConfig];
+        }
 
         return null;
     }
     
     private IRocketBooster GetDefaultBooster() 
     {
-        if (_defaultBoosterMap.ContainsKey(firstElementDetails))
-            return _defaultBoosterMap[firstElementDetails];
 
-        if(_defaultBoosterMap.ContainsKey(secondElementDetails))
-            return _defaultBoosterMap[secondElementDetails];
+        if (_defaultBoosterMap.ContainsKey(firstElement.ElementConfig))
+            return _defaultBoosterMap[firstElement.ElementConfig];
+
+        if(_defaultBoosterMap.ContainsKey(secondElement.ElementConfig))
+            return _defaultBoosterMap[secondElement.ElementConfig];
 
         return null;
     }
