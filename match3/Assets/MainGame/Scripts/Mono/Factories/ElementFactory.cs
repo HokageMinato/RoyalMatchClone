@@ -3,12 +3,13 @@ using UnityEngine;
 
 public class ElementFactory : Singleton<ElementFactory>
 {
-
+    //Instantiate element with config, remove individual prefabs.
     #region PRIVATE_VARIABLES
     [SerializeField] private Element[] elementPrefabs;
-    [SerializeField] private Element[] inGameBoosterElementPrefabs;
+    [SerializeField] private Element[] inGameBoosterElementCounterPartPrefabs;
 
     private Dictionary<ElementConfig,Element> keyValuePairs = new Dictionary<ElementConfig,Element>();
+    private HashSet<ElementConfig> boosterElements = new HashSet<ElementConfig>();
     #endregion
 
     #region PUBLIC_METHODS
@@ -18,8 +19,12 @@ public class ElementFactory : Singleton<ElementFactory>
         for (int i = 0; i < elementPrefabs.Length; i++)
             keyValuePairs.Add(elementPrefabs[i].ElementConfig, elementPrefabs[i]);
 
-        for (int i = 0; i < inGameBoosterElementPrefabs.Length; i++)
-            keyValuePairs.Add(inGameBoosterElementPrefabs[i].ElementConfig, inGameBoosterElementPrefabs[i]);
+        for (int i = 0; i < inGameBoosterElementCounterPartPrefabs.Length; i++)
+        {
+            Element element = inGameBoosterElementCounterPartPrefabs[i];
+            keyValuePairs.Add(element.ElementConfig, element);
+            boosterElements.Add(element.ElementConfig);
+        }
         
     }
 
@@ -36,7 +41,11 @@ public class ElementFactory : Singleton<ElementFactory>
         return element;
     }
 
-    
+    public bool IsBooster(ElementConfig config) 
+    { 
+        return boosterElements.Contains(config);
+    }
+
     #endregion
     
 }

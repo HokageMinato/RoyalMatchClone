@@ -30,5 +30,9 @@ public class EntityTuple<T, K> : IEquatable<EntityTuple<T, K>>
         return other.Key.Equals(Key) && other.Value.Equals(Value);
     }
 
+    public override string ToString()
+    {
+        return $"Key:{Key} Value{Value}";
+    }
 
 }

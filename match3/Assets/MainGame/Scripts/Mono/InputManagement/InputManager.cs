@@ -9,34 +9,27 @@ public class InputManager : Singleton<InputManager>
     [SerializeField] private GridCell _firstCell;
     [SerializeField] private GridCell _secondCell;
     [SerializeField] private ContactFilter2D _contactFilter;
+    [SerializeField] private List<MonoBehaviour> _swipeHandlers;
+    
+    
 
-    [SerializeField] private List<EntityTuple<ElementConfig,MonoBehaviour>> _serializedSwipeHandlerLookup;
-    [SerializeField] private MonoBehaviour _defaultSwipeHandlerMono;
-
-    private Dictionary<ElementConfig,IMatchHandler> _swipeHandlerLookup = new Dictionary<ElementConfig,IMatchHandler>();
-    private IMatchHandler _defaultSwipeHandler;
     
     private int swipeNumber = 0;
     private bool _inputValid;
+    
 
 
     public void Init()
     {
-        ParseInterfaces();
+        InitMatchHandlers();
     }
 
-    private void ParseInterfaces()
+    private void InitMatchHandlers()
     {
-        foreach (var item in _serializedSwipeHandlerLookup)
+        foreach (var item in _swipeHandlers)
         {
-            IMatchHandler handler = item.Value as IMatchHandler;
-            _swipeHandlerLookup.Add(item.Key,handler);
-            handler?.Init();
-            
+            ((IMatchHandler)item).Init();
         }
-        
-        _defaultSwipeHandler = _defaultSwipeHandlerMono as IMatchHandler;
-        _defaultSwipeHandler.Init();
     }
 
     private void Update()
@@ -124,18 +117,12 @@ public class InputManager : Singleton<InputManager>
         ElementConfig firstElement = matchExecutionData.FirstElement.ElementConfig;
         ElementConfig secondElement = matchExecutionData.SecondElement.ElementConfig;
 
-        IMatchHandler swipeHandler=null;
+        int idx = 0;
+        if (IsBoosterSwipe(firstElement, secondElement))
+            idx = 1;
+        
 
-        if(_swipeHandlerLookup.ContainsKey(firstElement))
-            swipeHandler = _swipeHandlerLookup[firstElement];
-
-        if (swipeHandler == null && _swipeHandlerLookup.ContainsKey(secondElement))
-            swipeHandler = _swipeHandlerLookup[secondElement];
-
-        if (swipeHandler == null)
-            swipeHandler = _defaultSwipeHandler;
-
-        swipeHandler.OnSwipeRecieved(matchExecutionData);
+        ((IMatchHandler)_swipeHandlers[idx]).OnSwipeRecieved(matchExecutionData);
     }
 
 
@@ -169,26 +156,24 @@ public class InputManager : Singleton<InputManager>
         return areNeighbours;
     }
 
+    private bool IsBoosterSwipe(ElementConfig elem1,ElementConfig elem2) 
+    {
+        return ElementFactory.instance.IsBooster(elem1) || ElementFactory.instance.IsBooster(elem2);
+    }
 
 
     #if UNITY_EDITOR
     private void OnValidate()
     {
-        foreach (var item in _serializedSwipeHandlerLookup)
+
+        foreach (var item in _swipeHandlers)
         {
-            if (item.Value != null && !(item.Value is IMatchHandler)) {
-                item.Value = null;
+            if (item!= null && !(item is IMatchHandler)) {
                 Debug.LogError($"Only implementations of {typeof(IMatchHandler)} are allowed");
             }
         }
 
-        var item2 = _defaultSwipeHandler;
-
-        if (item2 != null && !(item2 is IMatchHandler))
-        {
-            item2 = null;
-            Debug.LogError($"Only implementations of {typeof(IMatchHandler)} are allowed");
-        }
+        
     }
     #endif
 }

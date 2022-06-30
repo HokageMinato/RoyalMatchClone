@@ -214,7 +214,7 @@ GameObject:
   - component: {fileID: 322992772}
   - component: {fileID: 322992771}
   m_Layer: 0
-  m_Name: Matcher
+  m_Name: ElementSwipeHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -301,7 +301,7 @@ GameObject:
   - component: {fileID: 340355916}
   - component: {fileID: 340355917}
   m_Layer: 0
-  m_Name: RocketSwipeHandler
+  m_Name: BoosterSwipeHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -334,12 +334,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c91f61618283248aa063e3ceac8681, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BoosterMap: []
-  DefaultBoosterMap:
+  SoloBoosterMap:
+  - Key: {fileID: 11400000, guid: 5274e1f857cb01f43838765d62b24805, type: 2}
+    Value: {fileID: 11400000, guid: 6150c149eaba75740abdfd4f6059aa0c, type: 2}
+  - Key: {fileID: 11400000, guid: ee9f24831798cb84f8ec8d33fc956a93, type: 2}
+    Value: {fileID: 11400000, guid: 4656eaaa7ef21cc48b166f7d889f76f8, type: 2}
   - Key: {fileID: 11400000, guid: b9dcd339532eaa14d88f73f78f4041e5, type: 2}
-    Value: {fileID: 6230697226415717832, guid: 6705436c845983046a6c5014ea64e980, type: 3}
-  - Key: {fileID: 11400000, guid: 74f99be53f673c04fbc0441dcefd27e6, type: 2}
-    Value: {fileID: 3454057820638719714, guid: 9a591acbbbe9e2641a3efffa51b85a7f, type: 3}
+    Value: {fileID: 11400000, guid: 643546af40d275949b3d215392e2134d, type: 2}
+  - Key: {fileID: 11400000, guid: d5ae2cb950197ba48ae771e427820cda, type: 2}
+    Value: {fileID: 11400000, guid: 9096a7b494a06184891e9ac34e43b896, type: 2}
+  ComboMap:
+  - Key:
+      Key: {fileID: 11400000, guid: 5274e1f857cb01f43838765d62b24805, type: 2}
+      Value: {fileID: 11400000, guid: 5274e1f857cb01f43838765d62b24805, type: 2}
+    Value: {fileID: 11400000, guid: f2cf25076d396394db30147863af0027, type: 2}
+  - Key:
+      Key: {fileID: 11400000, guid: ee9f24831798cb84f8ec8d33fc956a93, type: 2}
+      Value: {fileID: 11400000, guid: 5274e1f857cb01f43838765d62b24805, type: 2}
+    Value: {fileID: 11400000, guid: a71d2ec0638c90e48a4b8e6cf56ef5ae, type: 2}
+  - Key:
+      Key: {fileID: 11400000, guid: ee9f24831798cb84f8ec8d33fc956a93, type: 2}
+      Value: {fileID: 11400000, guid: ee9f24831798cb84f8ec8d33fc956a93, type: 2}
+    Value: {fileID: 11400000, guid: c8f4e7658b768414f9bbc0a025683ff9, type: 2}
+  - Key:
+      Key: {fileID: 11400000, guid: b9dcd339532eaa14d88f73f78f4041e5, type: 2}
+      Value: {fileID: 11400000, guid: 5274e1f857cb01f43838765d62b24805, type: 2}
+    Value: {fileID: 11400000, guid: 4ab2dcab309944b4f8ecf2c5bf662fea, type: 2}
+  - Key:
+      Key: {fileID: 11400000, guid: b9dcd339532eaa14d88f73f78f4041e5, type: 2}
+      Value: {fileID: 11400000, guid: ee9f24831798cb84f8ec8d33fc956a93, type: 2}
+    Value: {fileID: 11400000, guid: 235e447a51719734bb2d16a3f0dad3a4, type: 2}
+  - Key:
+      Key: {fileID: 11400000, guid: b9dcd339532eaa14d88f73f78f4041e5, type: 2}
+      Value: {fileID: 11400000, guid: b9dcd339532eaa14d88f73f78f4041e5, type: 2}
+    Value: {fileID: 11400000, guid: 57b60a8adaa84d44db50e63599fd2f14, type: 2}
+  - Key:
+      Key: {fileID: 11400000, guid: b9dcd339532eaa14d88f73f78f4041e5, type: 2}
+      Value: {fileID: 11400000, guid: d5ae2cb950197ba48ae771e427820cda, type: 2}
+    Value: {fileID: 11400000, guid: cbf52fe7e4b5f79418dbe2d624c350f3, type: 2}
+  - Key:
+      Key: {fileID: 11400000, guid: d5ae2cb950197ba48ae771e427820cda, type: 2}
+      Value: {fileID: 11400000, guid: 5274e1f857cb01f43838765d62b24805, type: 2}
+    Value: {fileID: 11400000, guid: 66f1bcf1b5f3be34d8e508beab8dae8e, type: 2}
+  - Key:
+      Key: {fileID: 11400000, guid: d5ae2cb950197ba48ae771e427820cda, type: 2}
+      Value: {fileID: 11400000, guid: ee9f24831798cb84f8ec8d33fc956a93, type: 2}
+    Value: {fileID: 11400000, guid: 1f196d363af8399419324765eb20f3eb, type: 2}
+  - Key:
+      Key: {fileID: 11400000, guid: d5ae2cb950197ba48ae771e427820cda, type: 2}
+      Value: {fileID: 11400000, guid: d5ae2cb950197ba48ae771e427820cda, type: 2}
+    Value: {fileID: 11400000, guid: d38784a27f2a8d747950c1ec93788941, type: 2}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,18 +514,9 @@ MonoBehaviour:
     maxDepth: 0
     minNormalAngle: 0
     maxNormalAngle: 0
-  _serializedSwipeHandlerLookup:
-  - Key: {fileID: 11400000, guid: 5274e1f857cb01f43838765d62b24805, type: 2}
-    Value: {fileID: 0}
-  - Key: {fileID: 11400000, guid: ee9f24831798cb84f8ec8d33fc956a93, type: 2}
-    Value: {fileID: 0}
-  - Key: {fileID: 11400000, guid: b9dcd339532eaa14d88f73f78f4041e5, type: 2}
-    Value: {fileID: 340355917}
-  - Key: {fileID: 11400000, guid: 74f99be53f673c04fbc0441dcefd27e6, type: 2}
-    Value: {fileID: 340355917}
-  - Key: {fileID: 11400000, guid: d5ae2cb950197ba48ae771e427820cda, type: 2}
-    Value: {fileID: 0}
-  _defaultSwipeHandlerMono: {fileID: 322992769}
+  _swipeHandlers:
+  - {fileID: 322992769}
+  - {fileID: 340355917}
 --- !u!4 &544809430
 Transform:
   m_ObjectHideFlags: 0
@@ -527,6 +562,7 @@ Transform:
   m_Children:
   - {fileID: 1030791804}
   - {fileID: 764472498}
+  - {fileID: 922652355}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -622,12 +658,85 @@ MonoBehaviour:
   - {fileID: 797911112563619829, guid: b0f07240d56967547ab7a8ed5f2710c8, type: 3}
   - {fileID: 5712332276764928209, guid: 27b7c80f160f2c64daf78faa4618b9b4, type: 3}
   - {fileID: 7271803780314175212, guid: f60cc07fb7bfae14e96868c966bcc22c, type: 3}
-  inGameBoosterElementPrefabs:
+  inGameBoosterElementCounterPartPrefabs:
   - {fileID: 7271803780314175212, guid: 89148094d94b97d4c94c096aa4eeaa53, type: 3}
   - {fileID: 7271803780314175212, guid: e5eed9d04d92e6c4aae4a19c8601b803, type: 3}
   - {fileID: 7271803780314175212, guid: f6ca87d4852c20b46b44e5b5f153276e, type: 3}
   - {fileID: 7271803780314175212, guid: a1baf2b84a842f144862eb547ffd4b30, type: 3}
   - {fileID: 7271803780314175212, guid: 6f1b62763ec6dd24084df4fc36574362, type: 3}
+--- !u!1 &922652354
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 922652355}
+  - component: {fileID: 922652356}
+  m_Layer: 0
+  m_Name: GameplayRewardBoosterFactory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &922652355
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 922652354}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.4589008, y: -1.6854587, z: -0.75445414}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 664393495}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &922652356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 922652354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5461d1f385d484c82722c22dc8d6ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoosterMap:
+  - Key: {fileID: 11400000, guid: 643546af40d275949b3d215392e2134d, type: 2}
+    Value: {fileID: 6230697226415717834, guid: 6705436c845983046a6c5014ea64e980, type: 3}
+  - Key: {fileID: 11400000, guid: 4ab2dcab309944b4f8ecf2c5bf662fea, type: 2}
+    Value: {fileID: 3454057820638719712, guid: 6e1a6caa385972f4f8bc0ca0eaee6a05, type: 3}
+  - Key: {fileID: 11400000, guid: 57b60a8adaa84d44db50e63599fd2f14, type: 2}
+    Value: {fileID: 3454057820638719712, guid: 9dd518668dbe3c240aa46b831c1d2e31, type: 3}
+  - Key: {fileID: 11400000, guid: 235e447a51719734bb2d16a3f0dad3a4, type: 2}
+    Value: {fileID: 3454057820638719712, guid: 2b33b96b4f3681b4b80228a5f1a6058c, type: 3}
+  - Key: {fileID: 11400000, guid: cbf52fe7e4b5f79418dbe2d624c350f3, type: 2}
+    Value: {fileID: 3454057820638719712, guid: e4cdc350e0c88df4a8bbe1639bc238bf, type: 3}
+  - Key: {fileID: 11400000, guid: 9096a7b494a06184891e9ac34e43b896, type: 2}
+    Value: {fileID: 3454057820638719712, guid: 157707f19e2c51143bac867575870a3e, type: 3}
+  - Key: {fileID: 11400000, guid: 66f1bcf1b5f3be34d8e508beab8dae8e, type: 2}
+    Value: {fileID: 3454057820638719712, guid: 8a0f6f6f71991104dbb62f81b1e731c0, type: 3}
+  - Key: {fileID: 11400000, guid: d38784a27f2a8d747950c1ec93788941, type: 2}
+    Value: {fileID: 3454057820638719712, guid: a85cec1e6aec46343b44b9a6c11faba3, type: 3}
+  - Key: {fileID: 11400000, guid: 4656eaaa7ef21cc48b166f7d889f76f8, type: 2}
+    Value: {fileID: 3454057820638719712, guid: b4e7afffadeade542a26c9598c777431, type: 3}
+  - Key: {fileID: 11400000, guid: a71d2ec0638c90e48a4b8e6cf56ef5ae, type: 2}
+    Value: {fileID: 3454057820638719712, guid: 78148807e037e38479b467741aab1566, type: 3}
+  - Key: {fileID: 11400000, guid: c8f4e7658b768414f9bbc0a025683ff9, type: 2}
+    Value: {fileID: 3454057820638719712, guid: 3b66044b521a13a43bc1c911a9e4831e, type: 3}
+  - Key: {fileID: 11400000, guid: 1f196d363af8399419324765eb20f3eb, type: 2}
+    Value: {fileID: 3454057820638719712, guid: 91d0f95de3ba04c4489df52a16254912, type: 3}
+  - Key: {fileID: 11400000, guid: 6150c149eaba75740abdfd4f6059aa0c, type: 2}
+    Value: {fileID: 3454057820638719712, guid: 2aba74ec63551e34dbb4485ba65f0bc7, type: 3}
+  - Key: {fileID: 11400000, guid: f2cf25076d396394db30147863af0027, type: 2}
+    Value: {fileID: 3454057820638719712, guid: 9ee61199aa8713743bd09f647169965d, type: 3}
 --- !u!1 &939455103
 GameObject:
   m_ObjectHideFlags: 0
