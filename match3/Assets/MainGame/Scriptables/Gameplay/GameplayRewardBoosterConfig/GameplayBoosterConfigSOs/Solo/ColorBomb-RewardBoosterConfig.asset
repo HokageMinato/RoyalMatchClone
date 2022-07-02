@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ColorBomb-RewardBoosterConfig
   m_EditorClassIdentifier: 
   elementId:
-    id: 
+    id: ColorBomb

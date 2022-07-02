@@ -233,6 +233,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   patterns:
+  - {fileID: 11400000, guid: 349b100dd0d1190468fea9bfaf770a2e, type: 2}
+  - {fileID: 11400000, guid: 96fee0f247e44854db100291394f2ada, type: 2}
   - {fileID: 11400000, guid: 8007b98aeab3e4e4b842e40c2d0c2364, type: 2}
   - {fileID: 11400000, guid: e72ad1940304adb4da92ab40d20e0471, type: 2}
   - {fileID: 11400000, guid: 6c17708d0bd0cea46ba2304891b7683b, type: 2}
@@ -241,8 +243,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a50b5394066a69840b80efbb8f31b67e, type: 2}
   - {fileID: 11400000, guid: bd46a34abc52c7744a772b6c85636a1c, type: 2}
   - {fileID: 11400000, guid: 5f6de3182aba7d742ba26248b18f761a, type: 2}
-  - {fileID: 11400000, guid: 349b100dd0d1190468fea9bfaf770a2e, type: 2}
-  - {fileID: 11400000, guid: 96fee0f247e44854db100291394f2ada, type: 2}
   - {fileID: 11400000, guid: 3e5fba3d6d0db0c4ca1133490d628345, type: 2}
   - {fileID: 11400000, guid: 49e91f27093ccc342b5d83a12e18a670, type: 2}
   - {fileID: 11400000, guid: 6d763b51c71d4664693e57388a21cee5, type: 2}
@@ -1013,6 +1013,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 1139302220}
+  updateInterval: 0.5
 --- !u!4 &1139302223
 Transform:
   m_ObjectHideFlags: 0
@@ -1133,7 +1134,7 @@ MonoBehaviour:
   - Key: {fileID: 11400000, guid: 6d763b51c71d4664693e57388a21cee5, type: 2}
     Value: {fileID: 11400000, guid: b9dcd339532eaa14d88f73f78f4041e5, type: 2}
   - Key: {fileID: 11400000, guid: 49e91f27093ccc342b5d83a12e18a670, type: 2}
-    Value: {fileID: 11400000, guid: 74f99be53f673c04fbc0441dcefd27e6, type: 2}
+    Value: {fileID: 11400000, guid: b9dcd339532eaa14d88f73f78f4041e5, type: 2}
   - Key: {fileID: 11400000, guid: 349b100dd0d1190468fea9bfaf770a2e, type: 2}
     Value: {fileID: 11400000, guid: 5274e1f857cb01f43838765d62b24805, type: 2}
   - Key: {fileID: 11400000, guid: 96fee0f247e44854db100291394f2ada, type: 2}

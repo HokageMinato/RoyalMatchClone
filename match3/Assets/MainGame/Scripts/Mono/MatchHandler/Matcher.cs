@@ -77,6 +77,7 @@ public class MatchExecutionData : IEquatable<MatchExecutionData>
     public List<GridCell> patternCells;
     public int swipeId;
     public HashSet<int> dirtyColoumns;
+    public GridCell boosterCell=null;
     #endregion
 
     #region PUBLIC_PROPERTIES
@@ -85,6 +86,8 @@ public class MatchExecutionData : IEquatable<MatchExecutionData>
     {
         get { return matchData.Count > 0; }
     }
+
+    
 
     public Element FirstElement => firstCell?.ReadElement();
     public Element SecondElement => secondCell?.ReadElement();

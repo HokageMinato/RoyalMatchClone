@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: TNTColorBomb-RewardBoosterConfig
   m_EditorClassIdentifier: 
   elementId:
-    id: 
+    id: TNTColorBomb

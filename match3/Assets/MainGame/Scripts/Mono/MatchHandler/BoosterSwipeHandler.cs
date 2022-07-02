@@ -7,12 +7,8 @@ public class BoosterSwipeHandler : MonoBehaviour , IMatchHandler
     [SerializeField] private List<EntityTuple<ElementConfig, GameplayRewardBoosterConfig>> SoloBoosterMap;
     [SerializeField] private List<EntityTuple<EntityTuple<ElementConfig, ElementConfig>,GameplayRewardBoosterConfig>> ComboMap;
 
-    private Dictionary <ElementConfig,GameplayRewardBoosterConfig> _boosterMap = new Dictionary<ElementConfig,GameplayRewardBoosterConfig>();
-    private Dictionary<EntityTuple<ElementConfig, ElementConfig>, GameplayRewardBoosterConfig> _defaultBoosterMap = new Dictionary<EntityTuple<ElementConfig, ElementConfig>, GameplayRewardBoosterConfig>();
-
-    private Element firstElement;
-    private Element secondElement;
-    private Element _activePlaceboElement;
+    private Dictionary <ElementConfig,GameplayRewardBoosterConfig> _soloBoosterMap = new Dictionary<ElementConfig,GameplayRewardBoosterConfig>();
+    private Dictionary<EntityTuple<ElementConfig, ElementConfig>, GameplayRewardBoosterConfig> comboBoosterMap = new Dictionary<EntityTuple<ElementConfig, ElementConfig>, GameplayRewardBoosterConfig>();
 
     private Grid _grid;
 
@@ -21,15 +17,12 @@ public class BoosterSwipeHandler : MonoBehaviour , IMatchHandler
 
         foreach (var item in ComboMap)
         {
-            if (_defaultBoosterMap.ContainsKey(item.Key))
-                Debug.LogError($"{item.Key} Duplicate");
-
-            _defaultBoosterMap.Add(item.Key, item.Value);
+            comboBoosterMap.Add(item.Key, item.Value);
         }
         
 
         foreach (var item2 in SoloBoosterMap)
-            _boosterMap.Add(item2.Key, item2.Value);
+            _soloBoosterMap.Add(item2.Key, item2.Value);
         
 
         _grid = Grid.instance;
@@ -38,53 +31,50 @@ public class BoosterSwipeHandler : MonoBehaviour , IMatchHandler
 
     public void OnSwipeRecieved(MatchExecutionData matchExecutionData)
     {
-        Debug.Log("Handling RocketSwipe");
-        PopulateElementsData(matchExecutionData);
-        GetRocketBoosterAccordingToMatch().UseBooster(matchExecutionData,_grid,_activePlaceboElement); 
+        GetRocketBoosterAccordingToMatch(matchExecutionData).UseBooster(matchExecutionData,_grid); 
     }
 
-    private IMatchGameplayRewardBooster GetRocketBoosterAccordingToMatch()
+    private IMatchGameplayRewardBooster GetRocketBoosterAccordingToMatch(MatchExecutionData matchExecutionData)
     {
-        IMatchGameplayRewardBooster booster = TryGetComboBooster();
+        IMatchGameplayRewardBooster booster = TryGetComboBooster(matchExecutionData);
         
         if (booster != null)
             return booster;
 
-        return GetDefaultBooster();
+        return GetDefaultBooster(matchExecutionData);
     }
 
     private void PopulateElementsData(MatchExecutionData matchExecutionData)
     {
-        firstElement = matchExecutionData.firstCell.ReadElement();
-        secondElement = matchExecutionData.secondCell.ReadElement();
+    
     }
 
-    private IMatchGameplayRewardBooster TryGetComboBooster() 
+    private IMatchGameplayRewardBooster TryGetComboBooster(MatchExecutionData matchExecutionData) 
     {
         EntityTuple<ElementConfig, ElementConfig> comboConfigTuple = new EntityTuple<ElementConfig, ElementConfig>()
         {
-            Key = firstElement.ElementConfig,
-            Value = secondElement.ElementConfig
+            Key = matchExecutionData.FirstElement.ElementConfig,
+            Value = matchExecutionData.SecondElement.ElementConfig
         };
 
         EntityTuple<ElementConfig, ElementConfig> comboConfigTupleReverse = new EntityTuple<ElementConfig, ElementConfig>()
         {
-            Key = firstElement.ElementConfig,
-            Value = secondElement.ElementConfig
+            Key = comboConfigTuple.Value,
+            Value = comboConfigTuple.Key
         };
 
 
 
-        if (_defaultBoosterMap.ContainsKey(comboConfigTuple))
+        if (comboBoosterMap.ContainsKey(comboConfigTuple))
         {
-            _activePlaceboElement = firstElement;
-            return GenerateGameplayBooster(_defaultBoosterMap[comboConfigTuple]);
+            matchExecutionData.boosterCell = matchExecutionData.firstCell;
+            return GenerateGameplayBooster(comboBoosterMap[comboConfigTuple]);
         }
 
-        if (_defaultBoosterMap.ContainsKey(comboConfigTupleReverse))
+        if (comboBoosterMap.ContainsKey(comboConfigTupleReverse))
         {
-            _activePlaceboElement = secondElement;
-            return GenerateGameplayBooster(_defaultBoosterMap[comboConfigTupleReverse]);
+            matchExecutionData.boosterCell = matchExecutionData.secondCell;
+            return GenerateGameplayBooster(comboBoosterMap[comboConfigTupleReverse]);
         }
 
 
@@ -92,17 +82,34 @@ public class BoosterSwipeHandler : MonoBehaviour , IMatchHandler
         return null;
     }
     
-    private IMatchGameplayRewardBooster GetDefaultBooster() 
+    private IMatchGameplayRewardBooster GetDefaultBooster(MatchExecutionData matchExecutionData) 
     {
 
-        ElementConfig firstElementConfig = firstElement.ElementConfig;
-        ElementConfig secondElementConfig = secondElement.ElementConfig;
+        ElementConfig firstElementConfig = matchExecutionData.FirstElement.ElementConfig;
+        ElementConfig secondElementConfig = matchExecutionData.SecondElement.ElementConfig;
 
-        if (_boosterMap.ContainsKey(firstElementConfig))
-            return GenerateGameplayBooster(_boosterMap[firstElementConfig]);
+        Debug.Log($"Element configs recieved {firstElementConfig} {secondElementConfig} Contains Check {_soloBoosterMap.ContainsKey(firstElementConfig)} {_soloBoosterMap.ContainsKey(secondElementConfig)}");
 
-        if (_boosterMap.ContainsKey(secondElementConfig))
-            return GenerateGameplayBooster(_boosterMap[secondElementConfig]);
+        string dict = string.Empty;
+
+        foreach (var item in _soloBoosterMap)
+            dict += item.Key.ToString() + "\n";
+
+        Debug.Log($"dict: {dict}");
+
+
+
+        if (_soloBoosterMap.ContainsKey(firstElementConfig))
+        {
+            matchExecutionData.boosterCell = matchExecutionData.firstCell;
+            return GenerateGameplayBooster(_soloBoosterMap[firstElementConfig]);
+        }
+
+        if (_soloBoosterMap.ContainsKey(secondElementConfig))
+        {
+            matchExecutionData.boosterCell = matchExecutionData.secondCell;
+            return GenerateGameplayBooster(_soloBoosterMap[secondElementConfig]);
+        }
 
         return null;
     }
@@ -112,5 +119,7 @@ public class BoosterSwipeHandler : MonoBehaviour , IMatchHandler
     {
         return GameplayRewardBoosterFactory.instance.GenerateGameplayBoosterByConfig(config);
     }
+
+    
 
 }

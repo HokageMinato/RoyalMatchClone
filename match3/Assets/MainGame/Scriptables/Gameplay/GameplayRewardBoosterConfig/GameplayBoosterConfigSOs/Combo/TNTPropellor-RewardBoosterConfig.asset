@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: TNTPropellor-RewardBoosterConfig
   m_EditorClassIdentifier: 
   elementId:
-    id: 
+    id: TNTPropellor
