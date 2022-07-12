@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 
-public class GridMovementAnimator : MonoBehaviour
+public class GridMovementAnimator : Singleton<GridMovementAnimator>
 {
     public IEnumerator AnimateMovementRoutine(Dictionary<int,List<ElementAnimationData>> elementFromToPairAnimation)
     {
@@ -26,6 +26,12 @@ public class GridMovementAnimator : MonoBehaviour
 
     }
 
+    public IEnumerator AnimateCellSwap(MatchExecutionData matchExecutionData) 
+    {
+        Dictionary<int, List<ElementAnimationData>> swapCellAnimation = AnimateSwapCells(matchExecutionData);
+        yield return AnimateMovementRoutine(swapCellAnimation);
+    }
+
     IEnumerator AnimateElementChain(int key, List<ElementAnimationData> animationData, Action<int> onAnimationComplete)
     {
         List<ElementAnimationData> elementAnimationDatas = animationData;
@@ -34,4 +40,31 @@ public class GridMovementAnimator : MonoBehaviour
 
         onAnimationComplete(key);
     }
+
+
+    private Dictionary<int, List<ElementAnimationData>> AnimateSwapCells(MatchExecutionData matchExecutionData)
+    {
+        GridCell firstCell = matchExecutionData.firstCell;
+        GridCell secondCell = matchExecutionData.secondCell;
+
+        Element secondElement = secondCell.GetElement();
+        Element firstElement = firstCell.GetElement();
+
+
+        Dictionary<int, List<ElementAnimationData>> initialSwipeAnimationData = new Dictionary<int, List<ElementAnimationData>>()
+        {
+            {0,GenerateMoveAnimationData(firstElement,secondElement,firstCell,secondCell,matchExecutionData)},
+            {1,GenerateMoveAnimationData(secondElement,firstElement,secondCell,firstCell,matchExecutionData)}
+        };
+        return initialSwipeAnimationData;
+    }
+
+    private List<ElementAnimationData> GenerateMoveAnimationData(Element currentElement, Element otherElement, GridCell currentCell, GridCell otherCell, MatchExecutionData data)
+    {
+        List<ElementAnimationData> elemAnimation = new List<ElementAnimationData>();
+        currentCell.SetElement(otherElement);
+        elemAnimation.Add(new ElementAnimationData(currentElement, currentCell, otherCell, data, currentCell.HIndex));
+        return elemAnimation;
+    }
+
 }

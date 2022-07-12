@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{B37CBEA3-E801-567E-5C83-C3D9D1F5055A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkerGenerator", "LinkerGenerator.csproj", "{87D586A1-73AF-DBBC-AE9C-48D21C606FD9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.Player.csproj", "{B7836148-37EF-9006-CE14-D465F4E39BCE}"
 EndProject
 Global
@@ -17,10 +15,6 @@ Global
 		{B37CBEA3-E801-567E-5C83-C3D9D1F5055A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B37CBEA3-E801-567E-5C83-C3D9D1F5055A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B37CBEA3-E801-567E-5C83-C3D9D1F5055A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{87D586A1-73AF-DBBC-AE9C-48D21C606FD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{87D586A1-73AF-DBBC-AE9C-48D21C606FD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{87D586A1-73AF-DBBC-AE9C-48D21C606FD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{87D586A1-73AF-DBBC-AE9C-48D21C606FD9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B7836148-37EF-9006-CE14-D465F4E39BCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B7836148-37EF-9006-CE14-D465F4E39BCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7836148-37EF-9006-CE14-D465F4E39BCE}.Release|Any CPU.ActiveCfg = Release|Any CPU

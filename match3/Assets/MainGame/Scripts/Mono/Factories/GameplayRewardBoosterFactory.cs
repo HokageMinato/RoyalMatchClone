@@ -18,8 +18,7 @@ public class GameplayRewardBoosterFactory : Singleton<GameplayRewardBoosterFacto
 
     public IMatchGameplayRewardBooster GenerateGameplayBoosterByConfig(GameplayRewardBoosterConfig config)
     {
-        GameObject element = Instantiate(_boosterMap[config]);
-        element.transform.SetParent(Grid.instance.GetLayerTransformParent(RenderLayer.ElementLayer));
+        GameObject element = Instantiate(_boosterMap[config], Gridd.instance.GetLayerTransformParent(RenderLayer.ElementLayer));
         return element.GetComponentInChildren<IMatchGameplayRewardBooster>(true);
     }
 

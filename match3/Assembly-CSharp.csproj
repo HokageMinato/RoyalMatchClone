@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{B37CBEA3-E801-567E-5C83-C3D9D1F5055A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -56,7 +57,6 @@
     <Analyzer Include="D:\Installs\Visual Studio\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardBooster\Boosters\Solo\Rocket\IRocketBooster.cs" />
     <Compile Include="Assets\MainGame\Scripts\Scriptable\MatchPattern.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\Grid\GridMovementAnimator.cs" />
     <Compile Include="Assets\MainGame\Scripts\Scriptable\ElementConfig.cs" />
@@ -70,22 +70,24 @@
     <Compile Include="Assets\MainGame\Scripts\Mono\Managers\GameplayManager.cs" />
     <Compile Include="Assets\MainGame\Scripts\Scriptable\GameplayRewardBoosterConfig.cs" />
     <Compile Include="Assets\NativePooler.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardBooster\Boosters\Solo\Rocket\SimpleDirectionalRocketBooster.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\MatchHandler\Matcher.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardBooster\Boosters\Solo\HorizontalRocketBooster.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\MatchHandler\MatchSwipeHandler.cs" />
     <Compile Include="Assets\MainGame\Utilities\MinatoUtils.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardBooster\Boosters\IMatchGameplayRewardBooster.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\InputManagement\InputManager.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\Grid\Element.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardBooster\Boosters\Solo\Rocket\SimpleVerticalRocketBooster.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardBooster\Handlers\MatchGameplayBoosterHitAnimator.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\Factories\ObstacleFactory.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\GridBlockers\CellGroup.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\BasicLogger.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\MatchHandler\IMatchHandler.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\Grid\MatchFinder.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\Factories\ElementFactory.cs" />
-    <Compile Include="Assets\MainGame\Scripts\Mono\Grid\Grid.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\Grid\Gridd.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\GridBlockers\BaseCellBlocker.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\GridBlockers\GameplayObstacleHandler.cs" />
     <Compile Include="Assets\MainGame\Scripts\Mono\Grid\GridCell.cs" />
+    <Compile Include="Assets\MainGame\Scripts\Mono\MatchRewardBooster\Boosters\Solo\Propellor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -1038,10 +1040,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="LinkerGenerator.csproj">
-      <Project>{87D586A1-73AF-DBBC-AE9C-48D21C606FD9}</Project>
-      <Name>LinkerGenerator</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

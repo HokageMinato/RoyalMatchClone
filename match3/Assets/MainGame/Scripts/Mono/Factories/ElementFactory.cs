@@ -36,7 +36,7 @@ public class ElementFactory : Singleton<ElementFactory>
     public Element GenerateElementByConfig(ElementConfig config)
     {
         Element element = Instantiate(keyValuePairs[config]);
-        Transform elementTransformParent = Grid.instance.GetLayerTransformParent(element.RenderLayer);
+        Transform elementTransformParent = Gridd.instance.GetLayerTransformParent(element.RenderLayer);
         element.transform.SetParent(elementTransformParent);
         return element;
     }

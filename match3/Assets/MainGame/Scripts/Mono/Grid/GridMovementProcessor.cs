@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class GridMovementProcessor : MonoBehaviour
+public class GridMovementProcessor : Singleton<GridMovementProcessor>
 {
     public Transform transformActivePrefab;
     private Transform[] elementSpawnPositions;
@@ -17,7 +17,7 @@ public class GridMovementProcessor : MonoBehaviour
     private void SetElementFactoryTransforms()
     {
         GridDesignTemp gridLevel = GameplayManager.instance.levelData;
-        Grid grid = Grid.instance;
+        Gridd grid = Gridd.instance;
         int gridWidth = gridLevel.gridWidth;
 
         elementSpawnPositions = new Transform[gridWidth];
@@ -34,7 +34,7 @@ public class GridMovementProcessor : MonoBehaviour
         }
     }
     private void GenerateInitialElements() {
-        Grid grid = Grid.instance;
+        Gridd grid = Gridd.instance;
 
         for (int i = 0; i < grid.GridHeight; i++)
         {
@@ -56,7 +56,7 @@ public class GridMovementProcessor : MonoBehaviour
         int uAnimId = 0;
 
         #region FUNCTION_EXECUTION_ORDER
-        Grid grid = Grid.instance;
+        Gridd grid = Gridd.instance;
         Dictionary<int, List<ElementAnimationData>> elementFromToPairForAnimation = new Dictionary<int, List<ElementAnimationData>>();
         ShiftCells();
         ShiftNewCells();
@@ -247,7 +247,7 @@ public class GridMovementProcessor : MonoBehaviour
 
     bool IsColoumnEmpty(int colIdx) 
     { 
-        return Grid.instance.IsColoumnEmpty(colIdx);
+        return Gridd.instance.IsColoumnEmpty(colIdx);
     }
    
     private bool IsCellBlocked(GridCell gridCell)

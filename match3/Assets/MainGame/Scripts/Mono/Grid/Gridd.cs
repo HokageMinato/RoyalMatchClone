@@ -8,7 +8,7 @@ public static class GridConstants {
 }
 
 
-public class Grid : Singleton<Grid>
+public class Gridd : Singleton<Gridd>
 {
 
     #region PRIVATE_VARIABLES
@@ -62,7 +62,7 @@ public class Grid : Singleton<Grid>
         GridDesignTemp levelData = GameplayManager.instance.levelData;
         
         _grid = new GridCell[levelData.gridHeight][];
-       
+
 
         for (int i = 0; i < levelData.gridHeight; i++)
         {
@@ -202,7 +202,9 @@ public class Grid : Singleton<Grid>
         cell.transform.position = newPosition;
         cell.Init(i,j);
         cell.gameObject.name = $"({i},{j})";
+        
         _grid[i][j] = cell;
+
         CellCount++;
     }
 
@@ -234,31 +236,38 @@ public class Grid : Singleton<Grid>
         return layerTransforms[(int)renderLayer];
     }
 
-    public void LockDirtyColoumns(MatchExecutionData executionData) {
+    public void LockDirtyColoumns(MatchExecutionData executionData)
+    {
 
-        List<GridCell> cells = executionData.patternCells;
+        List<GridCell> patternCells = executionData.patternCells;
+        //List<GridCell> patternCells = executionData.boosterCells;
 
-        LockColoumn(executionData.firstCell.WIndex);
-        LockColoumn(executionData.secondCell.WIndex);
-        
+        LockColoumn(executionData.firstCell.WIndex,executionData);
+        LockColoumn(executionData.secondCell.WIndex,executionData);
+        LockColumnOfCells(patternCells,executionData);
+
+    }
+
+    public void LockColumnOfCells(List<GridCell> cells,MatchExecutionData executionData)
+    {
         for (int i = 0; i < cells.Count; i++)
         {
             int coloumnIndex = cells[i].WIndex;
             if (!executionData.dirtyColoumns.Contains(coloumnIndex))
             {
-                LockColoumn(coloumnIndex);
+                LockColoumn(coloumnIndex,executionData);
                 executionData.dirtyColoumns.Add(coloumnIndex);
             }
         }
+    }
 
-        void LockColoumn(int coloumnIndex)
+    void LockColoumn(int coloumnIndex, MatchExecutionData executionData)
+    {
+        for (int c = 0; c < GridHeight; c++)
         {
-            for (int c = 0; c < GridHeight; c++)
-            {
-                GridCell cell = this[c, coloumnIndex];
-                if (cell)
-                    cell.LockCell(executionData);
-            }
+            GridCell cell = this[c, coloumnIndex];
+            if (cell)
+                cell.LockCell(executionData);
         }
     }
 

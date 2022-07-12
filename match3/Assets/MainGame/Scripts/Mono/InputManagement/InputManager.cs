@@ -114,15 +114,15 @@ public class InputManager : Singleton<InputManager>
 
     private void HandleSwipe(MatchExecutionData matchExecutionData) 
     {
-        ElementConfig firstElement = matchExecutionData.FirstElement.ElementConfig;
-        ElementConfig secondElement = matchExecutionData.SecondElement.ElementConfig;
-
-        int idx = 0;
-        if (IsBoosterSwipe(firstElement, secondElement))
-            idx = 1;
-        
-
-        ((IMatchHandler)_swipeHandlers[idx]).OnSwipeRecieved(matchExecutionData);
+        for (int i = 0; i < _swipeHandlers.Count; i++)
+        {
+            IMatchHandler matchHandler = ((IMatchHandler)_swipeHandlers[i]);
+            if (matchHandler.CanHandleSwipe(matchExecutionData)) 
+            { 
+                matchHandler.HandleSwipe(matchExecutionData);
+                return;
+            }
+        }
     }
 
 
@@ -156,10 +156,7 @@ public class InputManager : Singleton<InputManager>
         return areNeighbours;
     }
 
-    private bool IsBoosterSwipe(ElementConfig elem1,ElementConfig elem2) 
-    {
-        return ElementFactory.instance.IsBooster(elem1) || ElementFactory.instance.IsBooster(elem2);
-    }
+    
 
 
     #if UNITY_EDITOR

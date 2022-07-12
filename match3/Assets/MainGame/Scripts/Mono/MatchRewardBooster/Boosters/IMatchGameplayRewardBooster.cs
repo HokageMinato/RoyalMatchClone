@@ -4,6 +4,9 @@ using UnityEngine;
 
 public interface IMatchGameplayRewardBooster 
 {
-    public void UseBooster(MatchExecutionData executionData, Grid grid);
+    public void UseBooster(MatchExecutionData executionData, Gridd grid);
+
+    
+
 }
 

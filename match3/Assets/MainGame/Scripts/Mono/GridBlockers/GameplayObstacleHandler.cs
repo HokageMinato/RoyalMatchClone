@@ -27,7 +27,7 @@ public class GameplayObstacleHandler : Singleton<GameplayObstacleHandler>
                 if (obstacleGenerator.IsBlockerType(cellType))
                 {
                     BaseCellBlocker blocker = obstacleGenerator.GenerateBlocker(cellType);
-                    GridCell cell = Grid.instance[i, j];
+                    GridCell cell = Gridd.instance[i, j];
                     blocker.Init(cell,i, j);
                     activeBlockers.Add(blocker);
                 }

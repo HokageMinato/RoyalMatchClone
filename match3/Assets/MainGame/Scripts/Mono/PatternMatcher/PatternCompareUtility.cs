@@ -6,7 +6,7 @@ public static class PatternCompareUtility
 {
     public static void GetAllPatternCellsNonAlloc(List<GridCell> outputList, MatchPattern matchPattern, int hI, int wJ) 
     {
-        Grid grid = Grid.instance;
+        Gridd grid = Gridd.instance;
 
         //  Debug.Log($"<Matcher> Checking {matchPattern.patternName} at cell {startingCell.gameObject.name}");
 
@@ -38,13 +38,13 @@ public static class PatternCompareUtility
 
     private static bool IsOutOfBounds(int iPaired, int jPaired)
     {
-        Grid grid = Grid.instance;
+        Gridd grid = Gridd.instance;
         return iPaired >= grid.GridHeight || jPaired >= grid.GridWidth || iPaired < 0 || jPaired < 0;
     }
 
     public static void GetMatchedPatternCellsNonAlloc(List<GridCell> outputList,MatchPattern matchPattern, int hI, int wJ)
     {
-        Grid grid = Grid.instance;
+        Gridd grid = Gridd.instance;
 
         //  Debug.Log($"<Matcher> Checking {matchPattern.patternName} at cell {startingCell.gameObject.name}");
         List<GridCell> potentialList = new List<GridCell>();

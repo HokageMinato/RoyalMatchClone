@@ -40,7 +40,7 @@ public class BaseCellBlocker : MonoBehaviour
 
     internal void UpdateRenderLayer()
     {
-        transform.SetParent(Grid.instance.GetLayerTransformParent(renderLayer));
+        transform.SetParent(Gridd.instance.GetLayerTransformParent(renderLayer));
     }
     #endregion
 

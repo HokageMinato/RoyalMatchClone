@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f06da442ed8acab47993ec6ee99d9a00, type: 3}
-  m_Name: Rocket
+  m_Name: RocketV
   m_EditorClassIdentifier: 
   elementId:
     id: RocketH
