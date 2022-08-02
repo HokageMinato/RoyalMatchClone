@@ -215,7 +215,7 @@ GameObject:
   - component: {fileID: 494275732}
   - component: {fileID: 494275734}
   m_Layer: 0
-  m_Name: MatchFinder
+  m_Name: CollapseMechanisms
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
